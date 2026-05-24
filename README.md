@@ -38,6 +38,10 @@ Update these in `hosts/main/configuration.nix`:
 - `time.timeZone`
 - `users.users.nixos` (replace `nixos` with your username)
 
+Then keep the same username key in `flake.nix` under:
+
+- `home-manager.users.nixos`
+
 ## 5) Apply config
 
 ```bash
@@ -50,7 +54,7 @@ Then reboot, log into TTY, and start Hyprland:
 start-hyprland
 ```
 
-That is the baseline. Add Home Manager, Quickshell, theming, etc. later in separate commits.
+That is the baseline. Home Manager is wired in for per-user dotfiles (see `hosts/main/home.nix`). Add Quickshell, theming, etc. later in separate commits.
 
 ## Notes for other users
 

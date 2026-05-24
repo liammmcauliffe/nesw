@@ -44,6 +44,7 @@
     extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
     shell = pkgs.bash;
   };
+  # Keep Home Manager user in flake.nix in sync with this username.
 
   # Needed if you want to use sudo
   security.sudo.enable = true;
