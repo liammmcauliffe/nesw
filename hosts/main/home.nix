@@ -1,10 +1,10 @@
 { config, pkgs, ... }:
 {
-  home.stateVersion = "24.11";
+  home.stateVersion = "26.05";
 
   wayland.windowManager.hyprland = {
     enable = true;
-    settings = {
+    extraConfig = ''
       monitor = ",preferred,auto,1";
       general = {
         gaps_in = 5;
@@ -18,6 +18,5 @@
         "SUPER, Return, exec, ghostty"
         "SUPER, Q, killactive"
       ];
-    };
+    '';
   };
-}
