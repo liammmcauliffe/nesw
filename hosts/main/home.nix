@@ -2,6 +2,23 @@
 {
   home.stateVersion = "26.05";
 
+  home.pointerCursor = {
+    gtk.enable = true;
+    x11.enable = true;
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Ice";
+    size = 24;
+  };
+
+  gtk = {
+    enable = true;
+    cursorTheme = {
+      package = pkgs.bibata-cursors;
+      name = "Bibata-Modern-Ice";
+      size = 24;
+    };
+  };
+
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
@@ -14,6 +31,9 @@
     extraConfig = ''
       local terminal = "ghostty"
       local mainMod  = "SUPER"
+
+      hl.env("XCURSOR_THEME", "Bibata-Modern-Ice")
+      hl.env("XCURSOR_SIZE",  "24")
 
       hl.monitor({
         output   = "",
@@ -30,6 +50,9 @@
         },
         decoration = {
           rounding = 10,
+        },
+        cursor = {
+          default_monitor = "",
         },
       })
 
