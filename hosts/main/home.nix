@@ -54,6 +54,11 @@
         cursor = {
           default_monitor = "",
         },
+        misc = {
+          background_color = "rgb(000000)",
+          disable_hyprland_logo = true,
+          disable_splash_rendering = true,
+        },
       })
 
       hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
