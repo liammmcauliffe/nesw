@@ -2,6 +2,13 @@
 {
   home.stateVersion = "26.05";
 
+  programs.fish = {
+    enable = true;
+    interactiveShellInit = ''
+      set fish_greeting ""
+    '';
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
     extraConfig = ''

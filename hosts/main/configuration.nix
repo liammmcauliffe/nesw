@@ -31,6 +31,8 @@
     package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
   };
 
+  programs.fish.enable = true;
+
   # Basic packages
   environment.systemPackages = with pkgs; [
     git
@@ -42,7 +44,7 @@
   users.users.nixos = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
-    shell = pkgs.bash;
+    shell = pkgs.fish;
   };
   # Keep Home Manager user in flake.nix in sync with this username.
 
