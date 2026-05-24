@@ -47,7 +47,7 @@ sudo nixos-rebuild switch --flake .#main
 Then reboot, log into TTY, and start Hyprland:
 
 ```bash
-Hyprland
+start-hyprland
 ```
 
 That is the baseline. Add Home Manager, Quickshell, theming, etc. later in separate commits.

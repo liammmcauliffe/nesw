@@ -28,14 +28,7 @@
   # Wayland + Hyprland
   programs.hyprland = {
     enable = true;
-    package = hyprland.packages.${pkgs.system}.hyprland;
-  };
-
-  # Required portals for screen share/file picker behavior in Wayland apps
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
-    config.common.default = "*";
+    package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
   };
 
   # Basic packages
