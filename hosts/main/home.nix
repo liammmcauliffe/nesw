@@ -4,7 +4,7 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    extraLuaConfig = ''
+    extraConfig = ''
       local terminal = "ghostty"
       local mainMod  = "SUPER"
 
