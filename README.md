@@ -30,14 +30,23 @@ cd ~/nesw
 sudo cp /etc/nixos/hardware-configuration.nix ./hosts/main/hardware-configuration.nix
 ```
 
-## 4) Edit machine-specific values
+## 4) Edit variables for your machine
 
-Update these in `settings.nix`:
+Before applying the configuration, you must manually enter your username so you do not lose sudo privileges.
 
-- `username`
-- `hostname`
-- `timezone`
-- `locale`
+Open `flake.nix` and replace `"YOUR_USERNAME"` with your actual username:
+
+```nix
+home-manager.users."YOUR_USERNAME" = {
+```
+
+Open `hosts/main/configuration.nix` and replace `"YOUR_USERNAME"`:
+
+```nix
+users.users."YOUR_USERNAME" = {
+```
+
+You can also adjust your `time.timeZone` and `i18n.defaultLocale` in this file if needed.
 
 ## 5) Apply config
 
@@ -45,9 +54,7 @@ Update these in `settings.nix`:
 sudo nixos-rebuild switch --flake .#main
 ```
 
-The flake target comes from `settings.nix` → `hostname`. With the default settings, that target is `.#main`.
-
-Then reboot, log into TTY, and start Hyprland:
+Then reboot, log into your TTY, and start Hyprland:
 
 ```bash
 start-hyprland
@@ -55,12 +62,6 @@ start-hyprland
 
 That is the baseline. Home Manager imports modules from `hosts/main/home.nix`; edit plain-text app config in `modules/hyprland/hyprland.conf` and `modules/fish/config.fish`.
 
-## Notes for other users
+## 6) Commit your changes
 
-This repo currently exposes one host target from `settings.nix`:
-
-```bash
-.#main
-```
-
-If someone else wants to reuse this, they should fork it and create their own host under `hosts/`.
+Once you've made these edits and replaced `"YOUR_USERNAME"` with your actual username (e.g. `"liam"`), commit it and push. You now have an incredibly stable repository that won't randomly break your system if you re-clone it!

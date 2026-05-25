@@ -1,8 +1,5 @@
 { config, pkgs, hyprland, ... }:
 
-let
-  settings = import ../../settings.nix;
-in
 {
   imports = [ ./hardware-configuration.nix ];
 
@@ -11,10 +8,10 @@ in
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Host basics
-  networking.hostName = settings.hostname;
+  networking.hostName = "main"; # Must match the flake target
   networking.networkmanager.enable = true;
-  time.timeZone = settings.timezone;
-  i18n.defaultLocale = settings.locale;
+  time.timeZone = "America/New_York";
+  i18n.defaultLocale = "en_US.UTF-8";
 
   # Enable flakes on the installed system
   nix.settings = {
@@ -50,7 +47,8 @@ in
     git
   ];
 
-  users.users.${settings.username} = {
+  # HARDCODE YOUR USERNAME HERE (e.g. "liam")
+  users.users."YOUR_USERNAME" = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
     shell = pkgs.fish;
