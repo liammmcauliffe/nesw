@@ -47,6 +47,11 @@
     git
   ];
 
+  # Fonts
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+  ];
+
   # HARDCODE YOUR USERNAME HERE (e.g. "liam")
   users.users."YOUR_USERNAME" = {
     isNormalUser = true;

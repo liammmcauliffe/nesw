@@ -8,9 +8,9 @@
   xdg.configFile."ghostty/config".text = ''
     theme = "Vague"
     font-family = "JetBrainsMono NFM Regular"
-    font-size = 20
-    window-padding-x = 10
-    window-padding-y = 10
+    font-size = 14
+    window-padding-x = 4
+    window-padding-y = 4
     window-decoration = true
     cursor-style=block
     adjust-cell-height=35%
