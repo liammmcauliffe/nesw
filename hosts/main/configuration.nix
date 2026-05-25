@@ -17,7 +17,16 @@ in
   i18n.defaultLocale = settings.locale;
 
   # Enable flakes on the installed system
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    auto-optimise-store = true;
+  };
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
 
   # Audio
   security.rtkit.enable = true;
