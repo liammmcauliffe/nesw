@@ -86,19 +86,25 @@ if [[ -f "$SCRIPT_DIR/settings.nix" ]]; then
   echo ""
 fi
 
+# Detect the current user (handles if they accidentally ran via sudo)
+CURRENT_USER=${SUDO_USER:-$USER}
+
 # Username
 info "Linux username"
-hint "Lowercase, no spaces, max 32 chars (e.g., liam, nixos)"
+hint "The user account you created during NixOS installation."
 while true; do
   USERNAME=$(gum input \
-    --placeholder "nixos" \
+    --value "$CURRENT_USER" \
+    --placeholder "$CURRENT_USER" \
     --prompt "> " \
     --prompt.foreground "$ACCENT" \
     --width 40)
-  USERNAME="${USERNAME:-nixos}"
+  
+  # Fallback just in case they clear the input entirely
+  USERNAME="${USERNAME:-$CURRENT_USER}"
 
-  if [[ ! "$USERNAME" =~ ^[a-z][a-z0-9_-]{0,31}$ ]]; then
-    error_msg "Invalid. Must start with a-z, and contain only a-z, 0-9, _, -"
+  if [[ ! "$USERNAME" =~ ^[a-z_][a-z0-9_-]{0,31}$ ]]; then
+    error_msg "Invalid. Must start with a-z or _, and contain only a-z, 0-9, _, -"
     continue
   fi
   break
