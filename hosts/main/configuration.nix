@@ -13,7 +13,7 @@ in
   # Host basics
   networking.hostName = settings.hostname;
   networking.networkmanager.enable = true;
-  time.timeZone = settings.timeZone;
+  time.timeZone = settings.timezone;
   i18n.defaultLocale = settings.locale;
 
   # Enable flakes on the installed system

@@ -19,66 +19,67 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Tokyo Night palette
-TN_BASE="#1a1b26"
-TN_SURFACE="#24283b"
-TN_PANEL="#1f2335"
-TN_TEXT="#c0caf5"
-TN_BLUE="#7aa2f7"
-TN_CYAN="#7dcfff"
-TN_GREEN="#9ece6a"
-TN_RED="#f7768e"
-TN_MUTED="#565f89"
-TN_YELLOW="#e0af68"
+# Minimal Modern Palette (Zinc/Slate)
+BG_SURFACE="#18181b"
+BG_PANEL="#27272a"
+TEXT_MAIN="#e4e4e7"
+TEXT_MUTED="#71717a"
+ACCENT="#94a3b8"
+SUCCESS="#86efac"
+ERROR="#fca5a5"
+WARN="#fcd34d"
 
 # UI Helper Functions
 header() {
   gum style \
     --border rounded \
-    --border-foreground "$TN_BLUE" \
-    --background "$TN_SURFACE" \
-    --foreground "$TN_TEXT" \
-    --padding "1 3" \
+    --border-foreground "$ACCENT" \
+    --padding "1 4" \
     --margin "1 0" \
     --bold \
     "$@"
 }
 
 info() {
-  gum style --foreground "$TN_CYAN" --bold "  ℹ $1"
+  gum style --foreground "$TEXT_MAIN" "  $1"
 }
 
 hint() {
-  gum style --foreground "$TN_MUTED" "    $1"
+  gum style --foreground "$TEXT_MUTED" "    $1"
 }
 
 success() {
-  gum style --foreground "$TN_GREEN" --bold "  ✓ $1"
+  gum style --foreground "$SUCCESS" "  + $1"
 }
 
 warn() {
-  gum style --foreground "$TN_YELLOW" --bold "  ⚠ $1"
+  gum style --foreground "$WARN" "  ! $1"
 }
 
 error_msg() {
-  gum style --foreground "$TN_RED" "  ✗ $1"
+  gum style --foreground "$ERROR" "  x $1"
 }
 
 divider() {
-  gum style --foreground "$TN_MUTED" "  $(printf '%.0s─' $(seq 1 40))"
+  gum style --foreground "$TEXT_MUTED" "  $(printf '%.0s─' $(seq 1 40))"
 }
 
 # Welcome
 clear
 header "nesw" "Hyprland + NixOS Interactive Setup"
 echo ""
-info "This wizard will configure your system settings and automate the installation steps."
+info "This wizard will configure your system settings and automate the installation."
 echo ""
 
 # Check if settings.nix already exists
 if [[ -f "$SCRIPT_DIR/settings.nix" ]]; then
-  warn "settings.nix already exists!"
-  if ! gum confirm "Overwrite existing settings?" --prompt.foreground "$TN_YELLOW"; then
+  warn "settings.nix already exists."
+  if ! gum confirm "Overwrite existing settings?" \
+    --prompt.foreground "$WARN" \
+    --selected.background "$ACCENT" \
+    --selected.foreground "$BG_SURFACE" \
+    --unselected.background "" \
+    --unselected.foreground "$TEXT_MAIN"; then
     error_msg "Aborted. No files were changed."
     exit 1
   fi
@@ -91,8 +92,8 @@ hint "Lowercase, no spaces, max 32 chars (e.g., liam, nixos)"
 while true; do
   USERNAME=$(gum input \
     --placeholder "nixos" \
-    --prompt "❯ " \
-    --prompt.foreground "$TN_BLUE" \
+    --prompt "> " \
+    --prompt.foreground "$ACCENT" \
     --width 40)
   USERNAME="${USERNAME:-nixos}"
 
@@ -111,8 +112,8 @@ hint "Lowercase, no spaces, max 63 chars (e.g., desktop, xps15, main)"
 while true; do
   HOSTNAME_VAL=$(gum input \
     --placeholder "main" \
-    --prompt "❯ " \
-    --prompt.foreground "$TN_BLUE" \
+    --prompt "> " \
+    --prompt.foreground "$ACCENT" \
     --width 40)
   HOSTNAME_VAL="${HOSTNAME_VAL:-main}"
 
@@ -133,13 +134,13 @@ TZ_LIST=$(timedatectl list-timezones 2>/dev/null || find /usr/share/zoneinfo/pos
 
 TIMEZONE=$(echo "$TZ_LIST" | gum filter \
   --placeholder "Search: New York, EST, Europe..." \
-  --prompt "❯ " \
-  --prompt.foreground "$TN_BLUE" \
+  --prompt "> " \
+  --prompt.foreground "$ACCENT" \
   --height 12 \
-  --indicator "→" \
-  --indicator.foreground "$TN_BLUE" \
-  --match.foreground "$TN_CYAN" \
-  --text.foreground "$TN_TEXT")
+  --indicator ">" \
+  --indicator.foreground "$ACCENT" \
+  --match.foreground "$TEXT_MAIN" \
+  --text.foreground "$TEXT_MUTED")
 
 if [[ -z "$TIMEZONE" ]]; then
   TIMEZONE="America/New_York"
@@ -187,13 +188,13 @@ id_ID.UTF-8"
 
 LOCALE=$(echo "$LOCALE_LIST" | gum filter \
   --placeholder "Search: en_US, German, fr..." \
-  --prompt "❯ " \
-  --prompt.foreground "$TN_BLUE" \
+  --prompt "> " \
+  --prompt.foreground "$ACCENT" \
   --height 12 \
-  --indicator "→" \
-  --indicator.foreground "$TN_BLUE" \
-  --match.foreground "$TN_CYAN" \
-  --text.foreground "$TN_TEXT")
+  --indicator ">" \
+  --indicator.foreground "$ACCENT" \
+  --match.foreground "$TEXT_MAIN" \
+  --text.foreground "$TEXT_MUTED")
 
 if [[ -z "$LOCALE" ]]; then
   LOCALE="en_US.UTF-8"
@@ -206,19 +207,22 @@ clear
 header "Review Configuration"
 echo ""
 gum style \
-  --border rounded \
-  --border-foreground "$TN_MUTED" \
-  --background "$TN_PANEL" \
-  --foreground "$TN_TEXT" \
+  --border normal \
+  --border-foreground "$TEXT_MUTED" \
   --padding "1 2" \
   --margin "0 0 1 0" \
-  "  👤 Username:  $USERNAME" \
-  "  💻 Hostname:  $HOSTNAME_VAL" \
-  "  🌍 Timezone:  $TIMEZONE" \
-  "  🗣️  Locale:    $LOCALE"
+  "  Username:  $USERNAME" \
+  "  Hostname:  $HOSTNAME_VAL" \
+  "  Timezone:  $TIMEZONE" \
+  "  Locale:    $LOCALE"
 echo ""
 
-if ! gum confirm "Does this look correct?" --prompt.foreground "$TN_BLUE"; then
+if ! gum confirm "Does this look correct?" \
+  --prompt.foreground "$ACCENT" \
+  --selected.background "$ACCENT" \
+  --selected.foreground "$BG_SURFACE" \
+  --unselected.background "" \
+  --unselected.foreground "$TEXT_MAIN"; then
   error_msg "Aborted. No files were changed."
   exit 1
 fi
@@ -234,7 +238,7 @@ cat > "$SCRIPT_DIR/settings.nix" <<EOF
   locale   = "$LOCALE";
 }
 EOF
-success "settings.nix updated!"
+success "settings.nix updated"
 echo ""
 
 # Automation Steps
@@ -252,7 +256,7 @@ if [[ -f "$HW_SRC" ]]; then
     mkdir -p "$(dirname "$HW_DEST")"
   fi
   $SUDO cp "$HW_SRC" "$HW_DEST"
-  success "Hardware configuration copied to hosts/main/"
+  success "Hardware configuration copied"
 else
   warn "Could not find $HW_SRC"
   hint "You may need to generate it first or copy it manually."
@@ -264,13 +268,18 @@ info "Building and switching to your new NixOS configuration..."
 hint "This will download packages and build your system. It may take a while."
 echo ""
 
-if gum confirm "Run 'nixos-rebuild switch' now?" --prompt.foreground "$TN_BLUE"; then
+if gum confirm "Run nixos-rebuild switch now?" \
+  --prompt.foreground "$ACCENT" \
+  --selected.background "$ACCENT" \
+  --selected.foreground "$BG_SURFACE" \
+  --unselected.background "" \
+  --unselected.foreground "$TEXT_MAIN"; then
   info "Starting build... (Output will appear below)"
   echo ""
   if $SUDO nixos-rebuild switch --flake "$SCRIPT_DIR#$HOSTNAME_VAL"; then
-    success "System built and switched successfully!"
+    success "System built and switched successfully"
   else
-    error_msg "Build failed! Check the output above for errors."
+    error_msg "Build failed. Check the output above for errors."
     exit 1
   fi
 else
@@ -281,13 +290,18 @@ echo ""
 
 # 3. Reboot
 divider
-if gum confirm "Reboot into your new system now?" --prompt.foreground "$TN_BLUE"; then
+if gum confirm "Reboot into your new system now?" \
+  --prompt.foreground "$ACCENT" \
+  --selected.background "$ACCENT" \
+  --selected.foreground "$BG_SURFACE" \
+  --unselected.background "" \
+  --unselected.foreground "$TEXT_MAIN"; then
   info "Rebooting in 3 seconds..."
   sleep 3
   $SUDO reboot
 else
   echo ""
-  success "Setup complete!"
+  success "Setup complete"
   info "Next steps:"
   hint "1. Reboot your machine: sudo reboot"
   hint "2. Log into TTY with your new username: $USERNAME"

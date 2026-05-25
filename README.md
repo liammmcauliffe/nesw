@@ -36,7 +36,7 @@ Update these in `settings.nix`:
 
 - `username`
 - `hostname`
-- `timeZone`
+- `timezone`
 - `locale`
 
 ## 5) Apply config
