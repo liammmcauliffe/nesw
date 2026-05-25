@@ -48,7 +48,6 @@ in
   # Basic packages
   environment.systemPackages = with pkgs; [
     git
-    neovim
     ghostty
   ];
 

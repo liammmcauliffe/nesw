@@ -1,0 +1,1 @@
+-- Replace modules/nvim/config with your own Neovim config to customize.
