@@ -10,17 +10,34 @@ if ! command -v gum &>/dev/null; then
   exec nix-shell -p gum --run "bash $0"
 fi
 
+# Determine if we need sudo (handles root vs nixos user on Live USB)
+if [[ $EUID -eq 0 ]]; then
+  SUDO=""
+else
+  SUDO="sudo"
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Colours / Style
-ACCENT="212" # purple
-FAINT="240" # grey
-HEADER_BORDER="rounded"
+# Tokyo Night palette
+TN_BASE="#1a1b26"
+TN_SURFACE="#24283b"
+TN_PANEL="#1f2335"
+TN_TEXT="#c0caf5"
+TN_BLUE="#7aa2f7"
+TN_CYAN="#7dcfff"
+TN_GREEN="#9ece6a"
+TN_RED="#f7768e"
+TN_MUTED="#565f89"
+TN_YELLOW="#e0af68"
 
+# UI Helper Functions
 header() {
   gum style \
-    --border "$HEADER_BORDER" \
-    --border-foreground "$ACCENT" \
+    --border rounded \
+    --border-foreground "$TN_BLUE" \
+    --background "$TN_SURFACE" \
+    --foreground "$TN_TEXT" \
     --padding "1 3" \
     --margin "1 0" \
     --bold \
@@ -28,31 +45,59 @@ header() {
 }
 
 info() {
-  gum style --foreground "$FAINT" --italic "  $1"
+  gum style --foreground "$TN_CYAN" --bold "  ℹ $1"
+}
+
+hint() {
+  gum style --foreground "$TN_MUTED" "    $1"
 }
 
 success() {
-  gum style --foreground "10" --bold "  ✓ $1"
+  gum style --foreground "$TN_GREEN" --bold "  ✓ $1"
+}
+
+warn() {
+  gum style --foreground "$TN_YELLOW" --bold "  ⚠ $1"
+}
+
+error_msg() {
+  gum style --foreground "$TN_RED" "  ✗ $1"
+}
+
+divider() {
+  gum style --foreground "$TN_MUTED" "  $(printf '%.0s─' $(seq 1 40))"
 }
 
 # Welcome
 clear
-header "nesw" "Hyprland + NixOS setup"
+header "nesw" "Hyprland + NixOS Interactive Setup"
+echo ""
+info "This wizard will configure your system settings and automate the installation steps."
 echo ""
 
+# Check if settings.nix already exists
+if [[ -f "$SCRIPT_DIR/settings.nix" ]]; then
+  warn "settings.nix already exists!"
+  if ! gum confirm "Overwrite existing settings?" --prompt.foreground "$TN_YELLOW"; then
+    error_msg "Aborted. No files were changed."
+    exit 1
+  fi
+  echo ""
+fi
+
 # Username
-info "Linux username (lowercase, no spaces, max 32 chars)"
+info "Linux username"
+hint "Lowercase, no spaces, max 32 chars (e.g., liam, nixos)"
 while true; do
   USERNAME=$(gum input \
     --placeholder "nixos" \
-    --prompt "username › " \
-    --prompt.foreground "$ACCENT" \
+    --prompt "❯ " \
+    --prompt.foreground "$TN_BLUE" \
     --width 40)
   USERNAME="${USERNAME:-nixos}"
 
-  # Validate: lowercase letters, digits, hyphens, underscores. Must start with letter.
   if [[ ! "$USERNAME" =~ ^[a-z][a-z0-9_-]{0,31}$ ]]; then
-    gum style --foreground "9" "  ✗ Must start with a lowercase letter, only a-z 0-9 _ - allowed, max 32 chars."
+    error_msg "Invalid. Must start with a-z, and contain only a-z, 0-9, _, -"
     continue
   fi
   break
@@ -61,18 +106,18 @@ success "username: $USERNAME"
 echo ""
 
 # Hostname
-info "Machine hostname (lowercase, no spaces, max 63 chars)"
+info "Machine hostname"
+hint "Lowercase, no spaces, max 63 chars (e.g., desktop, xps15, main)"
 while true; do
   HOSTNAME_VAL=$(gum input \
     --placeholder "main" \
-    --prompt "hostname › " \
-    --prompt.foreground "$ACCENT" \
+    --prompt "❯ " \
+    --prompt.foreground "$TN_BLUE" \
     --width 40)
   HOSTNAME_VAL="${HOSTNAME_VAL:-main}"
 
-  # Validate: lowercase letters, digits, hyphens. Must start/end with alphanumeric.
   if [[ ! "$HOSTNAME_VAL" =~ ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$ ]]; then
-    gum style --foreground "9" "  ✗ Must start/end with a-z or 0-9, only a-z 0-9 - allowed, max 63 chars."
+    error_msg "Invalid. Must start/end with a-z or 0-9, and contain only a-z, 0-9, -"
     continue
   fi
   break
@@ -81,19 +126,20 @@ success "hostname: $HOSTNAME_VAL"
 echo ""
 
 # Timezone
-info "Start typing your timezone (city, region, or abbreviation)"
+info "Timezone"
+hint "Start typing to search (e.g., New York, London, Tokyo)"
 
-# Build the timezone list from the system's tz database
 TZ_LIST=$(timedatectl list-timezones 2>/dev/null || find /usr/share/zoneinfo/posix -type f 2>/dev/null | sed 's|.*/zoneinfo/posix/||' | sort)
 
 TIMEZONE=$(echo "$TZ_LIST" | gum filter \
   --placeholder "Search: New York, EST, Europe..." \
-  --prompt "timezone › " \
-  --prompt.foreground "$ACCENT" \
+  --prompt "❯ " \
+  --prompt.foreground "$TN_BLUE" \
   --height 12 \
   --indicator "→" \
-  --indicator.foreground "$ACCENT" \
-  --match.foreground "$ACCENT")
+  --indicator.foreground "$TN_BLUE" \
+  --match.foreground "$TN_CYAN" \
+  --text.foreground "$TN_TEXT")
 
 if [[ -z "$TIMEZONE" ]]; then
   TIMEZONE="America/New_York"
@@ -102,9 +148,9 @@ success "timezone: $TIMEZONE"
 echo ""
 
 # Locale
-info "Start typing your locale"
+info "System Locale"
+hint "Start typing to search (e.g., en_US, de_DE, fr_FR)"
 
-# Common locales - covers the vast majority of users
 LOCALE_LIST="en_US.UTF-8
 en_GB.UTF-8
 en_AU.UTF-8
@@ -141,12 +187,13 @@ id_ID.UTF-8"
 
 LOCALE=$(echo "$LOCALE_LIST" | gum filter \
   --placeholder "Search: en_US, German, fr..." \
-  --prompt "locale › " \
-  --prompt.foreground "$ACCENT" \
+  --prompt "❯ " \
+  --prompt.foreground "$TN_BLUE" \
   --height 12 \
   --indicator "→" \
-  --indicator.foreground "$ACCENT" \
-  --match.foreground "$ACCENT")
+  --indicator.foreground "$TN_BLUE" \
+  --match.foreground "$TN_CYAN" \
+  --text.foreground "$TN_TEXT")
 
 if [[ -z "$LOCALE" ]]; then
   LOCALE="en_US.UTF-8"
@@ -154,24 +201,31 @@ fi
 success "locale: $LOCALE"
 echo ""
 
-# Confirm
+# Summary & Confirmation
+clear
+header "Review Configuration"
 echo ""
 gum style \
-  --border "rounded" \
-  --border-foreground "$FAINT" \
+  --border rounded \
+  --border-foreground "$TN_MUTED" \
+  --background "$TN_PANEL" \
+  --foreground "$TN_TEXT" \
   --padding "1 2" \
-  "  username:  $USERNAME" \
-  "  hostname:  $HOSTNAME_VAL" \
-  "  timezone:  $TIMEZONE" \
-  "  locale:    $LOCALE"
+  --margin "0 0 1 0" \
+  "  👤 Username:  $USERNAME" \
+  "  💻 Hostname:  $HOSTNAME_VAL" \
+  "  🌍 Timezone:  $TIMEZONE" \
+  "  🗣️  Locale:    $LOCALE"
 echo ""
 
-if ! gum confirm "Write these settings?" --prompt.foreground "$ACCENT"; then
-  gum style --foreground "9" "  Aborted. No files were changed."
+if ! gum confirm "Does this look correct?" --prompt.foreground "$TN_BLUE"; then
+  error_msg "Aborted. No files were changed."
   exit 1
 fi
 
 # Write settings.nix
+echo ""
+info "Writing settings.nix..."
 cat > "$SCRIPT_DIR/settings.nix" <<EOF
 {
   username = "$USERNAME";
@@ -180,14 +234,62 @@ cat > "$SCRIPT_DIR/settings.nix" <<EOF
   locale   = "$LOCALE";
 }
 EOF
+success "settings.nix updated!"
+echo ""
 
+# Automation Steps
+divider
+header "Automated Setup Steps"
 echo ""
-success "settings.nix written!"
+
+# 1. Hardware Configuration
+info "Copying hardware-configuration.nix..."
+HW_SRC="/etc/nixos/hardware-configuration.nix"
+HW_DEST="$SCRIPT_DIR/hosts/main/hardware-configuration.nix"
+
+if [[ -f "$HW_SRC" ]]; then
+  if [[ ! -d "$(dirname "$HW_DEST")" ]]; then
+    mkdir -p "$(dirname "$HW_DEST")"
+  fi
+  $SUDO cp "$HW_SRC" "$HW_DEST"
+  success "Hardware configuration copied to hosts/main/"
+else
+  warn "Could not find $HW_SRC"
+  hint "You may need to generate it first or copy it manually."
+fi
 echo ""
-info "Next steps:"
-echo "  1. Copy your hardware config:"
-echo "     sudo cp /etc/nixos/hardware-configuration.nix ./hosts/main/hardware-configuration.nix"
+
+# 2. NixOS Rebuild
+info "Building and switching to your new NixOS configuration..."
+hint "This will download packages and build your system. It may take a while."
 echo ""
-echo "  2. Build your system:"
-echo "     sudo nixos-rebuild switch --flake .#$HOSTNAME_VAL"
+
+if gum confirm "Run 'nixos-rebuild switch' now?" --prompt.foreground "$TN_BLUE"; then
+  info "Starting build... (Output will appear below)"
+  echo ""
+  if $SUDO nixos-rebuild switch --flake "$SCRIPT_DIR#$HOSTNAME_VAL"; then
+    success "System built and switched successfully!"
+  else
+    error_msg "Build failed! Check the output above for errors."
+    exit 1
+  fi
+else
+  warn "Skipped build. You can run it later with:"
+  hint "cd ~/nesw && sudo nixos-rebuild switch --flake .#$HOSTNAME_VAL"
+fi
 echo ""
+
+# 3. Reboot
+divider
+if gum confirm "Reboot into your new system now?" --prompt.foreground "$TN_BLUE"; then
+  info "Rebooting in 3 seconds..."
+  sleep 3
+  $SUDO reboot
+else
+  echo ""
+  success "Setup complete!"
+  info "Next steps:"
+  hint "1. Reboot your machine: sudo reboot"
+  hint "2. Log into TTY with your new username: $USERNAME"
+  hint "3. Start Hyprland: start-hyprland"
+fi
