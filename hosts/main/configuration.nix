@@ -1,4 +1,4 @@
-{ config, pkgs, hyprland, installUser, lib, ... }:
+{ config, pkgs, hyprland, ... }:
 
 let
   settings = import ../../settings.nix;
@@ -52,13 +52,14 @@ in
     ghostty
   ];
 
-  security.sudo.enable = true;
-
-  system.stateVersion = "24.11";
-} // lib.optionalAttrs (installUser != "") {
-  users.users.${installUser} = {
+  users.users.${settings.username} = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
     shell = pkgs.fish;
   };
+
+  # Needed if you want to use sudo
+  security.sudo.enable = true;
+
+  system.stateVersion = "24.11";
 }
