@@ -86,26 +86,6 @@ if [[ -f "$SCRIPT_DIR/settings.nix" ]]; then
   echo ""
 fi
 
-# Username
-info "Linux username"
-hint "Lowercase, no spaces, max 32 chars (e.g., liam, nixos)"
-while true; do
-  USERNAME=$(gum input \
-    --placeholder "nixos" \
-    --prompt "> " \
-    --prompt.foreground "$ACCENT" \
-    --width 40)
-  USERNAME="${USERNAME:-nixos}"
-
-  if [[ ! "$USERNAME" =~ ^[a-z][a-z0-9_-]{0,31}$ ]]; then
-    error_msg "Invalid. Must start with a-z, and contain only a-z, 0-9, _, -"
-    continue
-  fi
-  break
-done
-success "username: $USERNAME"
-echo ""
-
 # Hostname
 info "Machine hostname"
 hint "Lowercase, no spaces, max 63 chars (e.g., desktop, xps15, main)"
@@ -211,7 +191,6 @@ gum style \
   --border-foreground "$TEXT_MUTED" \
   --padding "1 2" \
   --margin "0 0 1 0" \
-  "  Username:  $USERNAME" \
   "  Hostname:  $HOSTNAME_VAL" \
   "  Timezone:  $TIMEZONE" \
   "  Locale:    $LOCALE"
@@ -232,7 +211,6 @@ echo ""
 info "Writing settings.nix..."
 cat > "$SCRIPT_DIR/settings.nix" <<EOF
 {
-  username = "$USERNAME";
   hostname = "$HOSTNAME_VAL";
   timezone = "$TIMEZONE";
   locale   = "$LOCALE";
@@ -304,6 +282,6 @@ else
   success "Setup complete"
   info "Next steps:"
   hint "1. Reboot your machine: sudo reboot"
-  hint "2. Log into TTY with your new username: $USERNAME"
+  hint "2. Log into the TTY with the user you created during NixOS install"
   hint "3. Start Hyprland: start-hyprland"
 fi

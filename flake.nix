@@ -14,22 +14,29 @@
     let
       settings = import ./settings.nix;
       system = "x86_64-linux";
+      # Account from the NixOS installer; set when you run sudo nixos-rebuild
+      installUser =
+        let u = builtins.getEnv "SUDO_USER";
+        in if u != "" then u else builtins.getEnv "USER";
     in
     {
       nixosConfigurations.${settings.hostname} = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit hyprland; };
+        specialArgs = { inherit hyprland installUser; };
         modules = [
           ./hosts/main/configuration.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.${settings.username} = {
-              imports = [ ./hosts/main/home.nix ];
-              home.stateVersion = "26.05";
-            };
           }
+          ({ lib, ... }:
+            lib.mkIf (installUser != "") {
+              home-manager.users.${installUser} = {
+                imports = [ ./hosts/main/home.nix ];
+                home.stateVersion = "26.05";
+              };
+            })
         ];
       };
     };
