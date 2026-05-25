@@ -32,15 +32,12 @@ sudo cp /etc/nixos/hardware-configuration.nix ./hosts/main/hardware-configuratio
 
 ## 4) Edit machine-specific values
 
-Update these in `hosts/main/configuration.nix`:
+Update these in `settings.nix`:
 
-- `networking.hostName`
-- `time.timeZone`
-- `users.users.nixos` (replace `nixos` with your username)
-
-Then keep the same username key in `flake.nix` under:
-
-- `home-manager.users.nixos`
+- `username`
+- `hostname`
+- `timeZone`
+- `locale`
 
 ## 5) Apply config
 
@@ -48,17 +45,19 @@ Then keep the same username key in `flake.nix` under:
 sudo nixos-rebuild switch --flake .#main
 ```
 
+The flake target comes from `settings.nix` → `hostname`. With the default settings, that target is `.#main`.
+
 Then reboot, log into TTY, and start Hyprland:
 
 ```bash
 start-hyprland
 ```
 
-That is the baseline. Home Manager is wired in for per-user dotfiles (see `hosts/main/home.nix`). Add Quickshell, theming, etc. later in separate commits.
+That is the baseline. Home Manager imports modules from `hosts/main/home.nix`; edit plain-text app config in `modules/hyprland/hyprland.conf` and `modules/fish/config.fish`.
 
 ## Notes for other users
 
-This repo currently exposes one host target:
+This repo currently exposes one host target from `settings.nix`:
 
 ```bash
 .#main

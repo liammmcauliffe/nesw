@@ -1,5 +1,8 @@
 { config, pkgs, hyprland, ... }:
 
+let
+  settings = import ../../settings.nix;
+in
 {
   imports = [ ./hardware-configuration.nix ];
 
@@ -8,10 +11,10 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Host basics
-  networking.hostName = "main";
+  networking.hostName = settings.hostname;
   networking.networkmanager.enable = true;
-  time.timeZone = "America/New_York";
-  i18n.defaultLocale = "en_US.UTF-8";
+  time.timeZone = settings.timeZone;
+  i18n.defaultLocale = settings.locale;
 
   # Enable flakes on the installed system
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -40,13 +43,11 @@
     ghostty
   ];
 
-  # Replace this user block with your real username before rebuild
-  users.users.nixos = {
+  users.users.${settings.username} = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
     shell = pkgs.fish;
   };
-  # Keep Home Manager user in flake.nix in sync with this username.
 
   # Needed if you want to use sudo
   security.sudo.enable = true;

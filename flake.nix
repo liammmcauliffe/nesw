@@ -12,10 +12,11 @@
 
   outputs = { nixpkgs, hyprland, home-manager, ... }:
     let
+      settings = import ./settings.nix;
       system = "x86_64-linux";
     in
     {
-      nixosConfigurations.main = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.${settings.hostname} = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit hyprland; };
         modules = [
@@ -24,7 +25,10 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.nixos = import ./hosts/main/home.nix;
+            home-manager.users.${settings.username} = {
+              imports = [ ./hosts/main/home.nix ];
+              home.stateVersion = "26.05";
+            };
           }
         ];
       };
