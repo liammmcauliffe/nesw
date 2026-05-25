@@ -1,9 +1,120 @@
-format = "$directory$character"
+"$schema" = 'https://starship.rs/config-schema.json'
 
+format = """
+(bright-blue)$username\
+$directory\
+$git_branch\
+$git_status\
+$c\
+$rust\
+$golang\
+$nodejs\
+$php\
+$java\
+$kotlin\
+$haskell\
+$python\
+$lua\
+$docker_context\
+$character"""
+
+add_newline = false
+
+# Username Module
+[username]
+show_always = true
+style_user = "bright-yellow"
+style_root = "purple "
+format = '[ $user]($style)'
+
+# Directory Module
 [directory]
+style = "blue"
+format = "[ $path ]($style)"
 truncation_length = 3
-truncate_to_repo = true
+truncation_symbol = "…/"
 
+# Git Branch Module
+[git_branch]
+symbol = ""
+style = "bright-blue"
+format = '[[ $symbol $branch ](bright-blue)]($style)'
+
+# Git Status Module
+[git_status]
+style = "bright-blue"
+format = '[[($all_status$ahead_behind )](bright-blue)]($style)'
+
+# Node.js Module
+[nodejs]
+symbol = "󰎙"
+style = "bright-green"
+format = '[[ $symbol( $version) ](bright-green)]($style)'
+
+# C Module
+[c]
+symbol = ""
+style = "white"
+format = '[[ $symbol( $version) ](white)]($style)'
+
+# Rust Module
+[rust]
+symbol= ""
+style = "red"
+format = '[[ $symbol( $version) ](red)]($style)'
+
+# Go Module
+[golang]
+symbol = "󰟓"
+style = "cyan"
+format = '[[ $symbol( $version) ](cyan)]($style)'
+
+# PHP Module
+[php]
+symbol = ""
+style = "purple"
+format = '[[ $symbol( $version) ](purple)]($style)'
+
+# Java Module
+[java]
+symbol = ""
+style = "yellow"
+format = '[[ $symbol( $version) ](yellow)]($style)'
+
+# Kotlin Module
+[kotlin]
+symbol = ""
+style = "bright-purple"
+format = '[[ $symbol( $version) ](bright-purple)]($style)'
+
+# Haskell Module
+[haskell]
+symbol = ""
+style = "magenta"
+format = '[[ $symbol( $version) ](magenta)]($style)'
+
+# Python Module
+[python]
+symbol = ""
+style = "bright-yellow"
+format = '[[ $symbol( $version) ](bright-yellow)]($style)'
+
+# Lua Module
+[lua]
+symbol = "󰢱"
+style = "bright-yellow"
+format = '[[ $symbol( $version) ](bright-yellow)]($style)'
+
+# Docker Context Module
+[docker_context]
+symbol = "󰡨"
+style = "blue"
+format = '[[ $symbol( $context) ](blue)]($style)'
+
+# Line Break Module
+[line_break]
+disabled = true
+
+# Character Module
 [character]
-success_symbol = "[❯](bold green)"
-error_symbol = "[❯](bold red)"
+format = "[](bright-blue) "

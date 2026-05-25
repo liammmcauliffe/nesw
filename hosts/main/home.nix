@@ -2,6 +2,7 @@
 {
   imports = [
     ../../modules/fish
+    ../../modules/ghostty
     ../../modules/hyprland
     ../../modules/nvim
     ../../modules/starship
