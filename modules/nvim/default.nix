@@ -9,6 +9,9 @@
       ripgrep
       fd
       wl-clipboard
+      gcc
+      gnumake
+      lua-language-server
     ];
 
     # Add you Neovim plugins here
@@ -16,6 +19,7 @@
         vim-moonfly-colors
         friendly-snippets
         nvim-treesitter
+        nvim-lspconfig
 
         mini-files
         mini-notify

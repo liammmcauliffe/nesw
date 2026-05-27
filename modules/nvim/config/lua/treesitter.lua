@@ -10,12 +10,12 @@ local ensure_installed = {
 treesitter.install(ensure_installed)
 
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = "*"
+    pattern = "*",
     callback = function(args)
         local buf = args.buf
         local ft = vim.bo[buf].filetype
 
-        local lang = vim.treesitter.language.git_lang(ft)
+        local lang = vim.treesitter.language.get_lang(ft)
         if not lang then
             return
         end

@@ -28,7 +28,6 @@ vim.opt.completeopt = "menuone,noselect,fuzzy,nosort"
 vim.opt.shortmess:append("c")
 vim.opt.clipboard:append("unnamedplus")
 vim.opt.isfname:append("@-@")
-vim.opt.guicursor = ""
 vim.opt.scrolloff = 8
 
 vim.opt.colorcolumn = "0"

@@ -55,3 +55,4 @@ MiniSnippets.setup({
 MiniSnippets.start_lsp_server({ match = false })
 
 require("treesitter")
+require("lsp")
