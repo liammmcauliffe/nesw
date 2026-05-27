@@ -1,4 +1,4 @@
-local home = ps.getenv("HOME")
+local home = os.getenv("HOME")
 local hyprland = home .. "/nesw/modules/hyprland"
 package.path = package.path .. ";" .. home .. "/nesw/modules/hyprland/?.lua"
 
@@ -6,7 +6,7 @@ os.execute("cp -L --no-preserve=mode --update=none " .. hyprland .. "/scheme/def
 
 require("hypr-vars")
 
-h1.monitor({
+hl.monitor({
     output = "",
     mode = "preferred",
     position = "auto",
@@ -25,4 +25,4 @@ require("hyprland.rules")
 require("hyprland.gestures")
 require("hyprland.keybinds")
 
-require("hypr-user")
+require("variables")
