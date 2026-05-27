@@ -27,7 +27,7 @@
             home-manager.useUserPackages = true;
             
             # HARDCODE YOUR USERNAME HERE (e.g. "liam")
-            home-manager.users."YOUR_USERNAME" = {
+            home-manager.users."liam" = {
               imports = [ ./hosts/main/home.nix ];
               home.stateVersion = "26.05";
             };

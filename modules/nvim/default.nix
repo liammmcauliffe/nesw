@@ -15,6 +15,7 @@
     plugins = with pkgs.vimPlugins; [
         vim-moonfly-colors
         friendly-snippets
+        nvim-treesitter
 
         mini-files
         mini-notify

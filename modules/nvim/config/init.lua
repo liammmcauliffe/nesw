@@ -2,6 +2,7 @@ require("vim._core.ui2").enable({})
 
 require("options")
 require("keymaps")
+require("treesitter")
 
 vim.cmd.colorscheme("moonfly")
 
@@ -52,3 +53,5 @@ MiniSnippets.setup({
     },
 })
 MiniSnippets.start_lsp_server({ match = false })
+
+require("treesitter")

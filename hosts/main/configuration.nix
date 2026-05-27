@@ -45,6 +45,7 @@
   # Basic packages
   environment.systemPackages = with pkgs; [
     git
+    tree-sitter
   ];
 
   # Fonts
@@ -53,7 +54,7 @@
   ];
 
   # HARDCODE YOUR USERNAME HERE (e.g. "liam")
-  users.users."YOUR_USERNAME" = {
+  users.users."liam" = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
     shell = pkgs.fish;
