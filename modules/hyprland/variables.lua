@@ -1,4 +1,4 @@
-local scheme = require("scheme.current")
+-- local scheme = require("scheme.current")
 
 return {
     -- Apps
@@ -25,7 +25,7 @@ return {
     shadowEnabled = true,
     shadowRange = 20,
     shadowRenderPower = 3,
-    shadowColour = "rgba(" .. scheme.surface .. "d4)",
+    -- shadowColour = "rgba(" .. scheme.surface .. "d4)",
 
     -- Gaps
     workspaceGaps = 20,
@@ -37,8 +37,8 @@ return {
     windowOpacity = 0.95,
     windowRounding = 15,
     windowBorderSize = 1,
-    activeWindowBorderColour = "rgba(" .. scheme.primary .. "e6)",
-    inactiveWindowBorderColour = "rgba(" .. scheme.onSurfaceVariant .. "11)",
+    -- activeWindowBorderColour = "rgba(" .. scheme.primary .. "e6)",
+    -- inactiveWindowBorderColour = "rgba(" .. scheme.onSurfaceVariant .. "11)",
     
     -- Misc
     volumeStep = 5,
