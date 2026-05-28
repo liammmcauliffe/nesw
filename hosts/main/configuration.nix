@@ -46,6 +46,7 @@
   environment.systemPackages = with pkgs; [
     git
     tree-sitter
+    app2unit
   ];
 
   # Fonts
