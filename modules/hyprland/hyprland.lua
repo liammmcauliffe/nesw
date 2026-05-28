@@ -13,10 +13,10 @@ hl.monitor({
 
 -- require("config.env")
 -- require("config.general")
--- require("config.input")
--- require("config.misc")
--- require("config.animations")
--- require("config.decoration")
+require("config.input")
+require("config.misc")
+require("config.animations")
+require("config.decoration")
 
 -- require("config.execs")
 -- require("config.rules")
