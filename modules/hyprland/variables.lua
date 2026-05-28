@@ -7,7 +7,7 @@ return {
 
     -- Touchpad
     touchpadDisableTyping = true,
-    touchScrollFactor = 0.3,
+    touchScrollFactor = 0.15,
     gestureFingers = 3,
     workspaceSwipeFingers = 4,
     gestureFingersMore = 4,
