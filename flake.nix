@@ -8,9 +8,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    zen-browser = {
+        url = "github:0xc000022070/zen-browser-flake";
+        inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, hyprland, home-manager, ... }:
+  outputs = { nixpkgs, hyprland, home-manager, zen-browser, ... }:
     let
       system = "x86_64-linux";
     in
@@ -25,7 +29,8 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            
+            home-manager.extraSpecialArgs = { inherit zen-browser; }; 
+
             # HARDCODE YOUR USERNAME HERE (e.g. "liam")
             home-manager.users."liam" = {
               imports = [ ./hosts/main/home.nix ];

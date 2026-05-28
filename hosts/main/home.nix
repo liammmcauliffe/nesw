@@ -6,5 +6,6 @@
     ../../modules/hyprland
     ../../modules/nvim
     ../../modules/starship
+    ../../modules/zen
   ];
 }
