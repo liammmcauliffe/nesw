@@ -76,7 +76,7 @@ return {
     kbCommunication = "SUPER + D",
 
     -- Apps
-    kbTerminal = "SUPER + T",
+    kbTerminal = "SUPER + Return",
     kbBrowser = "SUPER + W",
 
     -- Misc
