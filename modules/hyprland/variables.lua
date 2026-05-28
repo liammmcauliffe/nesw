@@ -3,7 +3,7 @@
 return {
     -- Apps
     terminal = "ghostty",
-    browser = "zen-browser",
+    browser = "zen-beta",
 
     -- Touchpad
     touchpadDisableTyping = true,
