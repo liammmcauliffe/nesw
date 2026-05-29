@@ -20,7 +20,7 @@ require("config.decoration")
 
 -- require("config.execs")
 require("config.rules")
--- require("config.gestures")
+require("config.gestures")
 require("config.keybinds")
 
 require("variables")

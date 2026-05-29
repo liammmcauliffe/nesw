@@ -44,6 +44,7 @@ return {
     volumeStep = 5,
     cursorTheme = "Bibata-Modern-Ice",
     cursorSize = 20,
+    suspendCommand = "systemctl suspend",
 
     -- KEYBINDS
     -- Workspaces
