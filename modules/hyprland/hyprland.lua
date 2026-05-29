@@ -11,7 +11,7 @@ hl.monitor({
     scale = 1,
 })
 
--- require("config.env")
+require("config.env")
 require("config.general")
 require("config.input")
 require("config.misc")
