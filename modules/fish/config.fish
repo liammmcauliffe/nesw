@@ -9,3 +9,7 @@ function ntest --description "Stage changes and test NixOS build without switchi
 	set -l current_dir (pwd)
 	cd ~/nesw; and git add -A; and sudo nixos-rebuild test --flake .#main; and cd $current_dir
 end
+
+function ls; eza --icons $argv; end
+function ll; eza -la --icons --git $argv; end
+function lt; eza --tree --icons $argv; end

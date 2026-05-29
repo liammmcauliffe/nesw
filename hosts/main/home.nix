@@ -7,5 +7,6 @@
     ../../modules/nvim
     ../../modules/starship
     ../../modules/zen
+    ../../modules/tools
   ];
 }
