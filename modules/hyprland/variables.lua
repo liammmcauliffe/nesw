@@ -48,10 +48,10 @@ return {
 
     -- KEYBINDS
     -- Workspaces
-    kbMoveWinToWs = "SUPER + ALT",
-    kbMoveWinToWsGroup = "CTRL + SUPER + ALT",
+    kbMoveWinToWs = "SUPER + CTRL",
+    kbMoveWinToWsGroup = "SUPER + CTRL + SHIFT + ALT",
     kbGoToWs = "SUPER",
-    kbGoToWsGroup = "CTRL + SUPER",
+    kbGoToWsGroup = "SUPER + CTRL + ALT",
     kbNextWs = "CTRL + SUPER + Right",
     kbPrevWs = "CTRL + SUPER + Left",
     kbToggleSpecialWs = "SUPER + S",
