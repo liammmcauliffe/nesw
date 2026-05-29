@@ -18,7 +18,7 @@ require("config.misc")
 require("config.animations")
 require("config.decoration")
 
--- require("config.execs")
+require("config.execs")
 require("config.rules")
 require("config.gestures")
 require("config.keybinds")

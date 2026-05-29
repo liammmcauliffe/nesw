@@ -42,6 +42,22 @@
 
   programs.fish.enable = true;
 
+  # Polkit + keyring (for the agents started in the Hyprland session)
+  security.polkit.enable = true;
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.login.enableGnomeKeyring = true;
+
+  # Location provider for gammastep night light
+  services.geoclue2.enable = true;
+  services.geoclue2.appConfig.gammastep = {
+    isAllowed = true;
+    isSystem = false;
+  };
+  location.provider = "geoclue2";
+
+  # Bluetooth (mpris-proxy forwards media keys to MPRIS)
+  hardware.bluetooth.enable = true;
+
   # Basic packages
   environment.systemPackages = with pkgs; [
     git
