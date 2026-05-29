@@ -30,6 +30,6 @@ hl.config({
         follow_focus             = true,
         follow_min_visible       = 0.0,
         -- Column widths to cycle through when resizing a column
-        explicit_column_widths   = { 0.35, 0.5, 0.65, 1.0 },
+        explicit_column_widths   = "0.35, 0.5, 0.65, 1.0",
     },
 })
