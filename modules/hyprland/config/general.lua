@@ -2,7 +2,7 @@ local vars = require("variables")
 
 hl.config({
     general = {
-        layout          = "dwindle",
+        layout          = "master",
 
         allow_tearing   = false, -- Allows `immediate` window rule to work
 
@@ -15,6 +15,13 @@ hl.config({
             active_border   = vars.activeWindowBorderColour,
             inactive_border = vars.inactiveWindowBorderColour,
         },
+    },
+
+    master = {
+        new_status  = "master",
+        mfact       = 0.50,
+        orientation = "right",
+        new_on_top  = true,
     },
 
     dwindle = {
