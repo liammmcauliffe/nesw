@@ -92,7 +92,7 @@ PanelWindow {
         interval: 1500
         // Stay open while the pointer is hovering the notch
         onTriggered: {
-            if (wsMouse.containsMouse)
+            if (hoverHandler.hovered)
                 return;
             root.expanded = false;
         }
@@ -180,61 +180,83 @@ PanelWindow {
             NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
         }
 
+        // Accumulator so one "notch" of scroll = one workspace, for both mouse
+        // wheels (discrete) and touchpads (many small high-res deltas).
+        property real wheelAccum: 0
+        readonly property real wheelStep: 120
+
         // Scroll to switch: vertical wheel or 2-finger horizontal scroll
         WheelHandler {
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-            onWheel: (event) => {
-                const dx = event.angleDelta.x;
-                const dy = event.angleDelta.y;
-                const delta = Math.abs(dx) > Math.abs(dy) ? dx : dy;
+            onWheel: event => {
+                let dx = event.angleDelta.x;
+                let dy = event.angleDelta.y;
+                let delta = Math.abs(dx) > Math.abs(dy) ? dx : dy;
+                if (delta === 0) {
+                    const px = event.pixelDelta.x;
+                    const py = event.pixelDelta.y;
+                    delta = Math.abs(px) > Math.abs(py) ? px : py;
+                }
                 if (delta === 0)
                     return;
-                root.goToWorkspace(root.activeWs + (delta < 0 ? 1 : -1));
+
+                content.wheelAccum += delta;
+                let steps = 0;
+                while (content.wheelAccum <= -content.wheelStep) {
+                    steps += 1;
+                    content.wheelAccum += content.wheelStep;
+                }
+                while (content.wheelAccum >= content.wheelStep) {
+                    steps -= 1;
+                    content.wheelAccum -= content.wheelStep;
+                }
+                if (steps !== 0)
+                    root.goToWorkspace(root.activeWs + steps);
             }
         }
 
-        // Click to jump, or click-drag to scrub workspaces live
-        MouseArea {
-            id: wsMouse
-            anchors.fill: parent
-            hoverEnabled: true
+        // Hovering locks the switcher open (collapse timer no-ops while hovered)
+        HoverHandler {
+            id: hoverHandler
             cursorShape: Qt.PointingHandCursor
-
-            property real pressX: 0
-            property int pressWs: 1
-            property bool dragging: false
-
-            // Hovering locks the switcher open (cancels the collapse timer)
-            onContainsMouseChanged: {
-                if (containsMouse)
+            onHoveredChanged: {
+                if (hovered)
                     collapseTimer.stop();
                 else if (root.expanded)
                     collapseTimer.restart();
             }
+        }
 
-            onPressed: mouse => {
-                pressX = mouse.x;
-                pressWs = root.activeWs;
-                dragging = false;
-                root.reveal();
+        // Tap a tick to jump to that workspace
+        TapHandler {
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            onTapped: eventPoint => {
+                const steps = Math.round((eventPoint.position.x - content.width / 2) / root.stepPx);
+                root.goToWorkspace(root.activeWs + steps);
             }
-            onPositionChanged: mouse => {
-                if (!pressed)
+        }
+
+        // Click and drag horizontally to scrub workspaces live
+        DragHandler {
+            id: dragHandler
+            target: null
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            xAxis.enabled: true
+            yAxis.enabled: false
+
+            property int startWs: 1
+            onActiveChanged: {
+                if (active) {
+                    startWs = root.activeWs;
+                    root.reveal();
+                }
+            }
+            onActiveTranslationChanged: {
+                if (!active)
                     return;
-                const dx = mouse.x - pressX;
-                if (Math.abs(dx) > 4)
-                    dragging = true;
-                if (dragging) {
-                    const target = pressWs - Math.round(dx / root.stepPx);
-                    if (target !== root.activeWs)
-                        root.goToWorkspace(target);
-                }
-            }
-            onReleased: mouse => {
-                if (!dragging) {
-                    const steps = Math.round((mouse.x - width / 2) / root.stepPx);
-                    root.goToWorkspace(root.activeWs + steps);
-                }
+                const target = startWs - Math.round(activeTranslation.x / root.stepPx);
+                if (target !== root.activeWs)
+                    root.goToWorkspace(target);
             }
         }
 
