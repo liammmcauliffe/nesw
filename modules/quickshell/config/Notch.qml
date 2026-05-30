@@ -38,15 +38,36 @@ PanelWindow {
     }
 
     // Workspace ruler config
-    readonly property int wsCount: 10
     readonly property int stepPx: 46
+    readonly property int rulerBuffer: 5 // extra ticks of runway past the last one
 
-    // Active workspace from Hyprland (clamped to 1..wsCount for display)
+    // Active workspace from Hyprland (uncapped)
     readonly property int activeWs: {
         const ws = Hyprland.focusedWorkspace;
-        const id = ws ? ws.id : 1;
-        return Math.max(1, Math.min(root.wsCount, id));
+        return ws ? Math.max(1, ws.id) : 1;
     }
+
+    // Highest existing workspace id
+    readonly property int maxOccupied: {
+        let m = 0;
+        const list = Hyprland.workspaces.values;
+        for (let i = 0; i < list.length; i++)
+            if (list[i].id > m)
+                m = list[i].id;
+        return m;
+    }
+
+    // Set of occupied workspace ids, for highlighting populated workspaces
+    readonly property var occupied: {
+        const s = {};
+        const list = Hyprland.workspaces.values;
+        for (let i = 0; i < list.length; i++)
+            s[list[i].id] = true;
+        return s;
+    }
+
+    // Ruler runs 1..rulerMax, growing as you move to higher workspaces
+    readonly property int rulerMax: Math.max(activeWs, maxOccupied) + rulerBuffer
 
     // Expand + restart the auto-collapse timer whenever the workspace changes
     onActiveWsChanged: reveal()
@@ -57,7 +78,7 @@ PanelWindow {
     }
 
     function goToWorkspace(n) {
-        const target = Math.max(1, Math.min(root.wsCount, n));
+        const target = Math.max(1, Math.round(n));
         // This Hyprland config evaluates dispatch IPC as Lua: it wraps the
         // request in `hl.dispatch(<request>)`, so we send the Lua dispatch
         // expression rather than the raw "workspace N" string.
@@ -68,7 +89,12 @@ PanelWindow {
     Timer {
         id: collapseTimer
         interval: 1500
-        onTriggered: root.expanded = false
+        // Stay open while the pointer is hovering the notch
+        onTriggered: {
+            if (wsMouse.containsMouse)
+                return;
+            root.expanded = false;
+        }
     }
 
     // Click-through except the notch
@@ -153,12 +179,61 @@ PanelWindow {
             NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
         }
 
-        // Scroll anywhere over the notch to change workspace
+        // Scroll to switch: vertical wheel or 2-finger horizontal scroll
         WheelHandler {
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
             onWheel: (event) => {
-                const dir = event.angleDelta.y < 0 ? 1 : -1;
-                root.goToWorkspace(root.activeWs + dir);
+                const dx = event.angleDelta.x;
+                const dy = event.angleDelta.y;
+                const delta = Math.abs(dx) > Math.abs(dy) ? dx : dy;
+                if (delta === 0)
+                    return;
+                root.goToWorkspace(root.activeWs + (delta < 0 ? 1 : -1));
+            }
+        }
+
+        // Click to jump, or click-drag to scrub workspaces live
+        MouseArea {
+            id: wsMouse
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+
+            property real pressX: 0
+            property int pressWs: 1
+            property bool dragging: false
+
+            // Hovering locks the switcher open (cancels the collapse timer)
+            onContainsMouseChanged: {
+                if (containsMouse)
+                    collapseTimer.stop();
+                else if (root.expanded)
+                    collapseTimer.restart();
+            }
+
+            onPressed: mouse => {
+                pressX = mouse.x;
+                pressWs = root.activeWs;
+                dragging = false;
+                root.reveal();
+            }
+            onPositionChanged: mouse => {
+                if (!pressed)
+                    return;
+                const dx = mouse.x - pressX;
+                if (Math.abs(dx) > 4)
+                    dragging = true;
+                if (dragging) {
+                    const target = pressWs - Math.round(dx / root.stepPx);
+                    if (target !== root.activeWs)
+                        root.goToWorkspace(target);
+                }
+            }
+            onReleased: mouse => {
+                if (!dragging) {
+                    const steps = Math.round((mouse.x - width / 2) / root.stepPx);
+                    root.goToWorkspace(root.activeWs + steps);
+                }
             }
         }
 
@@ -167,20 +242,21 @@ PanelWindow {
             id: strip
             height: parent.height
 
-            // Center the active workspace under the pointer
+            // Center the active workspace under the pointer line
             x: content.width / 2 - (root.activeWs - 1) * root.stepPx - root.stepPx / 2
             Behavior on x {
                 NumberAnimation { duration: 280; easing.type: Easing.OutCubic }
             }
 
             Repeater {
-                model: root.wsCount
+                model: root.rulerMax
 
                 delegate: Item {
                     id: tick
                     required property int index
                     readonly property int wsNumber: index + 1
                     readonly property bool isActive: wsNumber === root.activeWs
+                    readonly property bool isOccupied: root.occupied[wsNumber] === true
 
                     width: root.stepPx
                     height: content.height
@@ -194,55 +270,48 @@ PanelWindow {
                             height: 6
                             radius: 0.5
                             color: Colours.palette.m3onSurfaceVariant
-                            opacity: 0.35
+                            opacity: 0.3
                             x: tick.width / 2 + modelData * (root.stepPx / 6) - width / 2
-                            anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 5
+                            anchors.verticalCenter: parent.verticalCenter
                         }
                     }
 
-                    // Major tick (one per workspace)
+                    // Major tick (one per workspace); occupied ones stand out
                     Rectangle {
                         width: 2
-                        height: tick.isActive ? 16 : 11
+                        height: tick.isOccupied ? 14 : 9
                         radius: 1
-                        color: tick.isActive ? Colours.palette.m3primary : Colours.palette.m3onSurfaceVariant
+                        color: tick.isActive ? Colours.palette.m3primary
+                             : tick.isOccupied ? Colours.palette.m3onSurface
+                             : Colours.palette.m3onSurfaceVariant
+                        opacity: tick.isActive || tick.isOccupied ? 1 : 0.5
                         anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 5
+                        anchors.verticalCenter: parent.verticalCenter
                         Behavior on height { NumberAnimation { duration: 180 } }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        enabled: root.expanded
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.goToWorkspace(tick.wsNumber)
                     }
                 }
             }
         }
 
-        // Center pointer guide line
+        // Fixed full-height pointer line marking the current workspace
         Rectangle {
-            width: 1.5
-            height: root.notchHeight - 6
+            id: pointerLine
+            width: 2
             color: Colours.palette.m3primary
-            opacity: 0.5
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 5
         }
 
-        // Active workspace number (the "pointer" label)
+        // Active workspace number, offset to the right of the pointer line
         Text {
             text: root.activeWs
             color: Colours.palette.m3primary
-            font.pixelSize: 12
+            font.pixelSize: 18
             font.bold: true
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 1
+            anchors.left: pointerLine.right
+            anchors.leftMargin: 5
+            anchors.verticalCenter: parent.verticalCenter
         }
     }
 }
