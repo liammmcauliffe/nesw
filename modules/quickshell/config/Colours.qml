@@ -47,6 +47,7 @@ Singleton {
     FileView {
         path: root.schemePath
         watchChanges: true
+        printErrors: false // scheme.json is optional; defaults are used if absent
         onFileChanged: reload()
         onLoaded: root.load(text())
     }

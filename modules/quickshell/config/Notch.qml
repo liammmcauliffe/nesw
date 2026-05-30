@@ -58,7 +58,10 @@ PanelWindow {
 
     function goToWorkspace(n) {
         const target = Math.max(1, Math.min(root.wsCount, n));
-        Hyprland.dispatch("workspace " + target);
+        // This Hyprland config evaluates dispatch IPC as Lua: it wraps the
+        // request in `hl.dispatch(<request>)`, so we send the Lua dispatch
+        // expression rather than the raw "workspace N" string.
+        Hyprland.dispatch("hl.dsp.focus({ workspace = " + target + " })");
         reveal();
     }
 
