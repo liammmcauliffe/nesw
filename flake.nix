@@ -12,9 +12,13 @@
         url = "github:0xc000022070/zen-browser-flake";
         inputs.nixpkgs.follows = "nixpkgs";
     };
+    quickshell = {
+        url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
+        inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, hyprland, home-manager, zen-browser, ... }:
+  outputs = { nixpkgs, hyprland, home-manager, zen-browser, quickshell, ... }:
     let
       system = "x86_64-linux";
     in
@@ -29,7 +33,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit zen-browser; }; 
+            home-manager.extraSpecialArgs = { inherit zen-browser quickshell; }; 
 
             # HARDCODE YOUR USERNAME HERE (e.g. "liam")
             home-manager.users."liam" = {

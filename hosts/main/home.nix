@@ -8,5 +8,6 @@
     ../../modules/starship
     ../../modules/zen
     ../../modules/tools
+    ../../modules/quickshell
   ];
 }

@@ -1,4 +1,5 @@
 local vars = require("variables")
+local home = os.getenv("HOME")
 
 hl.on("hyprland.start", function()
     -- Keyring
@@ -18,4 +19,7 @@ hl.on("hyprland.start", function()
 
     -- Forward bluetooth media commands to MPRIS
     hl.exec_cmd("mpris-proxy")
+
+    -- Shell
+    hl.exec_cmd("qs -p " .. home .. "/.config/quickshell")
 end)
