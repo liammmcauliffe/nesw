@@ -24,6 +24,7 @@ PanelWindow {
     readonly property int notchHeight: 34
     readonly property int bottomRadius: 14
     readonly property int topRadius: 14
+    readonly property color notchColor: "black"
 
     // Click-through except the notch
     mask: Region {
@@ -45,7 +46,7 @@ PanelWindow {
         preferredRendererType: Shape.CurveRenderer
 
         ShapePath {
-            fillColor: "black"
+            fillColor: root.notchColor
             strokeWidth: 0
 
             startX: 0
