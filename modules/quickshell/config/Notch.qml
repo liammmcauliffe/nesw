@@ -190,7 +190,7 @@ PanelWindow {
                             width: 1
                             height: 6
                             radius: 0.5
-                            color: Theme.onSurfaceVariant
+                            color: Colours.palette.onSurfaceVariant
                             opacity: 0.35
                             x: tick.width / 2 + modelData * (root.stepPx / 6) - width / 2
                             anchors.bottom: parent.bottom
@@ -203,7 +203,7 @@ PanelWindow {
                         width: 2
                         height: tick.isActive ? 16 : 11
                         radius: 1
-                        color: tick.isActive ? Theme.primary : Theme.onSurfaceVariant
+                        color: tick.isActive ? Colours.palette.primary : Colours.palette.onSurfaceVariant
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.bottom: parent.bottom
                         anchors.bottomMargin: 5
@@ -224,7 +224,7 @@ PanelWindow {
         Rectangle {
             width: 1.5
             height: root.notchHeight - 6
-            color: Theme.primary
+            color: Colours.palette.primary
             opacity: 0.5
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
@@ -234,7 +234,7 @@ PanelWindow {
         // Active workspace number (the "pointer" label)
         Text {
             text: root.activeWs
-            color: Theme.primary
+            color: Colours.palette.primary
             font.pixelSize: 12
             font.bold: true
             anchors.horizontalCenter: parent.horizontalCenter
