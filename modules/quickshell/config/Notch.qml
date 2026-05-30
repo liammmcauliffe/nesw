@@ -40,6 +40,7 @@ PanelWindow {
     // Workspace ruler config
     readonly property int stepPx: 46
     readonly property int rulerBuffer: 5 // extra ticks of runway past the last one
+    readonly property int frameInset: 4 // matches Border.qml frame thickness
 
     // Active workspace from Hyprland (uncapped)
     readonly property int activeWs: {
@@ -272,46 +273,39 @@ PanelWindow {
                             color: Colours.palette.m3onSurfaceVariant
                             opacity: 0.3
                             x: tick.width / 2 + modelData * (root.stepPx / 6) - width / 2
-                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.verticalCenter: tick.verticalCenter
                         }
                     }
 
-                    // Major tick (one per workspace); occupied ones stand out
+                    // Major tick: the active one grows full-height (inset by the
+                    // frame thickness top & bottom) and takes the accent colour.
                     Rectangle {
                         width: 2
-                        height: tick.isOccupied ? 14 : 9
+                        height: tick.isActive ? content.height - root.frameInset * 2
+                              : tick.isOccupied ? 14 : 9
                         radius: 1
                         color: tick.isActive ? Colours.palette.m3primary
                              : tick.isOccupied ? Colours.palette.m3onSurface
                              : Colours.palette.m3onSurfaceVariant
                         opacity: tick.isActive || tick.isOccupied ? 1 : 0.5
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        Behavior on height { NumberAnimation { duration: 180 } }
+                        anchors.horizontalCenter: tick.horizontalCenter
+                        anchors.verticalCenter: tick.verticalCenter
+                        Behavior on height { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+                        Behavior on color { ColorAnimation { duration: 180 } }
                     }
                 }
             }
         }
 
-        // Fixed full-height pointer line marking the current workspace
-        Rectangle {
-            id: pointerLine
-            width: 2
-            color: Colours.palette.m3primary
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-        }
-
-        // Active workspace number, offset to the right of the pointer line
+        // Active workspace number, offset to the right of the active line
         Text {
             text: root.activeWs
             color: Colours.palette.m3primary
             font.pixelSize: 18
             font.bold: true
-            anchors.left: pointerLine.right
-            anchors.leftMargin: 5
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: content.horizontalCenter
+            anchors.leftMargin: 6
+            anchors.verticalCenter: content.verticalCenter
         }
     }
 }
