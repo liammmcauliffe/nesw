@@ -6,7 +6,7 @@ return {
     browser = "zen-beta",
 
     -- Touchpad
-    touchpadDisableTyping = true,
+    touchpadDisableTyping = false,
     touchScrollFactor = 0.1,
     gestureFingers = 3,
     workspaceSwipeFingers = 4,
@@ -23,15 +23,15 @@ return {
 
     -- Shadow
     shadowEnabled = true,
-    shadowRange = 20,
-    shadowRenderPower = 3,
+    shadowRange = 10,
+    shadowRenderPower = 2,
     -- shadowColour = "rgba(" .. scheme.surface .. "d4)",
 
     -- Gaps
-    workspaceGaps = 20,
-    windowGapsIn = 4,
-    windowGapsOut = 8,
-    singleWindowGapsOut = 8,
+    workspaceGaps = 12,
+    windowGapsIn = 6,
+    windowGapsOut = 12,
+    singleWindowGapsOut = 12,
 
     -- Window Styling
     windowOpacity = 0.95,
