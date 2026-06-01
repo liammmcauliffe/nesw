@@ -15,17 +15,21 @@ PanelWindow {
     anchors.left: true
     anchors.right: true
 
-    implicitHeight: notchHeight
+    // Window is taller than the visible notch so horizontal scroll / drag have
+    // vertical room, but only the notch height is reserved (exclusiveZone) and
+    // only the masked region is interactive, so the look is unchanged.
+    implicitHeight: expandedHitHeight
     color: "transparent"
 
     WlrLayershell.layer: WlrLayer.Top
-    WlrLayershell.exclusionMode: ExclusionMode.Auto
+    exclusiveZone: notchHeight
     WlrLayershell.namespace: "nesw-notch"
 
     // Notch size
     readonly property int collapsedWidth: 200
     readonly property int expandedWidth: 300
     readonly property int notchHeight: 34
+    readonly property int expandedHitHeight: 120 // invisible interactive area while open
     readonly property int bottomRadius: 14
     readonly property int topRadius: 14
     readonly property color notchColor: "black"
@@ -98,12 +102,12 @@ PanelWindow {
         }
     }
 
-    // Click-through except the notch
+    // Click-through except the interactive region (the notch, taller while open)
     mask: Region {
         x: (root.width - shape.width) / 2
         y: 0
         width: shape.width
-        height: shape.height
+        height: hit.height
     }
 
     // Notch shape
@@ -180,86 +184,6 @@ PanelWindow {
             NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
         }
 
-        // Accumulator so one "notch" of scroll = one workspace, for both mouse
-        // wheels (discrete) and touchpads (many small high-res deltas).
-        property real wheelAccum: 0
-        readonly property real wheelStep: 120
-
-        // Scroll to switch: vertical wheel or 2-finger horizontal scroll
-        WheelHandler {
-            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-            onWheel: event => {
-                let dx = event.angleDelta.x;
-                let dy = event.angleDelta.y;
-                let delta = Math.abs(dx) > Math.abs(dy) ? dx : dy;
-                if (delta === 0) {
-                    const px = event.pixelDelta.x;
-                    const py = event.pixelDelta.y;
-                    delta = Math.abs(px) > Math.abs(py) ? px : py;
-                }
-                if (delta === 0)
-                    return;
-
-                content.wheelAccum += delta;
-                let steps = 0;
-                while (content.wheelAccum <= -content.wheelStep) {
-                    steps += 1;
-                    content.wheelAccum += content.wheelStep;
-                }
-                while (content.wheelAccum >= content.wheelStep) {
-                    steps -= 1;
-                    content.wheelAccum -= content.wheelStep;
-                }
-                if (steps !== 0)
-                    root.goToWorkspace(root.activeWs + steps);
-            }
-        }
-
-        // Hovering locks the switcher open (collapse timer no-ops while hovered)
-        HoverHandler {
-            id: hoverHandler
-            cursorShape: Qt.PointingHandCursor
-            onHoveredChanged: {
-                if (hovered)
-                    collapseTimer.stop();
-                else if (root.expanded)
-                    collapseTimer.restart();
-            }
-        }
-
-        // Tap a tick to jump to that workspace
-        TapHandler {
-            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-            onTapped: eventPoint => {
-                const steps = Math.round((eventPoint.position.x - content.width / 2) / root.stepPx);
-                root.goToWorkspace(root.activeWs + steps);
-            }
-        }
-
-        // Click and drag horizontally to scrub workspaces live
-        DragHandler {
-            id: dragHandler
-            target: null
-            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-            xAxis.enabled: true
-            yAxis.enabled: false
-
-            property int startWs: 1
-            onActiveChanged: {
-                if (active) {
-                    startWs = root.activeWs;
-                    root.reveal();
-                }
-            }
-            onActiveTranslationChanged: {
-                if (!active)
-                    return;
-                const target = startWs - Math.round(activeTranslation.x / root.stepPx);
-                if (target !== root.activeWs)
-                    root.goToWorkspace(target);
-            }
-        }
-
         // Sliding tick strip
         Row {
             id: strip
@@ -328,6 +252,101 @@ PanelWindow {
             anchors.left: content.horizontalCenter
             anchors.leftMargin: 6
             anchors.verticalCenter: content.verticalCenter
+        }
+    }
+
+    // Transparent interactive area. Grows taller than the visible notch while
+    // the switcher is open so 2-finger horizontal scroll and click-drag have
+    // vertical room; the visuals above never change.
+    Item {
+        id: hit
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: root.notchWidth
+        height: root.expanded ? root.expandedHitHeight : root.notchHeight
+        Behavior on height {
+            NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+        }
+
+        // Accumulator so one "notch" of scroll = one workspace, for both mouse
+        // wheels (discrete) and touchpads (many small high-res deltas).
+        property real wheelAccum: 0
+        readonly property real wheelStep: 120
+
+        // Scroll to switch: vertical wheel or 2-finger horizontal scroll
+        WheelHandler {
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            onWheel: event => {
+                let dx = event.angleDelta.x;
+                let dy = event.angleDelta.y;
+                let delta = Math.abs(dx) > Math.abs(dy) ? dx : dy;
+                if (delta === 0) {
+                    const px = event.pixelDelta.x;
+                    const py = event.pixelDelta.y;
+                    delta = Math.abs(px) > Math.abs(py) ? px : py;
+                }
+                if (delta === 0)
+                    return;
+
+                hit.wheelAccum += delta;
+                let steps = 0;
+                while (hit.wheelAccum <= -hit.wheelStep) {
+                    steps += 1;
+                    hit.wheelAccum += hit.wheelStep;
+                }
+                while (hit.wheelAccum >= hit.wheelStep) {
+                    steps -= 1;
+                    hit.wheelAccum -= hit.wheelStep;
+                }
+                if (steps !== 0)
+                    root.goToWorkspace(root.activeWs + steps);
+            }
+        }
+
+        // Hovering locks the switcher open (collapse timer no-ops while hovered)
+        HoverHandler {
+            id: hoverHandler
+            cursorShape: Qt.PointingHandCursor
+            onHoveredChanged: {
+                if (hovered)
+                    collapseTimer.stop();
+                else if (root.expanded)
+                    collapseTimer.restart();
+            }
+        }
+
+        // Tap to jump to the workspace under the cursor
+        TapHandler {
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            onTapped: eventPoint => {
+                const steps = Math.round((eventPoint.position.x - hit.width / 2) / root.stepPx);
+                root.goToWorkspace(root.activeWs + steps);
+            }
+        }
+
+        // Click and drag horizontally to scrub workspaces live
+        DragHandler {
+            id: dragHandler
+            target: null
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            dragThreshold: 6
+            xAxis.enabled: true
+            yAxis.enabled: false
+
+            property int startWs: 1
+            onActiveChanged: {
+                if (active) {
+                    startWs = root.activeWs;
+                    root.reveal();
+                }
+            }
+            onActiveTranslationChanged: {
+                if (!active)
+                    return;
+                const target = startWs - Math.round(activeTranslation.x / root.stepPx);
+                if (target !== root.activeWs)
+                    root.goToWorkspace(target);
+            }
         }
     }
 }
