@@ -38,6 +38,9 @@ PanelWindow {
 
     property bool expanded: false
     property real notchWidth: expanded ? expandedWidth : collapsedWidth
+    property real slideOffset: -(activeWs - 1) * stepPx
+    property int numberWs: activeWs
+    property int pendingNumberWs: activeWs
 
     readonly property int activeWs: {
         const ws = Hyprland.focusedWorkspace;
@@ -68,11 +71,29 @@ PanelWindow {
 
     readonly property int rulerMax: Math.max(activeWs, maxOccupied) + rulerBuffer
 
-    onActiveWsChanged: reveal()
+    onActiveWsChanged: {
+        animateSlideTo(activeWs);
+        reveal();
+    }
 
     function reveal() {
         expanded = true;
         collapseTimer.restart();
+    }
+
+    function animateSlideTo(ws) {
+        const target = -(ws - 1) * stepPx;
+        pendingNumberWs = ws;
+
+        if (slideOffset === target) {
+            numberWs = ws;
+            return;
+        }
+
+        slideAnim.stop();
+        slideAnim.from = slideOffset;
+        slideAnim.to = target;
+        slideAnim.start();
     }
 
     function goToWorkspace(n) {
@@ -93,6 +114,15 @@ PanelWindow {
 
     Behavior on notchWidth {
         NumberAnimation { duration: 280; easing.type: Easing.OutCubic }
+    }
+
+    NumberAnimation {
+        id: slideAnim
+        target: root
+        property: "slideOffset"
+        duration: 280
+        easing.type: Easing.OutCubic
+        onFinished: root.numberWs = root.pendingNumberWs
     }
 
     // Clickthrough
@@ -194,11 +224,7 @@ PanelWindow {
         Row {
             id: strip
             height: parent.height
-            x: content.width / 2 - (root.activeWs - 1) * root.stepPx - root.stepPx / 2
-
-            Behavior on x {
-                NumberAnimation { duration: 280; easing.type: Easing.OutCubic }
-            }
+            x: content.width / 2 - root.stepPx / 2 + root.slideOffset
 
             Repeater {
                 model: root.rulerMax
@@ -255,7 +281,7 @@ PanelWindow {
         }
 
         Text {
-            text: root.activeWs
+            text: root.numberWs
             color: Colours.palette.m3primary
             font.pixelSize: 18
             font.bold: true
@@ -323,13 +349,21 @@ PanelWindow {
             }
         }
 
+        TapHandler {
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            onTapped: eventPoint => {
+                const steps = Math.round((eventPoint.position.x - hit.width / 2) / root.stepPx);
+                root.goToWorkspace(root.activeWs + steps);
+            }
+        }
+
         HoverHandler {
             id: hoverHandler
             cursorShape: Qt.PointingHandCursor
             onHoveredChanged: {
                 if (hovered) {
-                    root.reveal();
-                    collapseTimer.stop();
+                    if (root.expanded)
+                        collapseTimer.stop();
                 } else if (root.expanded) {
                     collapseTimer.restart();
                 }
