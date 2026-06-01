@@ -71,11 +71,18 @@ PanelWindow {
         return s;
     }
 
+    // The workspace shown by the ruler. Usually equals activeWs, but can be
+    // updated from early raw events to start the notch animation sooner.
+    property int displayedWs: activeWs
+
     // Ruler runs 1..rulerMax, growing as you move to higher workspaces
-    readonly property int rulerMax: Math.max(activeWs, maxOccupied) + rulerBuffer
+    readonly property int rulerMax: Math.max(displayedWs, activeWs, maxOccupied) + rulerBuffer
 
     // Expand + restart the auto-collapse timer whenever the workspace changes
-    onActiveWsChanged: reveal()
+    onActiveWsChanged: {
+        displayedWs = activeWs;
+        reveal();
+    }
 
     function reveal() {
         expanded = true;
@@ -84,11 +91,28 @@ PanelWindow {
 
     function goToWorkspace(n) {
         const target = Math.max(1, Math.round(n));
+        displayedWs = target;
         // This Hyprland config evaluates dispatch IPC as Lua: it wraps the
         // request in `hl.dispatch(<request>)`, so we send the Lua dispatch
         // expression rather than the raw "workspace N" string.
         Hyprland.dispatch("hl.dsp.focus({ workspace = " + target + " })");
         reveal();
+    }
+
+    // Try to animate as soon as possible on workspace requests. Hyprland does
+    // not expose swipe-progress over socket2, so this is still step-based.
+    Connections {
+        target: Hyprland
+        function onRawEvent(event) {
+            const match = /^workspacev2>>(-?\d+),/.exec(event);
+            if (!match)
+                return;
+            const id = Number(match[1]);
+            if (!Number.isFinite(id) || id < 1)
+                return;
+            root.displayedWs = id;
+            root.reveal();
+        }
     }
 
     Timer {
@@ -102,12 +126,19 @@ PanelWindow {
         }
     }
 
-    // Click-through except the interactive region (the notch, taller while open)
-    mask: Region {
+    // Geometry carrier for clickthrough mask updates.
+    Item {
+        id: hitMask
         x: (root.width - shape.width) / 2
         y: 0
         width: shape.width
         height: hit.height
+        visible: false
+    }
+
+    // Click-through except the interactive region (the notch, taller while open)
+    mask: Region {
+        item: hitMask
     }
 
     // Notch shape
@@ -189,8 +220,8 @@ PanelWindow {
             id: strip
             height: parent.height
 
-            // Center the active workspace under the pointer line
-            x: content.width / 2 - (root.activeWs - 1) * root.stepPx - root.stepPx / 2
+            // Center the shown workspace under the pointer line
+            x: content.width / 2 - (root.displayedWs - 1) * root.stepPx - root.stepPx / 2
             Behavior on x {
                 NumberAnimation { duration: 280; easing.type: Easing.OutCubic }
             }
@@ -202,7 +233,7 @@ PanelWindow {
                     id: tick
                     required property int index
                     readonly property int wsNumber: index + 1
-                    readonly property bool isActive: wsNumber === root.activeWs
+                    readonly property bool isActive: wsNumber === root.displayedWs
                     readonly property bool isOccupied: root.occupied[wsNumber] === true
 
                     width: root.stepPx
@@ -245,7 +276,7 @@ PanelWindow {
 
         // Active workspace number, offset to the right of the active line
         Text {
-            text: root.activeWs
+            text: root.displayedWs
             color: Colours.palette.m3primary
             font.pixelSize: 18
             font.bold: true
@@ -273,33 +304,45 @@ PanelWindow {
         property real wheelAccum: 0
         readonly property real wheelStep: 120
 
-        // Scroll to switch: vertical wheel or 2-finger horizontal scroll
+        function consumeWheelDelta(delta) {
+            if (delta === 0)
+                return;
+
+            wheelAccum += delta;
+            let steps = 0;
+            while (wheelAccum <= -wheelStep) {
+                steps += 1;
+                wheelAccum += wheelStep;
+            }
+            while (wheelAccum >= wheelStep) {
+                steps -= 1;
+                wheelAccum -= wheelStep;
+            }
+            if (steps !== 0)
+                root.goToWorkspace(root.displayedWs + steps);
+        }
+
+        // Vertical scrolling support (mouse wheel + touchpad vertical)
         WheelHandler {
+            orientation: Qt.Vertical
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
             onWheel: event => {
-                let dx = event.angleDelta.x;
-                let dy = event.angleDelta.y;
-                let delta = Math.abs(dx) > Math.abs(dy) ? dx : dy;
-                if (delta === 0) {
-                    const px = event.pixelDelta.x;
-                    const py = event.pixelDelta.y;
-                    delta = Math.abs(px) > Math.abs(py) ? px : py;
-                }
+                let delta = event.angleDelta.y;
                 if (delta === 0)
-                    return;
+                    delta = event.pixelDelta.y;
+                hit.consumeWheelDelta(delta);
+            }
+        }
 
-                hit.wheelAccum += delta;
-                let steps = 0;
-                while (hit.wheelAccum <= -hit.wheelStep) {
-                    steps += 1;
-                    hit.wheelAccum += hit.wheelStep;
-                }
-                while (hit.wheelAccum >= hit.wheelStep) {
-                    steps -= 1;
-                    hit.wheelAccum -= hit.wheelStep;
-                }
-                if (steps !== 0)
-                    root.goToWorkspace(root.activeWs + steps);
+        // Horizontal scrolling support (touchpad 2-finger horizontal)
+        WheelHandler {
+            orientation: Qt.Horizontal
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            onWheel: event => {
+                let delta = event.angleDelta.x;
+                if (delta === 0)
+                    delta = event.pixelDelta.x;
+                hit.consumeWheelDelta(delta);
             }
         }
 
@@ -308,19 +351,22 @@ PanelWindow {
             id: hoverHandler
             cursorShape: Qt.PointingHandCursor
             onHoveredChanged: {
-                if (hovered)
+                if (hovered) {
+                    root.reveal();
                     collapseTimer.stop();
-                else if (root.expanded)
+                } else if (root.expanded) {
                     collapseTimer.restart();
+                }
             }
         }
 
         // Tap to jump to the workspace under the cursor
         TapHandler {
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            gesturePolicy: TapHandler.DragThreshold
             onTapped: eventPoint => {
                 const steps = Math.round((eventPoint.position.x - hit.width / 2) / root.stepPx);
-                root.goToWorkspace(root.activeWs + steps);
+                root.goToWorkspace(root.displayedWs + steps);
             }
         }
 
@@ -329,14 +375,17 @@ PanelWindow {
             id: dragHandler
             target: null
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            acceptedButtons: Qt.LeftButton
             dragThreshold: 6
+            margin: 24
+            grabPermissions: PointerHandler.CanTakeOverFromAnything | PointerHandler.ApprovesTakeOverByAnything
             xAxis.enabled: true
             yAxis.enabled: false
 
             property int startWs: 1
             onActiveChanged: {
                 if (active) {
-                    startWs = root.activeWs;
+                    startWs = root.displayedWs;
                     root.reveal();
                 }
             }
@@ -344,7 +393,7 @@ PanelWindow {
                 if (!active)
                     return;
                 const target = startWs - Math.round(activeTranslation.x / root.stepPx);
-                if (target !== root.activeWs)
+                if (target !== root.displayedWs)
                     root.goToWorkspace(target);
             }
         }
