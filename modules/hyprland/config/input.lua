@@ -12,9 +12,6 @@ hl.config({
             natural_scroll       = true,
             disable_while_typing = vars.touchpadDisableTyping,
             scroll_factor        = vars.touchpadScrollFactor,
-            tap_to_click         = true,
-            tap_and_drag         = true,
-            drag_lock            = true,
         },
     },
 

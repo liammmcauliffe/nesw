@@ -1,6 +1,28 @@
 local vars = require("variables")
 local fn = require("config.functions")
 
+local function ws_jump(step)
+    return function()
+        local active_ws = hl.get_active_workspace()
+        if not active_ws then
+            return
+        end
+
+        local current = active_ws.id
+        local target = current + step
+
+        if step < 0 and current < 10 then
+            target = 1
+        end
+
+        if target < 1 then
+            target = 1
+        end
+
+        hl.dispatch(hl.dsp.focus({ workspace = target }))
+    end
+end
+
 for i = 1, 10 do
     local key = i % 10
     hl.bind(vars.kbGoToWs .. " + " .. key, fn.ws_action(false, "w", i))
@@ -20,6 +42,8 @@ hl.bind("SUPER + Page_down", hl.dsp.focus({ workspace = "+1" }), { repeating = t
 -- Go to workspace group -1/+1
 hl.bind("CTRL + SUPER + mouse_down", hl.dsp.focus({ workspace = "-10" }))
 hl.bind("CTRL + SUPER + mouse_up", hl.dsp.focus({ workspace = "+10" }))
+hl.bind("SUPER + grave", ws_jump(-10))
+hl.bind("SUPER + Minus", ws_jump(10))
 
 -- Toggle special workspace
 hl.bind("SUPER + S", hl.dsp.workspace.toggle_special("special"))
@@ -57,7 +81,6 @@ hl.bind("SUPER + SHIFT + left", hl.dsp.window.move({ direction = "left" }))
 hl.bind("SUPER + SHIFT + right", hl.dsp.window.move({ direction = "right" }))
 hl.bind("SUPER + SHIFT + up", hl.dsp.window.move({ direction = "up" }))
 hl.bind("SUPER + SHIFT + down", hl.dsp.window.move({ direction = "down" }))
-hl.bind("SUPER + Minus", hl.dsp.window.resize(fn.resize_active_window(-10, 0)), { repeating = true })
 hl.bind("SUPER + Equal", hl.dsp.window.resize(fn.resize_active_window(10, 0)), { repeating = true })
 hl.bind("SUPER + SHIFT + Minus", hl.dsp.window.resize(fn.resize_active_window(0, -10)), { repeating = true })
 hl.bind("SUPER + SHIFT + Equal", hl.dsp.window.resize(fn.resize_active_window(0, 10)), { repeating = true })
