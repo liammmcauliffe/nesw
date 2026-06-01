@@ -360,41 +360,48 @@ PanelWindow {
             }
         }
 
-        // Tap to jump to the workspace under the cursor
-        TapHandler {
-            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-            gesturePolicy: TapHandler.DragThreshold
-            onTapped: eventPoint => {
-                const steps = Math.round((eventPoint.position.x - hit.width / 2) / root.stepPx);
-                root.goToWorkspace(root.displayedWs + steps);
-            }
-        }
-
-        // Click and drag horizontally to scrub workspaces live
-        DragHandler {
-            id: dragHandler
-            target: null
-            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+        // Click-to-jump + click-drag scrub fallback. This is intentionally
+        // simple and robust on laptop touchpads where DragHandler can be
+        // finicky depending on tap/drag settings.
+        MouseArea {
+            id: dragArea
+            anchors.fill: parent
             acceptedButtons: Qt.LeftButton
-            dragThreshold: 6
-            margin: 24
-            grabPermissions: PointerHandler.CanTakeOverFromAnything | PointerHandler.ApprovesTakeOverByAnything
-            xAxis.enabled: true
-            yAxis.enabled: false
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
 
+            property real pressX: 0
             property int startWs: 1
-            onActiveChanged: {
-                if (active) {
-                    startWs = root.displayedWs;
-                    root.reveal();
+            property bool dragging: false
+
+            onPressed: mouse => {
+                pressX = mouse.x;
+                startWs = root.displayedWs;
+                dragging = false;
+                root.reveal();
+            }
+
+            onPositionChanged: mouse => {
+                if (!dragArea.pressed)
+                    return;
+
+                const dx = mouse.x - pressX;
+                if (Math.abs(dx) >= 4)
+                    dragging = true;
+
+                if (dragging) {
+                    const target = startWs - Math.round(dx / root.stepPx);
+                    if (target !== root.displayedWs)
+                        root.goToWorkspace(target);
                 }
             }
-            onActiveTranslationChanged: {
-                if (!active)
+
+            onReleased: mouse => {
+                if (dragging)
                     return;
-                const target = startWs - Math.round(activeTranslation.x / root.stepPx);
-                if (target !== root.displayedWs)
-                    root.goToWorkspace(target);
+
+                const steps = Math.round((mouse.x - hit.width / 2) / root.stepPx);
+                root.goToWorkspace(root.displayedWs + steps);
             }
         }
     }
