@@ -301,8 +301,9 @@ PanelWindow {
         Text {
             text: root.displayNumber
             color: Colors.palette.m3primary
-            font.pixelSize: 18
-            font.bold: true
+            font.family: Fonts.family
+            font.pixelSize: Fonts.sizeNotch
+            font.weight: Fonts.weightBold
             anchors.left: content.horizontalCenter
             anchors.leftMargin: 6
             anchors.verticalCenter: content.verticalCenter
