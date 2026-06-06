@@ -38,9 +38,10 @@ PanelWindow {
 
     property bool expanded: false
     property real notchWidth: expanded ? expandedWidth : collapsedWidth
-    property real slideOffset: -(activeWs - 1) * stepPx
-    property int numberWs: activeWs
-    property int pendingNumberWs: activeWs
+    property real slideOffset: 0
+
+    // workspace whose tick sits at the center notch (counts up as ticks pass under)
+    readonly property int displayNumber: Math.max(1, Math.round(1 - slideOffset / stepPx))
 
     readonly property int activeWs: {
         const ws = Hyprland.focusedWorkspace;
@@ -69,37 +70,55 @@ PanelWindow {
         return s;
     }
 
-    readonly property int rulerMax: Math.max(activeWs, maxOccupied) + rulerBuffer
+    readonly property int rulerMax: Math.max(activeWs, maxOccupied, displayNumber) + rulerBuffer
+
+    property bool slideReady: false
+
+    Component.onCompleted: {
+        slideOffset = -(activeWs - 1) * stepPx
+        slideReady = true
+    }
 
     onActiveWsChanged: {
-        animateSlideTo(activeWs);
-        reveal();
+        if (!slideReady)
+            return
+        animateSlideTo(activeWs)
+        reveal()
+    }
+
+    function slideDuration(fromWs, toWs) {
+        const dist = Math.abs(toWs - fromWs)
+        if (dist === 0)
+            return 0
+        // ~40ms per tick; fast enough to read each number on long jumps
+        return Math.min(450, Math.max(60, dist * 40))
     }
 
     function reveal() {
-        expanded = true;
-        collapseTimer.restart();
+        expanded = true
+        collapseTimer.restart()
     }
 
     function animateSlideTo(ws) {
-        const target = -(ws - 1) * stepPx;
-        pendingNumberWs = ws;
+        const target = -(ws - 1) * stepPx
+        const fromWs = displayNumber
 
-        if (slideOffset === target) {
-            numberWs = ws;
-            return;
+        if (Math.abs(slideOffset - target) < 0.5) {
+            slideOffset = target
+            return
         }
 
-        slideAnim.stop();
-        slideAnim.from = slideOffset;
-        slideAnim.to = target;
-        slideAnim.start();
+        slideAnim.stop()
+        slideAnim.duration = slideDuration(fromWs, ws)
+        slideAnim.from = slideOffset
+        slideAnim.to = target
+        slideAnim.start()
     }
 
     function goToWorkspace(n) {
-        const target = Math.max(1, Math.round(n));
-        Hyprland.dispatch("hl.dsp.focus({ workspace = " + target + " })");
-        reveal();
+        const target = Math.max(1, Math.round(n))
+        Hyprland.dispatch("hl.dsp.focus({ workspace = " + target + " })")
+        reveal()
     }
 
     Timer {
@@ -120,9 +139,8 @@ PanelWindow {
         id: slideAnim
         target: root
         property: "slideOffset"
-        duration: 280
-        easing.type: Easing.OutCubic
-        onFinished: root.numberWs = root.pendingNumberWs
+        easing.type: Easing.Linear
+        onFinished: root.slideOffset = to
     }
 
     // Clickthrough
@@ -234,7 +252,7 @@ PanelWindow {
                     required property int index
 
                     readonly property int wsNumber: index + 1
-                    readonly property bool isActive: wsNumber === root.activeWs
+                    readonly property bool isActive: wsNumber === root.displayNumber
                     readonly property bool isOccupied: root.occupied[wsNumber] === true
 
                     width: root.stepPx
@@ -281,7 +299,7 @@ PanelWindow {
         }
 
         Text {
-            text: root.numberWs
+            text: root.displayNumber
             color: Colors.palette.m3primary
             font.pixelSize: 18
             font.bold: true
@@ -308,52 +326,41 @@ PanelWindow {
 
         function consumeWheelDelta(delta) {
             if (delta === 0)
-                return;
+                return
 
-            wheelAccum += delta;
-            let steps = 0;
+            wheelAccum += delta
+            let steps = 0
 
             while (wheelAccum <= -wheelStep) {
-                steps += 1;
-                wheelAccum += wheelStep;
+                steps += 1
+                wheelAccum += wheelStep
             }
 
             while (wheelAccum >= wheelStep) {
-                steps -= 1;
-                wheelAccum -= wheelStep;
+                steps -= 1
+                wheelAccum -= wheelStep
             }
 
             if (steps !== 0)
-                root.goToWorkspace(root.activeWs + steps);
-        }
-
-        WheelHandler {
-            orientation: Qt.Vertical
-            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-            onWheel: event => {
-                let delta = event.angleDelta.y;
-                if (delta === 0)
-                    delta = event.pixelDelta.y;
-                hit.consumeWheelDelta(delta);
-            }
+                root.goToWorkspace(root.displayNumber + steps)
         }
 
         WheelHandler {
             orientation: Qt.Horizontal
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
             onWheel: event => {
-                let delta = event.angleDelta.x;
+                let delta = event.angleDelta.x
                 if (delta === 0)
-                    delta = event.pixelDelta.x;
-                hit.consumeWheelDelta(delta);
+                    delta = event.pixelDelta.x
+                hit.consumeWheelDelta(delta)
             }
         }
 
         TapHandler {
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
             onTapped: eventPoint => {
-                const steps = Math.round((eventPoint.position.x - hit.width / 2) / root.stepPx);
-                root.goToWorkspace(root.activeWs + steps);
+                const steps = Math.round((eventPoint.position.x - hit.width / 2) / root.stepPx)
+                root.goToWorkspace(root.displayNumber + steps)
             }
         }
 
