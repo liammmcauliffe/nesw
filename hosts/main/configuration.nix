@@ -3,17 +3,17 @@
 {
   imports = [ ./hardware-configuration.nix ];
 
-  # Bootloader
+  # bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Host basics
+  # host basics
   networking.hostName = "main"; # Must match the flake target
   networking.networkmanager.enable = true;
   time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
 
-  # Enable flakes on the installed system
+  # enable flakes
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     auto-optimise-store = true;
@@ -25,7 +25,7 @@
     options = "--delete-older-than 7d";
   };
 
-  # Audio
+  # audio
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -34,7 +34,7 @@
     pulse.enable = true;
   };
 
-  # Wayland + Hyprland
+  # wayland + hyprland
   programs.hyprland = {
     enable = true;
     package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
@@ -42,12 +42,12 @@
 
   programs.fish.enable = true;
 
-  # Polkit + keyring (for the agents started in the Hyprland session)
+  # polkit + keyring
   security.polkit.enable = true;
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.login.enableGnomeKeyring = true;
 
-  # Location provider for gammastep night light
+  # location for gammastep
   services.geoclue2.enable = true;
   services.geoclue2.appConfig.gammastep = {
     isAllowed = true;
@@ -55,17 +55,17 @@
   };
   location.provider = "geoclue2";
 
-  # Bluetooth (mpris-proxy forwards media keys to MPRIS)
+  # bluetooth
   hardware.bluetooth.enable = true;
 
-  # Basic packages
+  # basic packages
   environment.systemPackages = with pkgs; [
     git
     tree-sitter
     app2unit
   ];
 
-  # Fonts
+  # fonts
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
   ];
@@ -77,7 +77,7 @@
     shell = pkgs.fish;
   };
 
-  # Needed if you want to use sudo
+  # sudo
   security.sudo.enable = true;
 
   system.stateVersion = "25.11";

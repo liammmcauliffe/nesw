@@ -60,7 +60,7 @@ Then reboot, log into your TTY, and start Hyprland:
 start-hyprland
 ```
 
-That is the baseline. Home Manager imports modules from `hosts/main/home.nix`; edit plain-text app config in `modules/hyprland/hyprland.conf` and `modules/fish/config.fish`.
+That is the baseline. Home Manager imports modules from `hosts/main/home.nix`; edit plain-text app config in `modules/hyprland/` and `modules/fish/config.fish`.
 
 ## 6) Commit your changes
 

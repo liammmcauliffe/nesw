@@ -4,7 +4,7 @@ hl.config({
     general = {
         layout          = "master",
 
-        allow_tearing   = false, -- Allows `immediate` window rule to work
+        allow_tearing   = false, -- allows `immediate` window rule to work
 
         gaps_workspaces = vars.workspaceGaps,
         gaps_in         = vars.windowGapsIn,
@@ -12,8 +12,8 @@ hl.config({
         border_size     = vars.windowBorderSize,
 
         col             = {
-            active_border   = vars.activeWindowBorderColour,
-            inactive_border = vars.inactiveWindowBorderColour,
+            active_border   = vars.activeWindowBorderColor,
+            inactive_border = vars.inactiveWindowBorderColor,
         },
     },
 
@@ -36,7 +36,7 @@ hl.config({
         column_width             = 0.5,
         follow_focus             = true,
         follow_min_visible       = 0.0,
-        -- Column widths to cycle through when resizing a column
+        -- column widths to cycle through when resizing a column
         explicit_column_widths   = "0.35, 0.5, 0.65, 1.0",
     },
 })

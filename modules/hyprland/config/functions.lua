@@ -1,3 +1,4 @@
+-- workspace actions
 local function ws_action(move, mode, index)
     return function()
         local active_ws = hl.get_active_workspace()
@@ -15,6 +16,7 @@ local function ws_action(move, mode, index)
     end
 end
 
+-- resize by screen
 local function resize_by_screen(width_pct, height_pct)
     local screen = hl.get_active_monitor()
     if screen and type(screen.width) == "number" and type(screen.height) == "number" then
@@ -26,6 +28,7 @@ local function resize_by_screen(width_pct, height_pct)
     end
 end
 
+-- resize active window
 local function resize_active_window(width_pct, height_pct)
     local w = 800
     local h = 600
@@ -37,6 +40,7 @@ local function resize_active_window(width_pct, height_pct)
     end
 end
 
+-- resizer
 local function resizer(title_pattern, width_pct, height_pct, actions, plain_match)
     local window = hl.get_active_window()
     if (window and window.title) and string.find(window.title, title_pattern, 1, plain_match) then
@@ -50,6 +54,7 @@ local function resizer(title_pattern, width_pct, height_pct, actions, plain_matc
     end
 end
 
+-- move actions
 local function move_actions()
     local screen = hl.get_active_monitor()
     local win = hl.get_active_window()

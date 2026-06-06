@@ -20,101 +20,101 @@ $character"""
 
 add_newline = false
 
-# Username Module
+# username module
 [username]
 show_always = true
 style_user = "bright-yellow"
 style_root = "purple "
 format = '[ $user]($style)'
 
-# Directory Module
+# directory module
 [directory]
 style = "blue"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
 
-# Git Branch Module
+# git branch module
 [git_branch]
 symbol = ""
 style = "bright-blue"
 format = '[[ $symbol $branch ](bright-blue)]($style)'
 
-# Git Status Module
+# git status module
 [git_status]
 style = "bright-blue"
 format = '[[($all_status$ahead_behind )](bright-blue)]($style)'
 
-# Node.js Module
+# nodejs module
 [nodejs]
 symbol = "󰎙"
 style = "bright-green"
 format = '[[ $symbol( $version) ](bright-green)]($style)'
 
-# C Module
+# c module
 [c]
 symbol = ""
 style = "white"
 format = '[[ $symbol( $version) ](white)]($style)'
 
-# Rust Module
+# rust module
 [rust]
-symbol= ""
+symbol = ""
 style = "red"
 format = '[[ $symbol( $version) ](red)]($style)'
 
-# Go Module
+# go module
 [golang]
 symbol = "󰟓"
 style = "cyan"
 format = '[[ $symbol( $version) ](cyan)]($style)'
 
-# PHP Module
+# php module
 [php]
 symbol = ""
 style = "purple"
 format = '[[ $symbol( $version) ](purple)]($style)'
 
-# Java Module
+# java module
 [java]
 symbol = ""
 style = "yellow"
 format = '[[ $symbol( $version) ](yellow)]($style)'
 
-# Kotlin Module
+# kotlin module
 [kotlin]
 symbol = ""
 style = "bright-purple"
 format = '[[ $symbol( $version) ](bright-purple)]($style)'
 
-# Haskell Module
+# haskell module
 [haskell]
 symbol = ""
 style = "magenta"
 format = '[[ $symbol( $version) ](magenta)]($style)'
 
-# Python Module
+# python module
 [python]
 symbol = ""
 style = "bright-yellow"
 format = '[[ $symbol( $version) ](bright-yellow)]($style)'
 
-# Lua Module
+# lua module
 [lua]
 symbol = "󰢱"
 style = "bright-yellow"
 format = '[[ $symbol( $version) ](bright-yellow)]($style)'
 
-# Docker Context Module
+# docker context module
 [docker_context]
 symbol = "󰡨"
 style = "blue"
 format = '[[ $symbol( $context) ](blue)]($style)'
 
-# Line Break Module
+# line break module
 [line_break]
 disabled = true
 
-# Character Module
+# character module
 [character]
 format = "[](bright-blue) "

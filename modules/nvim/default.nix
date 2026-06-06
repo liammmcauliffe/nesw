@@ -4,7 +4,7 @@
     enable = true;
     defaultEditor = true;
 
-    # Add extra packages your Neovim config relies on here (LSPs, formatters, etc.)
+    # add extra packages your neovim config relies on here (LSPs, formatters, etc.)
     extraPackages = with pkgs; [
       ripgrep
       fd
@@ -14,21 +14,21 @@
       lua-language-server
     ];
 
-    # Add you Neovim plugins here
+    # add neovim plugins here
     plugins = with pkgs.vimPlugins; [
-        vim-moonfly-colors
-        friendly-snippets
-        nvim-treesitter
-        nvim-lspconfig
+      vim-moonfly-colors
+      friendly-snippets
+      nvim-treesitter
+      nvim-lspconfig
 
-        mini-files
-        mini-notify
-        mini-cmdline
-        mini-surround 
-        mini-pick
-        mini-extra
-        mini-completion
-        mini-snippets
+      mini-files
+      mini-notify
+      mini-cmdline
+      mini-surround
+      mini-pick
+      mini-extra
+      mini-completion
+      mini-snippets
     ];
   };
 

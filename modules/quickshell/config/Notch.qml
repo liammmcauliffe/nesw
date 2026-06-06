@@ -249,7 +249,7 @@ PanelWindow {
                             width: 1
                             height: 6
                             radius: 0.5
-                            color: Colours.palette.m3onSurfaceVariant
+                            color: Colors.palette.m3onSurfaceVariant
                             opacity: 0.3
                             x: tick.width / 2 + modelData * (root.stepPx / 6) - width / 2
                             anchors.verticalCenter: tick.verticalCenter
@@ -261,9 +261,9 @@ PanelWindow {
                         height: tick.isActive ? content.height - root.frameInset * 2
                               : tick.isOccupied ? 14 : 9
                         radius: 1
-                        color: tick.isActive ? Colours.palette.m3primary
-                             : tick.isOccupied ? Colours.palette.m3onSurface
-                             : Colours.palette.m3onSurfaceVariant
+                        color: tick.isActive ? Colors.palette.m3primary
+                             : tick.isOccupied ? Colors.palette.m3onSurface
+                             : Colors.palette.m3onSurfaceVariant
                         opacity: tick.isActive || tick.isOccupied ? 1 : 0.5
                         anchors.horizontalCenter: tick.horizontalCenter
                         anchors.verticalCenter: tick.verticalCenter
@@ -282,7 +282,7 @@ PanelWindow {
 
         Text {
             text: root.numberWs
-            color: Colours.palette.m3primary
+            color: Colors.palette.m3primary
             font.pixelSize: 18
             font.bold: true
             anchors.left: content.horizontalCenter

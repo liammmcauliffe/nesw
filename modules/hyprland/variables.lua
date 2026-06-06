@@ -1,18 +1,18 @@
 -- local scheme = require("scheme.current")
 
 return {
-    -- Apps
+    -- apps
     terminal = "ghostty",
     browser = "zen-beta",
 
-    -- Touchpad
+    -- touchpad
     touchpadDisableTyping = false,
     touchpadScrollFactor = 0.4,
     gestureFingers = 3,
     workspaceSwipeFingers = 4,
     gestureFingersMore = 4,
 
-    -- Blur
+    -- blur
     blurEnabled = true,
     blurSpecialWs = false,
     blurPopups = true,
@@ -21,33 +21,33 @@ return {
     blurPasses = 2,
     blurXray = false,
 
-    -- Shadow
+    -- shadow
     shadowEnabled = true,
     shadowRange = 10,
     shadowRenderPower = 2,
-    -- shadowColour = "rgba(" .. scheme.surface .. "d4)",
+    -- shadowColor = "rgba(" .. scheme.surface .. "d4)",
 
-    -- Gaps
+    -- gaps
     workspaceGaps = 12,
     windowGapsIn = 6,
     windowGapsOut = 12,
     singleWindowGapsOut = 12,
 
-    -- Window Styling
+    -- window styling
     windowOpacity = 0.95,
     windowRounding = 15,
     windowBorderSize = 1,
-    -- activeWindowBorderColour = "rgba(" .. scheme.primary .. "e6)",
-    -- inactiveWindowBorderColour = "rgba(" .. scheme.onSurfaceVariant .. "11)",
-    
-    -- Misc
+    -- activeWindowBorderColor = "rgba(" .. scheme.primary .. "e6)",
+    -- inactiveWindowBorderColor = "rgba(" .. scheme.onSurfaceVariant .. "11)",
+
+    -- misc
     volumeStep = 5,
     cursorTheme = "Bibata-Modern-Ice",
     cursorSize = 20,
     suspendCommand = "systemctl suspend",
 
-    -- KEYBINDS
-    -- Workspaces
+    -- keybinds
+    -- workspaces
     kbMoveWinToWs = "SUPER + CTRL",
     kbMoveWinToWsGroup = "SUPER + CTRL + SHIFT + ALT",
     kbGoToWs = "SUPER",
@@ -56,13 +56,13 @@ return {
     kbPrevWs = "CTRL + SUPER + Left",
     kbToggleSpecialWs = "SUPER + S",
 
-    -- Window Group
+    -- window groups
     kbWindowGroupCycleNext = "ALT + TAB",
     kbWindowGroupCyclePrev = "SHIFT + ALT + TAB",
     kbUngroup = "SUPER + U",
     kbToggleGroup = "SUPER + Comma",
 
-    -- Window Action
+    -- window actions
     kbMoveWindow = "SUPER + Z",
     kbResizeWindow = "SUPER + X",
     kbWindowPip = "SUPER + ALT + backslash",
@@ -72,14 +72,14 @@ return {
     kbToggleWindowFloating = "SUPER + ALT + space",
     kbCloseWindow = "SUPER + Q",
 
-    -- Special workspaces toggles
+    -- special workspaces toggles
     kbMusic = "SUPER + M",
     kbCommunication = "SUPER + D",
 
-    -- Apps
+    -- apps
     kbTerminal = "SUPER + Return",
     kbBrowser = "SUPER + W",
 
-    -- Misc
+    -- misc
     kbSession = "CTRL + ALT + Delete",
 }

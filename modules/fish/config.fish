@@ -1,5 +1,6 @@
 set fish_greeting ""
 
+# nixos commands
 function nswitch --description "Stage changes and rebuild NixOS from the nesw repo"
 	set -l current_dir (pwd)
 	cd ~/nesw; and git add -A; and sudo nixos-rebuild switch --flake .#main; and cd $current_dir
@@ -10,6 +11,7 @@ function ntest --description "Stage changes and test NixOS build without switchi
 	cd ~/nesw; and git add -A; and sudo nixos-rebuild test --flake .#main; and cd $current_dir
 end
 
+# eza commands
 function ls; eza --icons $argv; end
 function ll; eza -la --icons --git $argv; end
 function lt; eza --tree --icons $argv; end

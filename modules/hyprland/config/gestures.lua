@@ -1,6 +1,6 @@
 local vars = require("variables")
 
--- Gesture config
+-- gesture config
 hl.config({
     gestures = {
         workspace_swipe_distance = 700,
@@ -22,7 +22,7 @@ local function ws_step(delta)
     end
 end
 
--- Gestures
+-- gestures
 hl.gesture({ fingers = vars.workspaceSwipeFingers, direction = "left", action = ws_step(1) })
 hl.gesture({ fingers = vars.workspaceSwipeFingers, direction = "right", action = ws_step(-1) })
 hl.gesture({ fingers = vars.gestureFingers, direction = "up", action = "special", arg = "special" })

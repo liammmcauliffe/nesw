@@ -13,12 +13,12 @@ Singleton {
     readonly property Palette palette: current
     readonly property Palette current: Palette {}
 
-    // Path a colour generator can write to. Lives in a writable state dir so it
+    // Path a color generator can write to. Lives in a writable state dir so it
     // is independent of the read-only home-manager/nix config copy.
     readonly property string schemePath: `${Quickshell.env("HOME")}/.local/state/nesw/scheme.json`
 
-    // Parse a scheme file of the form { "colours": { "primary": "rrggbb", ... } }
-    // (unprefixed keys, a leading '#' on values is optional) and apply it.
+    // Parse a scheme file of the form { "colors": { "primary": "rrggbb", ... } }
+    // (also accepts "colours" from external generators; unprefixed keys, optional '#')
     function load(data: string): void {
         if (!data)
             return;
@@ -30,12 +30,12 @@ Singleton {
             return;
         }
 
-        const colours = scheme.colours ?? scheme;
-        for (const name in colours) {
+        const colors = scheme.colors ?? scheme.colours ?? scheme;
+        for (const name in colors) {
             const propName = name.startsWith("m3") ? name : `m3${name}`;
             if (!current.hasOwnProperty(propName))
                 continue;
-            const value = colours[name];
+            const value = colors[name];
             current[propName] = value.startsWith("#") ? value : `#${value}`;
         }
     }

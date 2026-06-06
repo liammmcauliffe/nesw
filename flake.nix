@@ -1,5 +1,5 @@
 {
-  description = "nesw by Liam McAuliffe";
+  description = "nesw by liam mcauliffe";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -9,12 +9,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     zen-browser = {
-        url = "github:0xc000022070/zen-browser-flake";
-        inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     quickshell = {
-        url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
-        inputs.nixpkgs.follows = "nixpkgs";
+      url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -23,7 +23,7 @@
       system = "x86_64-linux";
     in
     {
-      # Change "main" if you want a different hostname
+      # change "main" if you want a different hostname
       nixosConfigurations.main = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit hyprland; };
@@ -33,8 +33,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit zen-browser quickshell; }; 
-
+            home-manager.extraSpecialArgs = { inherit zen-browser quickshell; };
             # HARDCODE YOUR USERNAME HERE (e.g. "liam")
             home-manager.users."liam" = {
               imports = [ ./hosts/main/home.nix ];

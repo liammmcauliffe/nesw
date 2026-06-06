@@ -21,11 +21,11 @@
     enable = true;
   };
   xdg.configFile."hypr" = {
-	source = ./.;
-  	recursive = true;
+    source = ./.;
+    recursive = true;
   };
 
-  # Autostart deps (see config/execs.lua)
+  # autostart deps (see config/execs.lua)
   home.packages = with pkgs; [
     wl-clipboard # wl-paste
     cliphist     # clipboard history
@@ -33,7 +33,7 @@
     glib         # gsettings
   ];
 
-  # Polkit auth agent (Hyprland has no DE to autostart one)
+  # polkit auth agent (hyprland has no DE to autostart one)
   systemd.user.services.polkit-gnome-authentication-agent-1 = {
     Unit = {
       Description = "polkit-gnome-authentication-agent-1";
@@ -50,7 +50,7 @@
     };
   };
 
-  # Night light (uses system geoclue2 for location)
+  # night light (uses system geoclue2 for location)
   services.gammastep = {
     enable = true;
     provider = "geoclue2";
