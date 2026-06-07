@@ -303,7 +303,7 @@ PanelWindow {
             color: Colors.palette.m3primary
             font.family: Fonts.family
             font.pixelSize: Fonts.sizeNotch
-            font.weight: Fonts.weightBold
+            font.weight: Fonts.weightBlack
             anchors.left: content.horizontalCenter
             anchors.leftMargin: 6
             anchors.verticalCenter: content.verticalCenter
