@@ -3,6 +3,9 @@
 {
   imports = [ ./hardware-configuration.nix ];
 
+  # allow unfree software
+  nixpkgs.config.allowUnfree = true;
+
   # bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
