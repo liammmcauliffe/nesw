@@ -15,33 +15,32 @@ PanelWindow {
     anchors.left: true
     anchors.bottom: true
 
-    implicitWidth: hitWidth
+    implicitWidth: reservedWidth
     color: "transparent"
 
     WlrLayershell.layer: WlrLayer.Top
-    exclusiveZone: 0
+    exclusiveZone: reservedWidth
     WlrLayershell.namespace: "nesw-notch"
 
-    // Notch (vertical, hugs the left edge near the top)
-    readonly property int collapsedLength: 200
-    readonly property int expandedLength: 300
-    readonly property int notchThickness: 34
-    readonly property int hitWidth: 120
-    readonly property int bottomRadius: 14
-    readonly property int topRadius: 14
-    readonly property int edgeMargin: 8
-    readonly property color notchColor: "black"
+    // Panel (vertical switcher, top-left, always shown)
+    readonly property int panelMargin: 6
+    readonly property int panelWidth: 72
+    readonly property int panelHeight: 360
+    readonly property int panelRadius: 18
+    readonly property int reservedWidth: panelMargin + panelWidth + 10
+    readonly property color panelColor: Colors.palette.m3surface
 
     // Ruler
     readonly property int stepPx: 46
     readonly property int rulerBuffer: 5
-    readonly property int frameInset: 4
+    readonly property int tickLeft: 16
+    readonly property int minorLen: 7
+    readonly property int majorLen: 13
+    readonly property int activeLen: 22
 
-    property bool expanded: false
-    property real notchLength: expanded ? expandedLength : collapsedLength
     property real slideOffset: 0
 
-    // workspace whose tick sits at the center notch (counts up as ticks pass under)
+    // workspace whose tick sits at the centre line (counts up as ticks pass it)
     readonly property int displayNumber: Math.max(1, Math.round(1 - slideOffset / stepPx))
 
     readonly property int activeWs: {
@@ -84,7 +83,6 @@ PanelWindow {
         if (!slideReady)
             return
         animateSlideTo(activeWs)
-        reveal()
     }
 
     function slideDuration(fromWs, toWs) {
@@ -93,11 +91,6 @@ PanelWindow {
             return 0
         // ~40ms per tick; fast enough to read each number on long jumps
         return Math.min(450, Math.max(60, dist * 40))
-    }
-
-    function reveal() {
-        expanded = true
-        collapseTimer.restart()
     }
 
     function animateSlideTo(ws) {
@@ -119,21 +112,6 @@ PanelWindow {
     function goToWorkspace(n) {
         const target = Math.max(1, Math.round(n))
         Hyprland.dispatch("hl.dsp.focus({ workspace = " + target + " })")
-        reveal()
-    }
-
-    Timer {
-        id: collapseTimer
-        interval: 1500
-        onTriggered: {
-            if (hoverHandler.hovered)
-                return;
-            root.expanded = false;
-        }
-    }
-
-    Behavior on notchLength {
-        NumberAnimation { duration: 280; easing.type: Easing.OutCubic }
     }
 
     NumberAnimation {
@@ -144,13 +122,15 @@ PanelWindow {
         onFinished: root.slideOffset = to
     }
 
-    // Clickthrough
+    // Clickthrough: only the panel is interactive
     Item {
         id: hitMask
         anchors.left: parent.left
-        anchors.verticalCenter: shape.verticalCenter
-        width: hit.width
-        height: shape.height
+        anchors.top: parent.top
+        anchors.leftMargin: root.panelMargin
+        anchors.topMargin: root.panelMargin
+        width: root.panelWidth
+        height: root.panelHeight
         visible: false
     }
 
@@ -158,197 +138,115 @@ PanelWindow {
         item: hitMask
     }
 
-    // Shape
-    Shape {
-        id: shape
+    // Panel
+    Rectangle {
+        id: panel
         anchors.left: parent.left
         anchors.top: parent.top
-        anchors.topMargin: root.edgeMargin
+        anchors.leftMargin: root.panelMargin
+        anchors.topMargin: root.panelMargin
+        width: root.panelWidth
+        height: root.panelHeight
+        radius: root.panelRadius
+        color: root.panelColor
 
-        width: root.notchThickness
-        height: root.notchLength + root.topRadius * 2
-        preferredRendererType: Shape.CurveRenderer
+        // Ruler (clipped)
+        Item {
+            id: viewport
+            anchors.fill: parent
+            clip: true
 
-        ShapePath {
-            fillColor: root.notchColor
-            strokeWidth: 0
+            Column {
+                id: strip
+                width: parent.width
+                y: panel.height / 2 - root.stepPx / 2 + root.slideOffset
 
-            startX: 0
-            startY: 0
+                Repeater {
+                    model: root.rulerMax
 
-            PathArc {
-                x: root.topRadius
-                y: root.topRadius
-                radiusX: root.topRadius
-                radiusY: root.topRadius
-                direction: PathArc.Counterclockwise
-            }
+                    delegate: Item {
+                        id: tick
+                        required property int index
 
-            PathLine {
-                x: root.notchThickness - root.bottomRadius
-                y: root.topRadius
-            }
+                        readonly property int wsNumber: index + 1
+                        readonly property bool isActive: wsNumber === root.displayNumber
+                        readonly property bool isOccupied: root.occupied[wsNumber] === true
 
-            PathArc {
-                x: root.notchThickness
-                y: root.topRadius + root.bottomRadius
-                radiusX: root.bottomRadius
-                radiusY: root.bottomRadius
-                direction: PathArc.Clockwise
-            }
+                        width: panel.width
+                        height: root.stepPx
 
-            PathLine {
-                x: root.notchThickness
-                y: shape.height - root.topRadius - root.bottomRadius
-            }
+                        Repeater {
+                            // +3 fills the midpoint to the next workspace tick
+                            model: [-2, -1, 1, 2, 3]
 
-            PathArc {
-                x: root.notchThickness - root.bottomRadius
-                y: shape.height - root.topRadius
-                radiusX: root.bottomRadius
-                radiusY: root.bottomRadius
-                direction: PathArc.Clockwise
-            }
+                            delegate: Rectangle {
+                                required property int modelData
 
-            PathLine {
-                x: root.topRadius
-                y: shape.height - root.topRadius
-            }
+                                // hide the sub-ticks before the first workspace
+                                visible: !(tick.wsNumber === 1 && modelData < 0)
 
-            PathArc {
-                x: 0
-                y: shape.height
-                radiusX: root.topRadius
-                radiusY: root.topRadius
-                direction: PathArc.Counterclockwise
-            }
-
-            PathLine { x: 0; y: 0 }
-        }
-    }
-
-    // Content
-    Item {
-        id: content
-        anchors.left: parent.left
-        anchors.verticalCenter: shape.verticalCenter
-        width: root.notchThickness
-        height: root.notchLength
-        clip: true
-
-        opacity: root.expanded ? 1 : 0
-        Behavior on opacity {
-            NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
-        }
-
-        Column {
-            id: strip
-            width: parent.width
-            y: content.height / 2 - root.stepPx / 2 + root.slideOffset
-
-            Repeater {
-                model: root.rulerMax
-
-                delegate: Item {
-                    id: tick
-                    required property int index
-
-                    readonly property int wsNumber: index + 1
-                    readonly property bool isActive: wsNumber === root.displayNumber
-                    readonly property bool isOccupied: root.occupied[wsNumber] === true
-
-                    width: content.width
-                    height: root.stepPx
-
-                    Repeater {
-                        // +3 fills the midpoint to the next workspace tick
-                        model: [-2, -1, 1, 2, 3]
-
-                        delegate: Rectangle {
-                            required property int modelData
-
-                            // hide the sub-ticks before the first workspace
-                            visible: !(tick.wsNumber === 1 && modelData < 0)
-
-                            width: 6
-                            height: 1
-                            radius: 0.5
-                            color: Colors.palette.m3onSurfaceVariant
-                            opacity: 0.3
-                            y: tick.height / 2 + modelData * (root.stepPx / 6) - height / 2
-                            anchors.horizontalCenter: tick.horizontalCenter
-                        }
-                    }
-
-                    Rectangle {
-                        height: 2
-                        width: tick.isActive ? content.width - root.frameInset * 2
-                             : tick.isOccupied ? 14 : 9
-                        radius: 1
-                        color: tick.isActive ? Colors.palette.m3primary
-                             : tick.isOccupied ? Colors.palette.m3onSurface
-                             : Colors.palette.m3onSurfaceVariant
-                        opacity: tick.isActive || tick.isOccupied ? 1 : 0.5
-                        anchors.horizontalCenter: tick.horizontalCenter
-                        anchors.verticalCenter: tick.verticalCenter
-
-                        Behavior on width {
-                            NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
+                                x: root.tickLeft
+                                width: root.minorLen
+                                height: 1
+                                radius: 0.5
+                                color: Colors.palette.m3onSurfaceVariant
+                                opacity: 0.3
+                                y: tick.height / 2 + modelData * (root.stepPx / 6) - height / 2
+                            }
                         }
 
-                        Behavior on color {
-                            ColorAnimation { duration: 180 }
+                        Rectangle {
+                            x: root.tickLeft
+                            height: 2
+                            width: tick.isActive ? root.activeLen : root.majorLen
+                            radius: 1
+                            color: tick.isActive ? Colors.palette.m3primary
+                                 : tick.isOccupied ? Colors.palette.m3onSurface
+                                 : Colors.palette.m3onSurfaceVariant
+                            opacity: tick.isActive || tick.isOccupied ? 1 : 0.45
+                            anchors.verticalCenter: tick.verticalCenter
+
+                            Behavior on width {
+                                NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
+                            }
+
+                            Behavior on color {
+                                ColorAnimation { duration: 180 }
+                            }
                         }
                     }
                 }
             }
         }
 
+        // Active pointer (fixed at the centre line)
+        Shape {
+            anchors.verticalCenter: panel.verticalCenter
+            x: root.tickLeft - 12
+            width: 7
+            height: 11
+            preferredRendererType: Shape.CurveRenderer
+
+            ShapePath {
+                fillColor: Colors.palette.m3primary
+                strokeWidth: 0
+                startX: 0
+                startY: 0
+                PathLine { x: 7; y: 5.5 }
+                PathLine { x: 0; y: 11 }
+                PathLine { x: 0; y: 0 }
+            }
+        }
+
+        // Active number, to the right of the ticks
         Text {
             text: root.displayNumber
-            color: Colors.palette.m3primary
+            color: Colors.palette.m3onSurface
             font.family: Fonts.family
             font.pixelSize: Fonts.sizeNotch
             font.weight: Fonts.weightBlack
-            anchors.horizontalCenter: content.horizontalCenter
-            anchors.verticalCenter: content.verticalCenter
-        }
-    }
-
-    // Input
-    Item {
-        id: hit
-        anchors.left: parent.left
-        anchors.verticalCenter: shape.verticalCenter
-        height: root.notchLength
-        width: root.expanded ? root.hitWidth : root.notchThickness
-
-        Behavior on width {
-            NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
-        }
-
-        property real wheelAccum: 0
-        readonly property real wheelStep: 120
-
-        function consumeWheelDelta(delta) {
-            if (delta === 0)
-                return
-
-            wheelAccum += delta
-            let steps = 0
-
-            while (wheelAccum <= -wheelStep) {
-                steps += 1
-                wheelAccum += wheelStep
-            }
-
-            while (wheelAccum >= wheelStep) {
-                steps -= 1
-                wheelAccum -= wheelStep
-            }
-
-            if (steps !== 0)
-                root.goToWorkspace(root.displayNumber + steps)
+            x: root.tickLeft + root.activeLen + 8
+            anchors.verticalCenter: panel.verticalCenter
         }
 
         WheelHandler {
@@ -358,28 +256,47 @@ PanelWindow {
                 let delta = event.angleDelta.y
                 if (delta === 0)
                     delta = event.pixelDelta.y
-                hit.consumeWheelDelta(delta)
+                wheel.consume(delta)
             }
         }
 
         TapHandler {
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
             onTapped: eventPoint => {
-                const steps = Math.round((eventPoint.position.y - hit.height / 2) / root.stepPx)
+                const steps = Math.round((eventPoint.position.y - panel.height / 2) / root.stepPx)
                 root.goToWorkspace(root.displayNumber + steps)
             }
         }
 
         HoverHandler {
-            id: hoverHandler
             cursorShape: Qt.PointingHandCursor
-            onHoveredChanged: {
-                if (hovered) {
-                    if (root.expanded)
-                        collapseTimer.stop();
-                } else if (root.expanded) {
-                    collapseTimer.restart();
+        }
+
+        QtObject {
+            id: wheel
+
+            property real accum: 0
+            readonly property real threshold: 120
+
+            function consume(delta) {
+                if (delta === 0)
+                    return
+
+                accum += delta
+                let steps = 0
+
+                while (accum <= -threshold) {
+                    steps += 1
+                    accum += threshold
                 }
+
+                while (accum >= threshold) {
+                    steps -= 1
+                    accum -= threshold
+                }
+
+                if (steps !== 0)
+                    root.goToWorkspace(root.displayNumber + steps)
             }
         }
     }
