@@ -9,5 +9,5 @@
     ../../modules/zen
     ../../modules/tools
     ../../modules/quickshell
-  ];
+    ] ++ ( if builtins.pathExists. local.nix then [ ./local.nix ] else []);
 }
