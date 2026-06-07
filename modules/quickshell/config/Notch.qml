@@ -33,7 +33,6 @@ PanelWindow {
 
     // Ruler
     readonly property int stepPx: 46
-    readonly property int rulerBuffer: 5
     readonly property int frameInset: 4
 
     property bool expanded: false
@@ -70,8 +69,9 @@ PanelWindow {
         return s;
     }
 
+    // ruler runs from ws 1 to the last meaningful workspace; no buffer bars past the end
     readonly property int rulerEnd: Math.max(activeWs, maxOccupied, displayNumber)
-    readonly property int rulerMax: rulerEnd + rulerBuffer
+    readonly property int rulerMax: rulerEnd
 
     property bool slideReady: false
 
@@ -265,9 +265,12 @@ PanelWindow {
                         delegate: Rectangle {
                             required property int modelData
 
-                            // no sub-ticks before ws 1 or after the last workspace
-                            visible: !(tick.wsNumber === 1 && modelData < 0)
-                                  && !(tick.wsNumber >= root.rulerEnd && modelData > 0)
+                            // sub-ticks only fill the gaps between real bars, so a gap's
+                            // left bar shows its right ticks and the right bar shows its
+                            // left ticks; nothing spills before ws 1 or past the last ws
+                            visible: modelData < 0
+                                ? (tick.wsNumber >= 2 && tick.wsNumber <= root.rulerEnd)
+                                : (tick.wsNumber <= root.rulerEnd - 1)
 
                             width: 1
                             height: 6
