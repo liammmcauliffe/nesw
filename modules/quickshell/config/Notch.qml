@@ -259,7 +259,8 @@ PanelWindow {
                     height: content.height
 
                     Repeater {
-                        model: [-2, -1, 1, 2]
+                        // +3 fills the midpoint to the next workspace tick
+                        model: [-2, -1, 1, 2, 3]
 
                         delegate: Rectangle {
                             required property int modelData
