@@ -13,22 +13,23 @@ PanelWindow {
 
     anchors.top: true
     anchors.left: true
-    anchors.right: true
+    anchors.bottom: true
 
-    implicitHeight: hitHeight
+    implicitWidth: hitWidth
     color: "transparent"
 
     WlrLayershell.layer: WlrLayer.Top
-    exclusiveZone: notchHeight
+    exclusiveZone: 0
     WlrLayershell.namespace: "nesw-notch"
 
-    // Notch
-    readonly property int collapsedWidth: 200
-    readonly property int expandedWidth: 300
-    readonly property int notchHeight: 34
-    readonly property int hitHeight: 120
+    // Notch (vertical, hugs the left edge near the top)
+    readonly property int collapsedLength: 200
+    readonly property int expandedLength: 300
+    readonly property int notchThickness: 34
+    readonly property int hitWidth: 120
     readonly property int bottomRadius: 14
     readonly property int topRadius: 14
+    readonly property int edgeMargin: 8
     readonly property color notchColor: "black"
 
     // Ruler
@@ -37,7 +38,7 @@ PanelWindow {
     readonly property int frameInset: 4
 
     property bool expanded: false
-    property real notchWidth: expanded ? expandedWidth : collapsedWidth
+    property real notchLength: expanded ? expandedLength : collapsedLength
     property real slideOffset: 0
 
     // workspace whose tick sits at the center notch (counts up as ticks pass under)
@@ -131,7 +132,7 @@ PanelWindow {
         }
     }
 
-    Behavior on notchWidth {
+    Behavior on notchLength {
         NumberAnimation { duration: 280; easing.type: Easing.OutCubic }
     }
 
@@ -146,10 +147,10 @@ PanelWindow {
     // Clickthrough
     Item {
         id: hitMask
-        x: (root.width - shape.width) / 2
-        y: 0
-        width: shape.width
-        height: hit.height
+        anchors.left: parent.left
+        anchors.verticalCenter: shape.verticalCenter
+        width: hit.width
+        height: shape.height
         visible: false
     }
 
@@ -160,11 +161,12 @@ PanelWindow {
     // Shape
     Shape {
         id: shape
+        anchors.left: parent.left
         anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.topMargin: root.edgeMargin
 
-        width: root.notchWidth + root.topRadius * 2
-        height: root.notchHeight
+        width: root.notchThickness
+        height: root.notchLength + root.topRadius * 2
         preferredRendererType: Shape.CurveRenderer
 
         ShapePath {
@@ -179,46 +181,46 @@ PanelWindow {
                 y: root.topRadius
                 radiusX: root.topRadius
                 radiusY: root.topRadius
+                direction: PathArc.Counterclockwise
+            }
+
+            PathLine {
+                x: root.notchThickness - root.bottomRadius
+                y: root.topRadius
+            }
+
+            PathArc {
+                x: root.notchThickness
+                y: root.topRadius + root.bottomRadius
+                radiusX: root.bottomRadius
+                radiusY: root.bottomRadius
+                direction: PathArc.Clockwise
+            }
+
+            PathLine {
+                x: root.notchThickness
+                y: shape.height - root.topRadius - root.bottomRadius
+            }
+
+            PathArc {
+                x: root.notchThickness - root.bottomRadius
+                y: shape.height - root.topRadius
+                radiusX: root.bottomRadius
+                radiusY: root.bottomRadius
                 direction: PathArc.Clockwise
             }
 
             PathLine {
                 x: root.topRadius
-                y: root.notchHeight - root.bottomRadius
+                y: shape.height - root.topRadius
             }
 
             PathArc {
-                x: root.topRadius + root.bottomRadius
-                y: root.notchHeight
-                radiusX: root.bottomRadius
-                radiusY: root.bottomRadius
-                direction: PathArc.Counterclockwise
-            }
-
-            PathLine {
-                x: shape.width - root.topRadius - root.bottomRadius
-                y: root.notchHeight
-            }
-
-            PathArc {
-                x: shape.width - root.topRadius
-                y: root.notchHeight - root.bottomRadius
-                radiusX: root.bottomRadius
-                radiusY: root.bottomRadius
-                direction: PathArc.Counterclockwise
-            }
-
-            PathLine {
-                x: shape.width - root.topRadius
-                y: root.topRadius
-            }
-
-            PathArc {
-                x: shape.width
-                y: 0
+                x: 0
+                y: shape.height
                 radiusX: root.topRadius
                 radiusY: root.topRadius
-                direction: PathArc.Clockwise
+                direction: PathArc.Counterclockwise
             }
 
             PathLine { x: 0; y: 0 }
@@ -228,10 +230,10 @@ PanelWindow {
     // Content
     Item {
         id: content
-        anchors.horizontalCenter: parent.horizontalCenter
-        y: 0
-        width: root.notchWidth
-        height: root.notchHeight
+        anchors.left: parent.left
+        anchors.verticalCenter: shape.verticalCenter
+        width: root.notchThickness
+        height: root.notchLength
         clip: true
 
         opacity: root.expanded ? 1 : 0
@@ -239,10 +241,10 @@ PanelWindow {
             NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
         }
 
-        Row {
+        Column {
             id: strip
-            height: parent.height
-            x: content.width / 2 - root.stepPx / 2 + root.slideOffset
+            width: parent.width
+            y: content.height / 2 - root.stepPx / 2 + root.slideOffset
 
             Repeater {
                 model: root.rulerMax
@@ -255,8 +257,8 @@ PanelWindow {
                     readonly property bool isActive: wsNumber === root.displayNumber
                     readonly property bool isOccupied: root.occupied[wsNumber] === true
 
-                    width: root.stepPx
-                    height: content.height
+                    width: content.width
+                    height: root.stepPx
 
                     Repeater {
                         // +3 fills the midpoint to the next workspace tick
@@ -268,20 +270,20 @@ PanelWindow {
                             // hide the sub-ticks before the first workspace
                             visible: !(tick.wsNumber === 1 && modelData < 0)
 
-                            width: 1
-                            height: 6
+                            width: 6
+                            height: 1
                             radius: 0.5
                             color: Colors.palette.m3onSurfaceVariant
                             opacity: 0.3
-                            x: tick.width / 2 + modelData * (root.stepPx / 6) - width / 2
-                            anchors.verticalCenter: tick.verticalCenter
+                            y: tick.height / 2 + modelData * (root.stepPx / 6) - height / 2
+                            anchors.horizontalCenter: tick.horizontalCenter
                         }
                     }
 
                     Rectangle {
-                        width: 2
-                        height: tick.isActive ? content.height - root.frameInset * 2
-                              : tick.isOccupied ? 14 : 9
+                        height: 2
+                        width: tick.isActive ? content.width - root.frameInset * 2
+                             : tick.isOccupied ? 14 : 9
                         radius: 1
                         color: tick.isActive ? Colors.palette.m3primary
                              : tick.isOccupied ? Colors.palette.m3onSurface
@@ -290,7 +292,7 @@ PanelWindow {
                         anchors.horizontalCenter: tick.horizontalCenter
                         anchors.verticalCenter: tick.verticalCenter
 
-                        Behavior on height {
+                        Behavior on width {
                             NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
                         }
 
@@ -308,8 +310,7 @@ PanelWindow {
             font.family: Fonts.family
             font.pixelSize: Fonts.sizeNotch
             font.weight: Fonts.weightBlack
-            anchors.left: content.horizontalCenter
-            anchors.leftMargin: 6
+            anchors.horizontalCenter: content.horizontalCenter
             anchors.verticalCenter: content.verticalCenter
         }
     }
@@ -317,12 +318,12 @@ PanelWindow {
     // Input
     Item {
         id: hit
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
-        width: root.notchWidth
-        height: root.expanded ? root.hitHeight : root.notchHeight
+        anchors.left: parent.left
+        anchors.verticalCenter: shape.verticalCenter
+        height: root.notchLength
+        width: root.expanded ? root.hitWidth : root.notchThickness
 
-        Behavior on height {
+        Behavior on width {
             NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
         }
 
@@ -351,12 +352,12 @@ PanelWindow {
         }
 
         WheelHandler {
-            orientation: Qt.Horizontal
+            orientation: Qt.Vertical
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
             onWheel: event => {
-                let delta = event.angleDelta.x
+                let delta = event.angleDelta.y
                 if (delta === 0)
-                    delta = event.pixelDelta.x
+                    delta = event.pixelDelta.y
                 hit.consumeWheelDelta(delta)
             }
         }
@@ -364,7 +365,7 @@ PanelWindow {
         TapHandler {
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
             onTapped: eventPoint => {
-                const steps = Math.round((eventPoint.position.x - hit.width / 2) / root.stepPx)
+                const steps = Math.round((eventPoint.position.y - hit.height / 2) / root.stepPx)
                 root.goToWorkspace(root.displayNumber + steps)
             }
         }
