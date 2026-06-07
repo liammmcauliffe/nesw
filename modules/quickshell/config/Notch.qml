@@ -70,7 +70,8 @@ PanelWindow {
         return s;
     }
 
-    readonly property int rulerMax: Math.max(activeWs, maxOccupied, displayNumber) + rulerBuffer
+    readonly property int rulerEnd: Math.max(activeWs, maxOccupied, displayNumber)
+    readonly property int rulerMax: rulerEnd + rulerBuffer
 
     property bool slideReady: false
 
@@ -263,6 +264,10 @@ PanelWindow {
 
                         delegate: Rectangle {
                             required property int modelData
+
+                            // no sub-ticks before ws 1 or after the last workspace
+                            visible: !(tick.wsNumber === 1 && modelData < 0)
+                                  && !(tick.wsNumber >= root.rulerEnd && modelData > 0)
 
                             width: 1
                             height: 6
