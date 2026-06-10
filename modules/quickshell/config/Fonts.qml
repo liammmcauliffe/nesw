@@ -13,5 +13,6 @@ Singleton {
 
     // Medium (500) is the baseline UI weight, not Regular
     readonly property int weightBaseline: Font.Medium
+    readonly property int weightSemiBold: Font.DemiBold
     readonly property int weightBold: Font.Bold
 }

@@ -26,7 +26,9 @@ PanelWindow {
 
     // Matches the notch height so the band covers the full notch/clock span
     readonly property int barHeight: 40
-    // Matches the border's corner rounding so the fillets hug the same way
+    // Matches the border frame so the fillets sit on its inner edge and
+    // mirror the screen's bottom corners exactly
+    readonly property int borderWidth: 6
     readonly property int cornerRadius: 23
     readonly property color barColor: "#59000000"
 
@@ -47,15 +49,21 @@ PanelWindow {
 
             PathLine { x: shape.width; y: 0 }
 
-            // Down the right screen edge past the bar bottom
+            // Down the right edge past the bar bottom (the border strip
+            // overlays the outer 6px, so this edge stays hidden behind it)
             PathLine {
                 x: shape.width
                 y: root.barHeight + root.cornerRadius
             }
 
-            // Concave fillet curling back up to the bar bottom
+            PathLine {
+                x: shape.width - root.borderWidth
+                y: root.barHeight + root.cornerRadius
+            }
+
+            // Concave fillet from the border's inner edge up to the bar bottom
             PathArc {
-                x: shape.width - root.cornerRadius
+                x: shape.width - root.borderWidth - root.cornerRadius
                 y: root.barHeight
                 radiusX: root.cornerRadius
                 radiusY: root.cornerRadius
@@ -64,17 +72,22 @@ PanelWindow {
 
             // Across the bar bottom
             PathLine {
-                x: root.cornerRadius
+                x: root.borderWidth + root.cornerRadius
                 y: root.barHeight
             }
 
-            // Concave fillet curling down the left screen edge
+            // Concave fillet curling down to the left border's inner edge
             PathArc {
-                x: 0
+                x: root.borderWidth
                 y: root.barHeight + root.cornerRadius
                 radiusX: root.cornerRadius
                 radiusY: root.cornerRadius
                 direction: PathArc.Counterclockwise
+            }
+
+            PathLine {
+                x: 0
+                y: root.barHeight + root.cornerRadius
             }
 
             PathLine { x: 0; y: 0 }

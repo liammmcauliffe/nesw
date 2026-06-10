@@ -46,16 +46,15 @@ PanelWindow {
             PathLine { x: 0; y: frame.height }
             PathLine { x: 0; y: 0 }
 
-            // Inner rounded cutout
-            PathMove { x: root.thickness + root.rounding; y: root.thickness }
-            PathLine { x: frame.width - root.thickness - root.rounding; y: root.thickness }
-            PathArc { x: frame.width - root.thickness; y: root.thickness + root.rounding; radiusX: root.rounding; radiusY: root.rounding }
+            // Inner rounded cutout. The top corners are square: the top bar
+            // sits there and provides its own curves into the side strips.
+            PathMove { x: root.thickness; y: root.thickness }
+            PathLine { x: frame.width - root.thickness; y: root.thickness }
             PathLine { x: frame.width - root.thickness; y: frame.height - root.thickness - root.rounding }
             PathArc { x: frame.width - root.thickness - root.rounding; y: frame.height - root.thickness; radiusX: root.rounding; radiusY: root.rounding }
             PathLine { x: root.thickness + root.rounding; y: frame.height - root.thickness }
             PathArc { x: root.thickness; y: frame.height - root.thickness - root.rounding; radiusX: root.rounding; radiusY: root.rounding }
-            PathLine { x: root.thickness; y: root.thickness + root.rounding }
-            PathArc { x: root.thickness + root.rounding; y: root.thickness; radiusX: root.rounding; radiusY: root.rounding }
+            PathLine { x: root.thickness; y: root.thickness }
         }
     }
 }
