@@ -23,12 +23,13 @@ PanelWindow {
     WlrLayershell.namespace: "nesw-notch"
 
     // Notch
-    readonly property int collapsedWidth: 200
-    readonly property int expandedWidth: 300
-    readonly property int notchHeight: 34
+    readonly property int minWidth: 300
+    readonly property int maxWidth: 360
+    readonly property int notchHeight: 40
+    readonly property int notchRadius: 15
+    readonly property int borderWidth: 6
+    readonly property int notchPadding: 16
     readonly property int hitHeight: 120
-    readonly property int bottomRadius: 14
-    readonly property int topRadius: 14
     readonly property color notchColor: "black"
 
     // Ruler
@@ -37,7 +38,7 @@ PanelWindow {
     readonly property int frameInset: 4
 
     property bool expanded: false
-    property real notchWidth: expanded ? expandedWidth : collapsedWidth
+    property real notchWidth: Math.min(maxWidth, Math.max(minWidth, expanded ? maxWidth : minWidth))
     property real slideOffset: 0
 
     // workspace whose tick sits at the center notch (counts up as ticks pass under)
@@ -158,12 +159,15 @@ PanelWindow {
     }
 
     // Shape
+    // Continuous loop matching the canvas arcTo path: travels along the 6px
+    // top strip, dips down with an S-curve tangent to the strip's bottom edge,
+    // runs across the bottom, and curves back up to meet the strip again.
     Shape {
         id: shape
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
 
-        width: root.notchWidth + root.topRadius * 2
+        width: root.notchWidth + root.notchRadius * 2
         height: root.notchHeight
         preferredRendererType: Shape.CurveRenderer
 
@@ -174,53 +178,65 @@ PanelWindow {
             startX: 0
             startY: 0
 
+            // Left edge of the top strip
+            PathLine {
+                x: 0
+                y: root.borderWidth
+            }
+
+            // S-curve: strip bottom edge flares into the left notch wall
             PathArc {
-                x: root.topRadius
-                y: root.topRadius
-                radiusX: root.topRadius
-                radiusY: root.topRadius
+                x: root.notchRadius
+                y: root.borderWidth + root.notchRadius
+                radiusX: root.notchRadius
+                radiusY: root.notchRadius
                 direction: PathArc.Clockwise
             }
 
             PathLine {
-                x: root.topRadius
-                y: root.notchHeight - root.bottomRadius
+                x: root.notchRadius
+                y: root.notchHeight - root.notchRadius
             }
 
+            // Bottom-left rounded corner
             PathArc {
-                x: root.topRadius + root.bottomRadius
+                x: root.notchRadius * 2
                 y: root.notchHeight
-                radiusX: root.bottomRadius
-                radiusY: root.bottomRadius
+                radiusX: root.notchRadius
+                radiusY: root.notchRadius
                 direction: PathArc.Counterclockwise
             }
 
             PathLine {
-                x: shape.width - root.topRadius - root.bottomRadius
+                x: shape.width - root.notchRadius * 2
                 y: root.notchHeight
             }
 
+            // Bottom-right rounded corner
             PathArc {
-                x: shape.width - root.topRadius
-                y: root.notchHeight - root.bottomRadius
-                radiusX: root.bottomRadius
-                radiusY: root.bottomRadius
+                x: shape.width - root.notchRadius
+                y: root.notchHeight - root.notchRadius
+                radiusX: root.notchRadius
+                radiusY: root.notchRadius
                 direction: PathArc.Counterclockwise
             }
 
             PathLine {
-                x: shape.width - root.topRadius
-                y: root.topRadius
+                x: shape.width - root.notchRadius
+                y: root.borderWidth + root.notchRadius
             }
 
+            // S-curve back up to the strip's bottom edge
             PathArc {
                 x: shape.width
-                y: 0
-                radiusX: root.topRadius
-                radiusY: root.topRadius
+                y: root.borderWidth
+                radiusX: root.notchRadius
+                radiusY: root.notchRadius
                 direction: PathArc.Clockwise
             }
 
+            // Right edge of the top strip, then back across the screen top
+            PathLine { x: shape.width; y: 0 }
             PathLine { x: 0; y: 0 }
         }
     }
@@ -229,9 +245,9 @@ PanelWindow {
     Item {
         id: content
         anchors.horizontalCenter: parent.horizontalCenter
-        y: 0
-        width: root.notchWidth
-        height: root.notchHeight
+        y: root.borderWidth
+        width: root.notchWidth - root.notchPadding * 2
+        height: root.notchHeight - root.borderWidth
         clip: true
 
         opacity: root.expanded ? 1 : 0
