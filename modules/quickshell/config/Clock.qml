@@ -39,7 +39,7 @@ PanelWindow {
         color: Colors.palette.m3onSurface
         font.family: Fonts.family
         font.pixelSize: 16
-        font.weight: Fonts.weightBaseline
+        font.weight: Fonts.weightBold
 
         anchors.right: parent.right
         anchors.rightMargin: root.sideMargin
