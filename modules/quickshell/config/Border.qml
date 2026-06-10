@@ -19,15 +19,15 @@ PanelWindow {
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     WlrLayershell.namespace: "nesw-border"
 
-    // Frame style
+    // frame style
     readonly property int thickness: 6
     readonly property int rounding: 23
     readonly property color frameColor: "black"
 
-    // Fully click-through
+    // fully click-through
     mask: Region {}
 
-    // Screen frame with solid rounded corners
+    // screen frame with solid rounded corners
     Shape {
         id: frame
         anchors.fill: parent
@@ -38,7 +38,7 @@ PanelWindow {
             strokeWidth: 0
             fillRule: ShapePath.OddEvenFill
 
-            // Outer screen edge
+            // outer screen edge
             startX: 0
             startY: 0
             PathLine { x: frame.width; y: 0 }
@@ -46,8 +46,8 @@ PanelWindow {
             PathLine { x: 0; y: frame.height }
             PathLine { x: 0; y: 0 }
 
-            // Inner rounded cutout. The top corners are square: the top bar
-            // sits there and provides its own curves into the side strips.
+            // inner rounded cutout. the top corners are square: the top bar
+            // sits there and provides its own curves into the side strips
             PathMove { x: root.thickness; y: root.thickness }
             PathLine { x: frame.width - root.thickness; y: root.thickness }
             PathLine { x: frame.width - root.thickness; y: frame.height - root.thickness - root.rounding }

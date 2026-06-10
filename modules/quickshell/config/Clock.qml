@@ -18,14 +18,14 @@ PanelWindow {
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     WlrLayershell.namespace: "nesw-clock"
 
-    // Matches the center notch's reserved strip
+    // matches the center notch's reserved strip
     readonly property int notchHeight: 40
     readonly property int borderWidth: 6
 
-    // Keeps the text clear of the border's rounded corner
+    // keeps the text clear of the border's rounded corner
     readonly property int sideMargin: 24
 
-    // Fully click-through
+    // fully click-through
     mask: Region {}
 
     SystemClock {
@@ -44,7 +44,7 @@ PanelWindow {
         anchors.right: parent.right
         anchors.rightMargin: root.sideMargin
 
-        // Centered in the strip-to-notch-bottom band, like a menu bar clock
+        // centered in the strip-to-notch-bottom band, like a menu bar clock
         y: root.borderWidth + (root.notchHeight - root.borderWidth - height) / 2
     }
 }

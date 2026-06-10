@@ -3,11 +3,11 @@ import QtQuick.Shapes
 import Quickshell
 import Quickshell.Wayland
 
-// Translucent dark band across the top of the screen, blurred by hyprland
-// (see the nesw-topbar layer rule). Sits beneath the notch and clock so the
+// translucent dark band across the top of the screen, blurred by hyprland
+// (see the nesw-topbar layer rule). sits beneath the notch and clock so the
 // solid black notch stands out and white text stays readable on any wallpaper.
-// The bottom corners curl down the screen edges with concave fillets that hug
-// the windows' rounded top corners, mirroring how the border hugs them below.
+// the bottom corners curl down the screen edges with concave fillets that hug
+// the windows' rounded top corners, mirroring how the border hugs them below
 PanelWindow {
     id: root
 
@@ -24,15 +24,15 @@ PanelWindow {
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     WlrLayershell.namespace: "nesw-topbar"
 
-    // Matches the notch height so the band covers the full notch/clock span
+    // matches the notch height so the band covers the full notch/clock span
     readonly property int barHeight: 40
-    // Matches the border frame so the fillets sit on its inner edge and
+    // matches the border frame so the fillets sit on its inner edge and
     // mirror the screen's bottom corners exactly
     readonly property int borderWidth: 6
     readonly property int cornerRadius: 23
     readonly property color barColor: "#59000000"
 
-    // Fully click-through
+    // fully click-through
     mask: Region {}
 
     Shape {
@@ -49,7 +49,7 @@ PanelWindow {
 
             PathLine { x: shape.width; y: 0 }
 
-            // Down the right edge past the bar bottom (the border strip
+            // down the right edge past the bar bottom (the border strip
             // overlays the outer 6px, so this edge stays hidden behind it)
             PathLine {
                 x: shape.width
@@ -61,7 +61,7 @@ PanelWindow {
                 y: root.barHeight + root.cornerRadius
             }
 
-            // Concave fillet from the border's inner edge up to the bar bottom
+            // concave fillet from the border's inner edge up to the bar bottom
             PathArc {
                 x: shape.width - root.borderWidth - root.cornerRadius
                 y: root.barHeight
@@ -70,13 +70,13 @@ PanelWindow {
                 direction: PathArc.Counterclockwise
             }
 
-            // Across the bar bottom
+            // across the bar bottom
             PathLine {
                 x: root.borderWidth + root.cornerRadius
                 y: root.barHeight
             }
 
-            // Concave fillet curling down to the left border's inner edge
+            // concave fillet curling down to the left border's inner edge
             PathArc {
                 x: root.borderWidth
                 y: root.barHeight + root.cornerRadius

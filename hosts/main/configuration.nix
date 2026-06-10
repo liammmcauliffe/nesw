@@ -11,7 +11,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # host basics
-  networking.hostName = "main"; # Must match the flake target
+  networking.hostName = "main"; # must match the flake target
   networking.networkmanager.enable = true;
   time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -70,14 +70,14 @@
 
   # fonts
   fonts.packages = with pkgs; [
-    # UI (shell/notch/clock); NOTE: pkgs.dm-sans is NOT this font, it ships
+    # UI (shell/notch/clock); pkgs.dm-sans is not this font, it ships
     # "DeepMind Sans" -- the real DM Sans comes from google-fonts
     (google-fonts.override { fonts = [ "DM Sans" ]; })
     monaspace    # terminal/editor (Monaspace Neon)
     nerd-fonts.jetbrains-mono
   ];
 
-  # HARDCODE YOUR USERNAME HERE (e.g. "liam")
+  # hardcode your username here (e.g. "liam")
   users.users."liam" = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "video" "audio" ];

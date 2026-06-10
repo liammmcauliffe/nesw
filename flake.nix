@@ -34,7 +34,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit zen-browser quickshell; };
-            # HARDCODE YOUR USERNAME HERE (e.g. "liam")
+            # hardcode your username here (e.g. "liam")
             home-manager.users."liam" = {
               imports = [ ./hosts/main/home.nix ];
               home.stateVersion = "26.05";

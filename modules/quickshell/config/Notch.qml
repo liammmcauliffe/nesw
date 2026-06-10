@@ -19,14 +19,14 @@ PanelWindow {
     color: "transparent"
 
     WlrLayershell.layer: WlrLayer.Top
-    // Reserving (notchHeight - borderWidth) makes the notch-to-window gap
+    // reserving (notchHeight - borderWidth) makes the notch-to-window gap
     // always equal the window-to-border gap on the sides/bottom: both come
     // out to (gaps_out - borderWidth), so they stay in sync however hyprland
-    // gaps are tuned.
+    // gaps are tuned
     exclusiveZone: notchHeight - borderWidth
     WlrLayershell.namespace: "nesw-notch"
 
-    // Notch
+    // notch
     readonly property int minWidth: 300
     readonly property int maxWidth: 360
     readonly property int notchHeight: 40
@@ -36,7 +36,7 @@ PanelWindow {
     readonly property int hitHeight: 120
     readonly property color notchColor: "black"
 
-    // Ruler
+    // ruler
     readonly property int stepPx: 46
     readonly property int rulerBuffer: 5
     readonly property int frameInset: 4
@@ -148,7 +148,7 @@ PanelWindow {
         onFinished: root.slideOffset = to
     }
 
-    // Clickthrough
+    // clickthrough
     Item {
         id: hitMask
         x: (root.width - shape.width) / 2
@@ -162,10 +162,10 @@ PanelWindow {
         item: hitMask
     }
 
-    // Shape
-    // Continuous loop matching the canvas arcTo path: travels along the 6px
+    // shape
+    // continuous loop matching the canvas arcTo path: travels along the 6px
     // top strip, dips down with an S-curve tangent to the strip's bottom edge,
-    // runs across the bottom, and curves back up to meet the strip again.
+    // runs across the bottom, and curves back up to meet the strip again
     Shape {
         id: shape
         anchors.top: parent.top
@@ -182,7 +182,7 @@ PanelWindow {
             startX: 0
             startY: 0
 
-            // Left edge of the top strip
+            // left edge of the top strip
             PathLine {
                 x: 0
                 y: root.borderWidth
@@ -202,7 +202,7 @@ PanelWindow {
                 y: root.notchHeight - root.notchRadius
             }
 
-            // Bottom-left rounded corner
+            // bottom-left rounded corner
             PathArc {
                 x: root.notchRadius * 2
                 y: root.notchHeight
@@ -216,7 +216,7 @@ PanelWindow {
                 y: root.notchHeight
             }
 
-            // Bottom-right rounded corner
+            // bottom-right rounded corner
             PathArc {
                 x: shape.width - root.notchRadius
                 y: root.notchHeight - root.notchRadius
@@ -239,13 +239,13 @@ PanelWindow {
                 direction: PathArc.Clockwise
             }
 
-            // Right edge of the top strip, then back across the screen top
+            // right edge of the top strip, then back across the screen top
             PathLine { x: shape.width; y: 0 }
             PathLine { x: 0; y: 0 }
         }
     }
 
-    // Content
+    // content
     Item {
         id: content
         anchors.horizontalCenter: parent.horizontalCenter
@@ -334,7 +334,7 @@ PanelWindow {
         }
     }
 
-    // Input
+    // input
     Item {
         id: hit
         anchors.top: parent.top

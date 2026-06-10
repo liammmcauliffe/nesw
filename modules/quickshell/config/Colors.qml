@@ -5,19 +5,19 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// The palette ships with dark defaults and is hot-reloaded from a generated
-// scheme.json (e.g. produced by matugen/wallust) when present.
+// the palette ships with dark defaults and is hot-reloaded from a generated
+// scheme.json (e.g. produced by matugen/wallust) when present
 Singleton {
     id: root
 
     readonly property Palette palette: current
     readonly property Palette current: Palette {}
 
-    // Path a color generator can write to. Lives in a writable state dir so it
-    // is independent of the read-only home-manager/nix config copy.
+    // path a color generator can write to. lives in a writable state dir so it
+    // is independent of the read-only home-manager/nix config copy
     readonly property string schemePath: `${Quickshell.env("HOME")}/.local/state/nesw/scheme.json`
 
-    // Parse a scheme file of the form { "colors": { "primary": "rrggbb", ... } }
+    // parse a scheme file of the form { "colors": { "primary": "rrggbb", ... } }
     // (also accepts "colours" from external generators; unprefixed keys, optional '#')
     function load(data: string): void {
         if (!data)

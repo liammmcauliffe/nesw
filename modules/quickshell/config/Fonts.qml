@@ -6,7 +6,7 @@ import Quickshell
 Singleton {
     id: root
 
-    // Installed system-wide via fonts.packages (dm-sans)
+    // installed system-wide via fonts.packages (dm-sans)
     readonly property string family: "DM Sans"
 
     readonly property int sizeNotch: 18
