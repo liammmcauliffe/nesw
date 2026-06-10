@@ -325,7 +325,7 @@ PanelWindow {
             color: Colors.palette.m3primary
             font.family: Fonts.family
             font.pixelSize: Fonts.sizeNotch
-            font.weight: Fonts.weightBlack
+            font.weight: Fonts.weightBold
             anchors.left: content.horizontalCenter
             anchors.leftMargin: 6
             anchors.verticalCenter: content.verticalCenter

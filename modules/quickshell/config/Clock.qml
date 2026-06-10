@@ -35,11 +35,11 @@ PanelWindow {
 
     Text {
         id: label
-        text: Qt.formatDateTime(clock.date, "ddd MMM d h:mmAP")
+        text: Qt.formatDateTime(clock.date, "ddd MMM d  h:mm AP")
         color: Colors.palette.m3onSurface
         font.family: Fonts.family
         font.pixelSize: 16
-        font.weight: Fonts.weightBold
+        font.weight: Fonts.weightBaseline
 
         anchors.right: parent.right
         anchors.rightMargin: root.sideMargin

@@ -7,7 +7,7 @@
 
   xdg.configFile."ghostty/config".text = ''
     theme = "Vague"
-    font-family = "JetBrainsMono NFM Regular"
+    font-family = "Monaspace Neon"
     font-size = 14
     window-padding-x = 4
     window-padding-y = 4

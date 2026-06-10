@@ -70,6 +70,8 @@
 
   # fonts
   fonts.packages = with pkgs; [
+    dm-sans      # UI (shell/notch/clock)
+    monaspace    # terminal/editor (Monaspace Neon)
     nerd-fonts.jetbrains-mono
   ];
 
