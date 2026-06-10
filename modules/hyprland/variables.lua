@@ -22,7 +22,7 @@ return {
     blurXray = false,
 
     -- shadow
-    shadowEnabled = true,
+    shadowEnabled = false,
     shadowRange = 10,
     shadowRenderPower = 2,
     -- shadowColor = "rgba(" .. scheme.surface .. "d4)",
