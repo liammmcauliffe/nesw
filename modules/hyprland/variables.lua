@@ -31,9 +31,9 @@ return {
     -- the 6px screen border sits inside gaps_out, so the visible gap between
     -- windows and the border/notch is (windowGapsOut - 6) = 2px on all sides
     workspaceGaps = 12,
-    windowGapsIn = 6,
-    windowGapsOut = 8,
-    singleWindowGapsOut = 8,
+    windowGapsIn = 4,
+    windowGapsOut = 12,
+    singleWindowGapsOut = 12,
 
     -- window styling
     windowOpacity = 0.95,
