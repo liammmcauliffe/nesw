@@ -70,7 +70,9 @@
 
   # fonts
   fonts.packages = with pkgs; [
-    dm-sans      # UI (shell/notch/clock)
+    # UI (shell/notch/clock); NOTE: pkgs.dm-sans is NOT this font, it ships
+    # "DeepMind Sans" -- the real DM Sans comes from google-fonts
+    (google-fonts.override { fonts = [ "DM Sans" ]; })
     monaspace    # terminal/editor (Monaspace Neon)
     nerd-fonts.jetbrains-mono
   ];
