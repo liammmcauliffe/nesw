@@ -19,9 +19,11 @@ PanelWindow {
     color: "transparent"
 
     WlrLayershell.layer: WlrLayer.Top
-    // hyprland adds gaps_out (12px) on top of this, so reserve less than the
-    // full notch height to leave only ~2px between windows and the notch
-    exclusiveZone: notchHeight - 10
+    // Reserving (notchHeight - borderWidth) makes the notch-to-window gap
+    // always equal the window-to-border gap on the sides/bottom: both come
+    // out to (gaps_out - borderWidth), so they stay in sync however hyprland
+    // gaps are tuned.
+    exclusiveZone: notchHeight - borderWidth
     WlrLayershell.namespace: "nesw-notch"
 
     // Notch
