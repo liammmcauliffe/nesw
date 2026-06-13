@@ -19,8 +19,7 @@ PanelWindow {
     implicitHeight: hitHeight
     color: "transparent"
 
-    // overlay so the notch (and the volume hud) draws above fullscreen windows
-    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.layer: WlrLayer.Top
     // reserving (notchHeight - borderWidth) makes the notch-to-window gap
     // always equal the window-to-border gap on the sides/bottom: both come
     // out to (gaps_out - borderWidth), so they stay in sync however hyprland
@@ -190,8 +189,8 @@ PanelWindow {
                 restart();
                 return;
             }
-            root.audioMode = false;
             root.expanded = false;
+            root.audioMode = false;
         }
     }
 
@@ -327,7 +326,7 @@ PanelWindow {
             height: parent.height
             x: content.width / 2 - root.stepPx / 2 + root.slideOffset
 
-            opacity: root.audioMode ? 0 : 1
+            opacity: root.expanded && !root.audioMode ? 1 : 0
             Behavior on opacity {
                 NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
             }
@@ -400,7 +399,7 @@ PanelWindow {
             anchors.leftMargin: 6
             anchors.verticalCenter: content.verticalCenter
 
-            opacity: root.audioMode ? 0 : 1
+            opacity: root.expanded && !root.audioMode ? 1 : 0
             Behavior on opacity {
                 NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
             }
@@ -412,7 +411,7 @@ PanelWindow {
             id: audioHud
             anchors.fill: parent
             visible: opacity > 0
-            opacity: root.audioMode ? 1 : 0
+            opacity: root.expanded && root.audioMode ? 1 : 0
             Behavior on opacity {
                 NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
             }
