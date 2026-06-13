@@ -36,7 +36,8 @@ PanelWindow {
     Text {
         id: label
         text: Qt.formatDateTime(clock.date, "ddd MMM d  h:mm AP")
-        color: Colors.palette.m3onSurface
+        // flat white default until the scheme drives the top bar foreground
+        color: "white"
         font.family: Fonts.family
         font.pixelSize: 16
         font.weight: Fonts.weightSemiBold

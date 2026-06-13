@@ -3,10 +3,9 @@ import QtQuick.Shapes
 import Quickshell
 import Quickshell.Wayland
 
-// solid dark grey band across the top of the screen. sits beneath the notch
-// and clock so the black notch stands out and the white clock stays readable.
-// flat default for now; once the scheme is wired up this becomes a
-// wallpaper-derived color (light wallpapers flip the bar elements to black).
+// translucent dark band across the top of the screen, blurred by hyprland
+// (see the nesw-topbar layer rule). sits beneath the notch and clock so the
+// solid black notch stands out and white text stays readable on any wallpaper.
 // the bottom corners curl down the screen edges with concave fillets that hug
 // the windows' rounded top corners, mirroring how the border hugs them below
 PanelWindow {
@@ -31,7 +30,7 @@ PanelWindow {
     // mirror the screen's bottom corners exactly
     readonly property int borderWidth: 6
     readonly property int cornerRadius: 23
-    readonly property color barColor: "#2c2c2e"
+    readonly property color barColor: "#59000000"
 
     // fully click-through
     mask: Region {}
