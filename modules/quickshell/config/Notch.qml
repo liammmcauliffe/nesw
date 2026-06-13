@@ -170,6 +170,17 @@ PanelWindow {
         reveal()
     }
 
+    // settle a scrub: glide the ruler to the nearest tick and focus that workspace
+    function commitWorkspaceDrag() {
+        const ws = displayNumber
+        slideAnim.stop()
+        slideAnim.duration = 160
+        slideAnim.from = slideOffset
+        slideAnim.to = -(ws - 1) * stepPx
+        slideAnim.start()
+        goToWorkspace(ws)
+    }
+
     Timer {
         id: collapseTimer
         interval: 1500
@@ -532,12 +543,42 @@ PanelWindow {
             }
         }
 
-        TapHandler {
+        // click-and-drag to scrub through workspaces, mirroring the volume
+        // slider; a plain click (no movement past the threshold) does nothing
+        MouseArea {
+            id: wsDrag
+            anchors.fill: parent
             enabled: !root.audioMode
-            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-            onTapped: eventPoint => {
-                const steps = Math.round((eventPoint.position.x - hit.width / 2) / root.stepPx)
-                root.goToWorkspace(root.displayNumber + steps)
+            preventStealing: true
+            cursorShape: Qt.PointingHandCursor
+            acceptedButtons: Qt.LeftButton
+
+            property real pressX: 0
+            property real startOffset: 0
+            property bool moved: false
+
+            onPressed: mouse => {
+                slideAnim.stop()
+                wsDrag.pressX = mouse.x
+                wsDrag.startOffset = root.slideOffset
+                wsDrag.moved = false
+            }
+            onPositionChanged: mouse => {
+                if (!wsDrag.pressed)
+                    return
+                const dx = mouse.x - wsDrag.pressX
+                if (!wsDrag.moved && Math.abs(dx) > 4) {
+                    wsDrag.moved = true
+                    collapseTimer.stop()
+                    root.expanded = true
+                }
+                if (wsDrag.moved)
+                    root.slideOffset = wsDrag.startOffset + dx
+            }
+            onReleased: {
+                if (wsDrag.moved)
+                    root.commitWorkspaceDrag()
+                wsDrag.moved = false
             }
         }
 
