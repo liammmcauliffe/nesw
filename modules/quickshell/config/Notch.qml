@@ -185,7 +185,7 @@ PanelWindow {
         id: collapseTimer
         interval: 1500
         onTriggered: {
-            if (hoverHandler.hovered || root.audioMode)
+            if (hoverHandler.hovered || root.audioMode || wsDrag.active)
                 return;
             root.expanded = false;
         }
@@ -570,6 +570,19 @@ PanelWindow {
             }
         }
 
+        // tapping a visible switcher jumps to the workspace under the cursor;
+        // while collapsed (blank notch) taps are ignored so a stray click can't
+        // switch. drags are handled by wsDrag, so a tap only fires for a click
+        // that never crossed the drag threshold
+        TapHandler {
+            enabled: root.expanded && !root.audioMode
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            onTapped: eventPoint => {
+                const steps = Math.round((eventPoint.position.x - hit.width / 2) / root.stepPx)
+                root.goToWorkspace(root.displayNumber + steps)
+            }
+        }
+
         HoverHandler {
             id: hoverHandler
             cursorShape: Qt.PointingHandCursor
@@ -580,7 +593,7 @@ PanelWindow {
                 } else if (root.expanded) {
                     if (root.audioMode)
                         audioTimer.restart();
-                    else
+                    else if (!wsDrag.active)
                         collapseTimer.restart();
                 }
             }
