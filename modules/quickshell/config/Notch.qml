@@ -544,41 +544,29 @@ PanelWindow {
         }
 
         // click-and-drag to scrub through workspaces, mirroring the volume
-        // slider; a plain click (no movement past the threshold) does nothing
-        MouseArea {
+        // slider; a plain click never crosses the drag threshold, so the
+        // focused workspace is left untouched
+        DragHandler {
             id: wsDrag
-            anchors.fill: parent
             enabled: !root.audioMode
-            preventStealing: true
-            cursorShape: Qt.PointingHandCursor
-            acceptedButtons: Qt.LeftButton
+            target: null
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
 
-            property real pressX: 0
             property real startOffset: 0
-            property bool moved: false
 
-            onPressed: mouse => {
-                slideAnim.stop()
-                wsDrag.pressX = mouse.x
-                wsDrag.startOffset = root.slideOffset
-                wsDrag.moved = false
-            }
-            onPositionChanged: mouse => {
-                if (!wsDrag.pressed)
-                    return
-                const dx = mouse.x - wsDrag.pressX
-                if (!wsDrag.moved && Math.abs(dx) > 4) {
-                    wsDrag.moved = true
+            onActiveChanged: {
+                if (wsDrag.active) {
+                    slideAnim.stop()
+                    wsDrag.startOffset = root.slideOffset
                     collapseTimer.stop()
                     root.expanded = true
-                }
-                if (wsDrag.moved)
-                    root.slideOffset = wsDrag.startOffset + dx
-            }
-            onReleased: {
-                if (wsDrag.moved)
+                } else {
                     root.commitWorkspaceDrag()
-                wsDrag.moved = false
+                }
+            }
+            onActiveTranslationChanged: {
+                if (wsDrag.active)
+                    root.slideOffset = wsDrag.startOffset + wsDrag.activeTranslation.x
             }
         }
 
