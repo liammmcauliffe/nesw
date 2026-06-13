@@ -46,7 +46,6 @@ PanelWindow {
     readonly property PwNode audioSink: Pipewire.defaultAudioSink
     readonly property real volume: audioSink && audioSink.audio ? audioSink.audio.volume : 0
     readonly property bool muted: audioSink && audioSink.audio ? audioSink.audio.muted : false
-    readonly property int volumePercent: Math.round(volume * 100)
 
     // audioMode swaps the notch content from the workspace ruler to the volume hud
     property bool audioMode: false
@@ -405,8 +404,8 @@ PanelWindow {
             }
         }
 
-        // audio hud: speaker icon, draggable level bar, percent readout. kept
-        // monochrome white to match the clock until the scheme drives colors
+        // audio hud: static speaker glyphs flank a draggable level bar tinted
+        // with the workspace accent (m3primary)
         Item {
             id: audioHud
             anchors.fill: parent
@@ -417,66 +416,79 @@ PanelWindow {
             }
 
             VolumeIcon {
-                id: volIcon
-                level: root.volumePercent
-                muted: root.muted
-                size: 22
+                id: volIconMin
+                glyph: "none"
+                size: 20
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
             }
 
-            Text {
-                id: volPercent
-                text: root.muted ? "muted" : root.volumePercent + "%"
-                color: "white"
-                font.family: Fonts.family
-                font.pixelSize: 14
-                font.weight: Fonts.weightSemiBold
-                horizontalAlignment: Text.AlignRight
-                width: 42
+            VolumeIcon {
+                id: volIconMax
+                glyph: "high"
+                size: 20
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
             }
 
             Item {
                 id: track
-                height: 6
-                anchors.left: volIcon.right
+                height: 20
+                anchors.left: volIconMin.right
                 anchors.leftMargin: 12
-                anchors.right: volPercent.left
+                anchors.right: volIconMax.left
                 anchors.rightMargin: 12
                 anchors.verticalCenter: parent.verticalCenter
 
+                readonly property int handleSize: 14
+                readonly property real usable: width - handleSize
+                readonly property real fraction: Math.max(0, Math.min(1, root.volume))
+
                 Rectangle {
-                    anchors.fill: parent
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: 6
                     radius: height / 2
-                    color: "white"
-                    opacity: 0.2
+                    color: Colors.palette.m3onSurfaceVariant
+                    opacity: 0.3
                 }
 
                 Rectangle {
-                    width: Math.max(height, Math.min(1, root.volume) * parent.width)
-                    height: parent.height
+                    anchors.left: parent.left
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: 6
                     radius: height / 2
-                    color: "white"
-                    opacity: root.muted ? 0.35 : 1
+                    width: track.handleSize / 2 + track.fraction * track.usable
+                    color: Colors.palette.m3primary
+                    opacity: root.muted ? 0.4 : 1
                     Behavior on width {
+                        NumberAnimation { duration: 90; easing.type: Easing.OutCubic }
+                    }
+                }
+
+                Rectangle {
+                    width: track.handleSize
+                    height: track.handleSize
+                    radius: width / 2
+                    color: "white"
+                    opacity: root.muted ? 0.4 : 1
+                    anchors.verticalCenter: parent.verticalCenter
+                    x: track.fraction * track.usable
+                    Behavior on x {
                         NumberAnimation { duration: 90; easing.type: Easing.OutCubic }
                     }
                 }
 
                 MouseArea {
                     id: audioDrag
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    height: parent.height + 24
+                    anchors.fill: parent
                     hoverEnabled: true
                     preventStealing: true
-                    onPressed: mouse => root.setVolume(mouse.x / audioDrag.width)
+                    onPressed: mouse => root.setVolume((mouse.x - track.handleSize / 2) / track.usable)
                     onPositionChanged: mouse => {
                         if (audioDrag.pressed)
-                            root.setVolume(mouse.x / audioDrag.width)
+                            root.setVolume((mouse.x - track.handleSize / 2) / track.usable)
                     }
                 }
             }
