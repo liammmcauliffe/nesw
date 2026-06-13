@@ -440,9 +440,14 @@ PanelWindow {
                 anchors.rightMargin: 12
                 anchors.verticalCenter: parent.verticalCenter
 
-                readonly property int handleSize: 14
-                readonly property real usable: width - handleSize
-                readonly property real fraction: Math.max(0, Math.min(1, root.volume))
+                // animate the level, not the pixel width: while the notch expands
+                // track.width keeps changing, so binding the fill to level * width
+                // lets it stretch in lockstep instead of chasing a width animation
+                // toward a target that is still moving
+                property real level: Math.max(0, Math.min(1, root.volume))
+                Behavior on level {
+                    NumberAnimation { duration: 90; easing.type: Easing.OutCubic }
+                }
 
                 Rectangle {
                     anchors.left: parent.left
@@ -459,25 +464,9 @@ PanelWindow {
                     anchors.verticalCenter: parent.verticalCenter
                     height: 6
                     radius: height / 2
-                    width: track.handleSize / 2 + track.fraction * track.usable
+                    width: track.level * track.width
                     color: Colors.palette.m3primary
                     opacity: root.muted ? 0.4 : 1
-                    Behavior on width {
-                        NumberAnimation { duration: 90; easing.type: Easing.OutCubic }
-                    }
-                }
-
-                Rectangle {
-                    width: track.handleSize
-                    height: track.handleSize
-                    radius: width / 2
-                    color: "white"
-                    opacity: root.muted ? 0.4 : 1
-                    anchors.verticalCenter: parent.verticalCenter
-                    x: track.fraction * track.usable
-                    Behavior on x {
-                        NumberAnimation { duration: 90; easing.type: Easing.OutCubic }
-                    }
                 }
 
                 MouseArea {
@@ -485,10 +474,10 @@ PanelWindow {
                     anchors.fill: parent
                     hoverEnabled: true
                     preventStealing: true
-                    onPressed: mouse => root.setVolume((mouse.x - track.handleSize / 2) / track.usable)
+                    onPressed: mouse => root.setVolume(mouse.x / track.width)
                     onPositionChanged: mouse => {
                         if (audioDrag.pressed)
-                            root.setVolume((mouse.x - track.handleSize / 2) / track.usable)
+                            root.setVolume(mouse.x / track.width)
                     }
                 }
             }
