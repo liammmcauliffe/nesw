@@ -5,6 +5,7 @@ import QtQuick.Shapes
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
+import Quickshell.Services.Pipewire
 
 PanelWindow {
     id: root
@@ -18,7 +19,8 @@ PanelWindow {
     implicitHeight: hitHeight
     color: "transparent"
 
-    WlrLayershell.layer: WlrLayer.Top
+    // overlay so the notch (and the volume hud) draws above fullscreen windows
+    WlrLayershell.layer: WlrLayer.Overlay
     // reserving (notchHeight - borderWidth) makes the notch-to-window gap
     // always equal the window-to-border gap on the sides/bottom: both come
     // out to (gaps_out - borderWidth), so they stay in sync however hyprland
@@ -40,6 +42,25 @@ PanelWindow {
     readonly property int stepPx: 46
     readonly property int rulerBuffer: 5
     readonly property int frameInset: 4
+
+    // audio
+    readonly property PwNode audioSink: Pipewire.defaultAudioSink
+    readonly property real volume: audioSink && audioSink.audio ? audioSink.audio.volume : 0
+    readonly property bool muted: audioSink && audioSink.audio ? audioSink.audio.muted : false
+    readonly property int volumePercent: Math.round(volume * 100)
+
+    // audioMode swaps the notch content from the workspace ruler to the volume hud
+    property bool audioMode: false
+    // armed after startup so the initial pipewire sync doesn't pop the hud
+    property bool audioReady: false
+
+    // volume/muted are invalid unless the node is bound; tracking binds it
+    PwObjectTracker {
+        objects: [root.audioSink]
+    }
+
+    onVolumeChanged: showAudio()
+    onMutedChanged: showAudio()
 
     property bool expanded: false
     property real notchWidth: Math.min(maxWidth, Math.max(minWidth, expanded ? maxWidth : minWidth))
@@ -84,9 +105,16 @@ PanelWindow {
         slideReady = true
     }
 
+    Timer {
+        interval: 1000
+        running: true
+        onTriggered: root.audioReady = true
+    }
+
     onActiveWsChanged: {
         if (!slideReady)
             return
+        audioMode = false
         animateSlideTo(activeWs)
         reveal()
     }
@@ -102,6 +130,24 @@ PanelWindow {
     function reveal() {
         expanded = true
         collapseTimer.restart()
+    }
+
+    function showAudio() {
+        if (!audioReady)
+            return
+        audioMode = true
+        expanded = true
+        audioTimer.restart()
+    }
+
+    function setVolume(fraction) {
+        if (!audioSink || !audioSink.audio)
+            return
+        audioSink.audio.muted = false
+        audioSink.audio.volume = Math.max(0, Math.min(1, fraction))
+        audioMode = true
+        expanded = true
+        audioTimer.restart()
     }
 
     function animateSlideTo(ws) {
@@ -130,8 +176,21 @@ PanelWindow {
         id: collapseTimer
         interval: 1500
         onTriggered: {
-            if (hoverHandler.hovered)
+            if (hoverHandler.hovered || root.audioMode)
                 return;
+            root.expanded = false;
+        }
+    }
+
+    Timer {
+        id: audioTimer
+        interval: 2000
+        onTriggered: {
+            if (hoverHandler.hovered || audioDrag.containsMouse) {
+                restart();
+                return;
+            }
+            root.audioMode = false;
             root.expanded = false;
         }
     }
@@ -254,6 +313,10 @@ PanelWindow {
         height: root.notchHeight - root.borderWidth
         clip: true
 
+        // in audio mode the slider needs pointer events, so lift content above
+        // the workspace input layer (hit) below
+        z: root.audioMode ? 10 : 0
+
         opacity: root.expanded ? 1 : 0
         Behavior on opacity {
             NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
@@ -263,6 +326,11 @@ PanelWindow {
             id: strip
             height: parent.height
             x: content.width / 2 - root.stepPx / 2 + root.slideOffset
+
+            opacity: root.audioMode ? 0 : 1
+            Behavior on opacity {
+                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
+            }
 
             Repeater {
                 model: root.rulerMax
@@ -331,6 +399,88 @@ PanelWindow {
             anchors.left: content.horizontalCenter
             anchors.leftMargin: 6
             anchors.verticalCenter: content.verticalCenter
+
+            opacity: root.audioMode ? 0 : 1
+            Behavior on opacity {
+                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
+            }
+        }
+
+        // audio hud: speaker icon, draggable level bar, percent readout. kept
+        // monochrome white to match the clock until the scheme drives colors
+        Item {
+            id: audioHud
+            anchors.fill: parent
+            visible: opacity > 0
+            opacity: root.audioMode ? 1 : 0
+            Behavior on opacity {
+                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
+            }
+
+            VolumeIcon {
+                id: volIcon
+                level: root.volumePercent
+                muted: root.muted
+                size: 22
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Text {
+                id: volPercent
+                text: root.muted ? "muted" : root.volumePercent + "%"
+                color: "white"
+                font.family: Fonts.family
+                font.pixelSize: 14
+                font.weight: Fonts.weightSemiBold
+                horizontalAlignment: Text.AlignRight
+                width: 42
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Item {
+                id: track
+                height: 6
+                anchors.left: volIcon.right
+                anchors.leftMargin: 12
+                anchors.right: volPercent.left
+                anchors.rightMargin: 12
+                anchors.verticalCenter: parent.verticalCenter
+
+                Rectangle {
+                    anchors.fill: parent
+                    radius: height / 2
+                    color: "white"
+                    opacity: 0.2
+                }
+
+                Rectangle {
+                    width: Math.max(height, Math.min(1, root.volume) * parent.width)
+                    height: parent.height
+                    radius: height / 2
+                    color: "white"
+                    opacity: root.muted ? 0.35 : 1
+                    Behavior on width {
+                        NumberAnimation { duration: 90; easing.type: Easing.OutCubic }
+                    }
+                }
+
+                MouseArea {
+                    id: audioDrag
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: parent.height + 24
+                    hoverEnabled: true
+                    preventStealing: true
+                    onPressed: mouse => root.setVolume(mouse.x / audioDrag.width)
+                    onPositionChanged: mouse => {
+                        if (audioDrag.pressed)
+                            root.setVolume(mouse.x / audioDrag.width)
+                    }
+                }
+            }
         }
     }
 
@@ -371,6 +521,7 @@ PanelWindow {
         }
 
         WheelHandler {
+            enabled: !root.audioMode
             orientation: Qt.Horizontal
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
             onWheel: event => {
@@ -382,6 +533,7 @@ PanelWindow {
         }
 
         TapHandler {
+            enabled: !root.audioMode
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
             onTapped: eventPoint => {
                 const steps = Math.round((eventPoint.position.x - hit.width / 2) / root.stepPx)
@@ -394,10 +546,13 @@ PanelWindow {
             cursorShape: Qt.PointingHandCursor
             onHoveredChanged: {
                 if (hovered) {
-                    if (root.expanded)
-                        collapseTimer.stop();
+                    collapseTimer.stop();
+                    audioTimer.stop();
                 } else if (root.expanded) {
-                    collapseTimer.restart();
+                    if (root.audioMode)
+                        audioTimer.restart();
+                    else
+                        collapseTimer.restart();
                 }
             }
         }
