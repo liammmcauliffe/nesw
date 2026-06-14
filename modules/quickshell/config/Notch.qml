@@ -6,7 +6,6 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import Quickshell.Services.Pipewire
-import Quickshell.Services.UPower
 import "icons"
 
 PanelWindow {
@@ -54,19 +53,6 @@ PanelWindow {
     // armed after startup so the initial pipewire sync doesn't pop the hud
     property bool audioReady: false
 
-    readonly property bool isLowBattery: {
-        const b = UPower.displayDevice;
-        return b ? (b.percentage < 15
-            && b.state !== UPowerDeviceState.Charging
-            && b.state !== UPowerDeviceState.FullyCharged) : false;
-    }
-
-    readonly property bool isCharging: {
-        const b = UPower.displayDevice;
-        return b ? (b.state === UPowerDeviceState.Charging
-            || b.state === UPowerDeviceState.FullyCharged) : false;
-    }
-
     // Hyprland keeps the normal workspace as focusedWorkspace while a special
     // workspace is open — check the monitor's specialWorkspace field instead
     readonly property bool inSpecialWs: {
@@ -91,11 +77,6 @@ PanelWindow {
             audioMode = false
             reveal()
         }
-    }
-
-    onIsChargingChanged: {
-        if (slideReady)
-            reveal()
     }
 
     // volume/muted are invalid unless the node is bound; tracking binds it
@@ -449,21 +430,13 @@ PanelWindow {
 
         Text {
             text: root.inSpecialWs ? "S" : root.displayNumber
-            color: {
-                if (root.inSpecialWs)   return Colors.palette.m3primary
-                if (root.isLowBattery)  return Colors.palette.m3error
-                return Colors.palette.m3primary
-            }
+            color: Colors.palette.m3primary
             font.family: Fonts.family
             font.pixelSize: Fonts.sizeNotch
             font.weight: Fonts.weightBold
             anchors.left: content.horizontalCenter
             anchors.leftMargin: 6
             anchors.verticalCenter: content.verticalCenter
-
-            Behavior on color {
-                ColorAnimation { duration: 300 }
-            }
 
             opacity: root.expanded && !root.audioMode ? 1 : 0
             Behavior on opacity {
