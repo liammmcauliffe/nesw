@@ -32,6 +32,7 @@ PanelWindow {
 
     // audioMode swaps the notch content from the workspace ruler to the volume hud
     property bool audioMode: false
+    property bool isVolumeChanging: false
     // armed after startup so the initial pipewire sync doesn't pop the hud
     property bool audioReady: false
 
@@ -46,6 +47,8 @@ PanelWindow {
         return name.length > 0;
     }
 
+    readonly property real contentWidth: notchWidth - Constants.notchPadding * 2
+
     Connections {
         target: Hyprland
         function onRawEvent(event) {
@@ -55,10 +58,10 @@ PanelWindow {
     }
 
     onInSpecialWsChanged: {
-        if (inSpecialWs) {
-            audioMode = false
-            reveal()
-        }
+        if (!inSpecialWs || audioLockTimer.running)
+            return
+        audioMode = false
+        reveal()
     }
 
     // volume/muted are invalid unless the node is bound; tracking binds it
@@ -73,8 +76,11 @@ PanelWindow {
     property real notchWidth: Math.min(Constants.maxWidth, Math.max(Constants.minWidth, expanded ? Constants.maxWidth : Constants.minWidth))
     property real slideOffset: 0
 
-    // workspace whose tick sits at the center notch (counts up as ticks pass under)
-    readonly property int displayNumber: Math.max(1, Math.round(1 - slideOffset / Constants.stepPx))
+    // workspace whose tick sits at the center notch
+    readonly property int displayNumber: {
+        const centerOffset = contentWidth / 2 - Constants.stepPx / 2
+        return Math.max(1, Math.round(1 + (centerOffset - slideOffset) / Constants.stepPx))
+    }
 
     readonly property int activeWs: {
         const ws = Hyprland.focusedWorkspace;
@@ -109,8 +115,14 @@ PanelWindow {
 
     Component.onCompleted: {
         Hyprland.refreshMonitors();
-        slideOffset = -(activeWs - 1) * Constants.stepPx
+        slideOffset = slideTargetForWs(activeWs)
         slideReady = true
+    }
+
+    onNotchWidthChanged: {
+        if (!slideReady || wsDrag.active)
+            return
+        slideOffset = slideTargetForWs(displayNumber)
     }
 
     Timer {
@@ -119,20 +131,31 @@ PanelWindow {
         onTriggered: root.audioReady = true
     }
 
+    Timer {
+        id: audioLockTimer
+        interval: 800
+        repeat: false
+        onTriggered: {
+            root.isVolumeChanging = false
+            if (!hoverHandler.hovered && !audioHud.dragContainsMouse && !audioTimer.running)
+                root.audioMode = false
+        }
+    }
+
     onActiveWsChanged: {
         if (!slideReady)
             return
+        if (audioLockTimer.running)
+            return
+
         audioMode = false
         animateSlideTo(activeWs)
         reveal()
     }
 
-    function slideDuration(fromWs, toWs) {
-        const dist = Math.abs(toWs - fromWs)
-        if (dist === 0)
-            return 0
-        // ~40ms per tick; fast enough to read each number on long jumps
-        return Math.min(450, Math.max(60, dist * 40))
+    function slideTargetForWs(ws) {
+        const centerOffset = contentWidth / 2 - Constants.stepPx / 2
+        return centerOffset - (ws - 1) * Constants.stepPx
     }
 
     function reveal() {
@@ -143,8 +166,10 @@ PanelWindow {
     function showAudio() {
         if (!audioReady)
             return
+        isVolumeChanging = true
         audioMode = true
         expanded = true
+        audioLockTimer.restart()
         audioTimer.restart()
     }
 
@@ -153,8 +178,10 @@ PanelWindow {
             return
         audioSink.audio.muted = false
         audioSink.audio.volume = Math.max(0, Math.min(1, fraction))
+        isVolumeChanging = true
         audioMode = true
         expanded = true
+        audioLockTimer.restart()
         audioTimer.restart()
     }
 
@@ -163,19 +190,14 @@ PanelWindow {
     }
 
     function animateSlideTo(ws) {
-        const target = -(ws - 1) * Constants.stepPx
-        const fromWs = displayNumber
+        const target = slideTargetForWs(ws)
 
         if (Math.abs(slideOffset - target) < 0.5) {
             slideOffset = target
             return
         }
 
-        slideAnim.stop()
-        slideAnim.duration = slideDuration(fromWs, ws)
-        slideAnim.from = slideOffset
-        slideAnim.to = target
-        slideAnim.start()
+        slideOffset = target
     }
 
     function goToWorkspace(n) {
@@ -187,11 +209,7 @@ PanelWindow {
     // settle a scrub: glide the ruler to the nearest tick and focus that workspace
     function commitWorkspaceDrag() {
         const ws = displayNumber
-        slideAnim.stop()
-        slideAnim.duration = 160
-        slideAnim.from = slideOffset
-        slideAnim.to = -(ws - 1) * Constants.stepPx
-        slideAnim.start()
+        slideOffset = slideTargetForWs(ws)
         goToWorkspace(ws)
     }
 
@@ -214,30 +232,60 @@ PanelWindow {
                 return;
             }
             root.expanded = false;
-            root.audioMode = false;
+            if (!audioLockTimer.running)
+                root.audioMode = false;
         }
     }
 
     Behavior on notchWidth {
-        NumberAnimation { duration: 280; easing.type: Easing.OutCubic }
+        SpringAnimation {
+            spring: 3
+            damping: 0.3
+            mass: 0.6
+            epsilon: 0.01
+        }
     }
 
-    NumberAnimation {
-        id: slideAnim
-        target: root
-        property: "slideOffset"
-        easing.type: Easing.Linear
-        onFinished: root.slideOffset = to
+    Behavior on slideOffset {
+        enabled: !wsDrag.active
+        SpringAnimation {
+            spring: 2
+            damping: 0.25
+            mass: 0.8
+            epsilon: 0.01
+        }
     }
 
-    // clickthrough
+    // input mask: center gets the full expanded hit depth; screen sides only
+  // the visible notch strip so clicks pass through to maximized windows below
     Item {
         id: hitMask
-        x: (root.width - shape.width) / 2
-        y: 0
-        width: shape.width
-        height: hit.height
+        anchors.fill: parent
         visible: false
+
+        readonly property real centerX: (width - shape.width) / 2
+        readonly property real centerHitHeight: root.expanded ? Constants.hitHeight : Constants.notchHeight
+
+        Item {
+            x: 0
+            y: 0
+            width: parent.centerX
+            height: Constants.notchHeight
+        }
+
+        Item {
+            x: parent.centerX
+            y: 0
+            width: shape.width
+            height: parent.centerHitHeight
+        }
+
+        Item {
+            x: parent.centerX + shape.width
+            y: 0
+            width: parent.width - x
+            height: Constants.notchHeight
+        }
     }
 
     mask: Region {
@@ -264,13 +312,11 @@ PanelWindow {
             startX: 0
             startY: 0
 
-            // left edge of the top strip
             PathLine {
                 x: 0
                 y: Constants.borderWidth
             }
 
-            // S-curve: strip bottom edge flares into the left notch wall
             PathArc {
                 x: Constants.notchRadius
                 y: Constants.borderWidth + Constants.notchRadius
@@ -284,7 +330,6 @@ PanelWindow {
                 y: Constants.notchHeight - Constants.notchRadius
             }
 
-            // bottom-left rounded corner
             PathArc {
                 x: Constants.notchRadius * 2
                 y: Constants.notchHeight
@@ -298,7 +343,6 @@ PanelWindow {
                 y: Constants.notchHeight
             }
 
-            // bottom-right rounded corner
             PathArc {
                 x: shape.width - Constants.notchRadius
                 y: Constants.notchHeight - Constants.notchRadius
@@ -312,7 +356,6 @@ PanelWindow {
                 y: Constants.borderWidth + Constants.notchRadius
             }
 
-            // S-curve back up to the strip's bottom edge
             PathArc {
                 x: shape.width
                 y: Constants.borderWidth
@@ -321,7 +364,6 @@ PanelWindow {
                 direction: PathArc.Clockwise
             }
 
-            // right edge of the top strip, then back across the screen top
             PathLine { x: shape.width; y: 0 }
             PathLine { x: 0; y: 0 }
         }
@@ -332,12 +374,10 @@ PanelWindow {
         id: content
         anchors.horizontalCenter: parent.horizontalCenter
         y: Constants.borderWidth
-        width: root.notchWidth - Constants.notchPadding * 2
+        width: root.contentWidth
         height: Constants.notchHeight - Constants.borderWidth
         clip: true
 
-        // in audio mode the slider needs pointer events, so lift content above
-        // the workspace input layer (hit) below
         z: root.audioMode ? 10 : 0
 
         opacity: root.expanded ? 1 : 0
@@ -368,7 +408,7 @@ PanelWindow {
         }
     }
 
-    // input
+    // input — workspace interactions live only in the centered notch column
     Item {
         id: hit
         anchors.top: parent.top
@@ -377,7 +417,12 @@ PanelWindow {
         height: root.expanded ? Constants.hitHeight : Constants.notchHeight
 
         Behavior on height {
-            NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+            SpringAnimation {
+                spring: 3
+                damping: 0.35
+                mass: 0.5
+                epsilon: 0.01
+            }
         }
 
         property real wheelAccum: 0
@@ -416,9 +461,6 @@ PanelWindow {
             }
         }
 
-        // click-and-drag to scrub through workspaces, mirroring the volume
-        // slider; a plain click never crosses the drag threshold, so the
-        // focused workspace is left untouched
         DragHandler {
             id: wsDrag
             enabled: root.expanded && !root.audioMode
@@ -429,7 +471,6 @@ PanelWindow {
 
             onActiveChanged: {
                 if (wsDrag.active) {
-                    slideAnim.stop()
                     wsDrag.startOffset = root.slideOffset
                     collapseTimer.stop()
                 } else {
@@ -442,10 +483,6 @@ PanelWindow {
             }
         }
 
-        // tapping a visible switcher jumps to the workspace under the cursor;
-        // while collapsed (blank notch) taps are ignored so a stray click can't
-        // switch. drags are handled by wsDrag, so a tap only fires for a click
-        // that never crossed the drag threshold
         TapHandler {
             enabled: root.expanded && !root.audioMode
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
