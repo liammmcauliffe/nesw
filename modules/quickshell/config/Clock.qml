@@ -189,9 +189,18 @@ PanelWindow {
         return null
     }
 
+    readonly property bool wifiConnecting: {
+        const dev = wifiDevice
+        if (!dev)
+            return false
+        return dev.state === DeviceConnectionState.Connecting
+    }
+
     readonly property string wifiGlyph: {
         if (!Networking.wifiEnabled || !Networking.wifiHardwareEnabled)
             return "none"
+        if (wifiConnecting)
+            return "connecting"
         if (!activeWifi)
             return "none"
         const s = activeWifi.signalStrength
@@ -204,7 +213,7 @@ PanelWindow {
     // click wifi icon to cycle glyphs; one more click after ethernet returns to live
     property bool wifiDebug: false
     property int wifiDebugStep: 0
-    readonly property var wifiDebugGlyphs: ["high", "medium", "low", "none", "ethernet"]
+    readonly property var wifiDebugGlyphs: ["high", "medium", "low", "none", "connecting", "ethernet"]
 
     readonly property string displayWifiGlyph: wifiDebug
         ? wifiDebugGlyphs[wifiDebugStep]
@@ -331,8 +340,8 @@ PanelWindow {
         Item {
             id: networkIcon
             visible: root.showWifiIcon || root.showEthernetIcon
-            width: 28
-            height: 28
+            width: root.showWifiIcon ? 32 : 28
+            height: root.showWifiIcon ? 32 : 28
             anchors.verticalCenter: parent.verticalCenter
 
             WifiIcon {
@@ -340,8 +349,10 @@ PanelWindow {
                 glyph: root.wifiDebug ? root.displayWifiGlyph : root.wifiGlyph
                 color: "white"
                 shellColor: Colors.palette.m3onSurfaceVariant
-                size: 28
-                anchors.centerIn: parent
+                size: 32
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: -2
             }
 
             EthernetIcon {
