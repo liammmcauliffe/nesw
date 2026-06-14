@@ -94,7 +94,10 @@ PanelWindow {
             query = "";
             searchInput.text = "";
             list.currentIndex = 0;
+            panelHost.playOpen();
             focusTimer.start();
+        } else {
+            panelHost.playClose();
         }
     }
 
@@ -161,23 +164,66 @@ PanelWindow {
 
         transformOrigin: Item.Top
         enabled: root.open
-        visible: root.open || panelHost.opacity > 0.01
+        visible: opacity > 0.01
 
-        opacity: root.open ? 1 : 0
-        scale: root.open ? 1 : 0.82
+        opacity: 0
+        scale: 0.82
 
-        Behavior on opacity {
-            NumberAnimation {
-                duration: root.open ? 100 : 70
-                easing.type: Easing.OutCubic
-            }
+        function playOpen() {
+            openScale.stop();
+            openOpacity.stop();
+            closeScale.stop();
+            closeOpacity.stop();
+            scale = 0.82;
+            opacity = 0;
+            openOpacity.start();
+            openScale.start();
         }
-        Behavior on scale {
-            NumberAnimation {
-                duration: root.open ? 460 : 100
-                easing.type: root.open ? Easing.OutBack : Easing.InQuart
-                easing.overshoot: root.open ? 1.45 : 0
-            }
+
+        function playClose() {
+            openScale.stop();
+            openOpacity.stop();
+            closeScale.stop();
+            closeOpacity.stop();
+            closeScale.start();
+            closeOpacity.start();
+        }
+
+        NumberAnimation {
+            id: openScale
+            target: panelHost
+            property: "scale"
+            to: 1
+            duration: 460
+            easing.type: Easing.OutBack
+            easing.overshoot: 1.45
+        }
+
+        NumberAnimation {
+            id: openOpacity
+            target: panelHost
+            property: "opacity"
+            to: 1
+            duration: 100
+            easing.type: Easing.OutCubic
+        }
+
+        NumberAnimation {
+            id: closeScale
+            target: panelHost
+            property: "scale"
+            to: 0.82
+            duration: 100
+            easing.type: Easing.InQuart
+        }
+
+        NumberAnimation {
+            id: closeOpacity
+            target: panelHost
+            property: "opacity"
+            to: 0
+            duration: 70
+            easing.type: Easing.OutCubic
         }
 
         Rectangle {
