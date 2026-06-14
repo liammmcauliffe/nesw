@@ -1,6 +1,6 @@
 pragma ComponentBehavior: Bound
 
-import QtQuick 2.15
+import QtQuick
 import "icons"
 
 Item {

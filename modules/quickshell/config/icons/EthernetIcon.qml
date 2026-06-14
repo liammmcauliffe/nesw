@@ -1,7 +1,7 @@
 pragma ComponentBehavior: Bound
 
-import QtQuick 2.15
-import QtQuick.Shapes 1.15
+import QtQuick
+import QtQuick.Shapes
 
 // TODO: replace with a proper ethernet glyph (current path is a placeholder)
 Item {
