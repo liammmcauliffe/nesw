@@ -59,6 +59,11 @@ PanelWindow {
             || state === UPowerDeviceState.FullyCharged
     }
 
+    function isDischargingState(state) {
+        return state === UPowerDeviceState.Discharging
+            || state === UPowerDeviceState.PendingDischarge
+    }
+
     function devicePluggedIn(device) {
         if (!device || !device.ready)
             return false
@@ -86,8 +91,23 @@ PanelWindow {
     }
 
     readonly property bool pluggedIn: {
-        if (!UPower.onBattery)
-            return true
+        if (!batteryDisplay.ready)
+            return false
+
+        const pb = primaryBattery
+        if (pb && pb.ready) {
+            if (isDischargingState(pb.state))
+                return false
+            if (devicePluggedIn(pb))
+                return true
+        }
+
+        if (batteryDisplay.ready) {
+            if (isDischargingState(batteryDisplay.state))
+                return false
+            if (devicePluggedIn(batteryDisplay))
+                return true
+        }
 
         const list = UPower.devices.values
 
@@ -96,20 +116,20 @@ PanelWindow {
                 return true
         }
 
-        const pb = primaryBattery
-        if (pb && devicePluggedIn(pb))
-            return true
-
-        if (batteryDisplay.ready && devicePluggedIn(batteryDisplay))
-            return true
-
         for (let i = 0; i < list.length; i++) {
             const d = list[i]
-            if (d.type === UPowerDeviceType.Battery && d.isPresent && devicePluggedIn(d))
-                return true
+            if (d.type === UPowerDeviceType.Battery && d.isPresent && d.ready) {
+                if (isDischargingState(d.state))
+                    return false
+                if (devicePluggedIn(d))
+                    return true
+            }
         }
 
-        return false
+        if (UPower.onBattery)
+            return false
+
+        return !UPower.onBattery
     }
 
     readonly property bool isLow: percentage < 0.15 && !pluggedIn
