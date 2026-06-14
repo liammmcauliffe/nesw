@@ -193,7 +193,7 @@ PanelWindow {
         const dev = wifiDevice
         if (!dev)
             return false
-        return dev.state === DeviceConnectionState.Connecting
+        return dev.state === ConnectionState.Connecting
     }
 
     readonly property string wifiGlyph: {
@@ -350,9 +350,7 @@ PanelWindow {
                 color: "white"
                 shellColor: Colors.palette.m3onSurfaceVariant
                 size: 32
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: -2
+                anchors.centerIn: parent
             }
 
             EthernetIcon {

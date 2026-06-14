@@ -11,8 +11,6 @@ Item {
     property color color: "white"
     property color shellColor: "#a1a1aa"
     property int size: 32
-    // nudge glyph up — removing the top arc left empty space above the arcs
-    property int glyphYOffset: -5
 
     width: size
     height: size
@@ -64,7 +62,7 @@ Item {
     Timer {
         running: root.isConnecting
         repeat: true
-        interval: 180
+        interval: 260
         onTriggered: root.connectFrame = (root.connectFrame + 1) % 5
     }
 
@@ -77,7 +75,7 @@ Item {
         width: 256
         height: 256
         x: (root.width - width * root.glyphScale) / 2
-        y: (root.height - height * root.glyphScale) / 2 + root.glyphYOffset
+        y: (root.height - height * root.glyphScale) / 2
         scale: root.glyphScale
         transformOrigin: Item.TopLeft
         preferredRendererType: Shape.CurveRenderer
