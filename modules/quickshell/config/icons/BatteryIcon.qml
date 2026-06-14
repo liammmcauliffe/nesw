@@ -65,30 +65,37 @@ Item {
         scale: root.size / 16
         transformOrigin: Item.Center
         preferredRendererType: Shape.CurveRenderer
+        visible: !root.isCharging
 
         ShapePath {
-            visible: !root.isCharging
             fillColor: root.shellColor
             strokeWidth: 0
             PathSvg { path: root.glyph === "empty" ? root.emptyShellPath : root.shellPath }
         }
+    }
+
+    Shape {
+        width: 16
+        height: 16
+        anchors.centerIn: parent
+        scale: root.size / 16
+        transformOrigin: Item.Center
+        preferredRendererType: Shape.CurveRenderer
+        visible: root.isCharging
 
         ShapePath {
-            visible: root.isCharging
             fillColor: root.shellColor
             strokeWidth: 0
             PathSvg { path: root.chargingShellA }
         }
 
         ShapePath {
-            visible: root.isCharging
             fillColor: root.shellColor
             strokeWidth: 0
             PathSvg { path: root.chargingShellB }
         }
 
         ShapePath {
-            visible: root.isCharging
             fillColor: root.shellColor
             strokeWidth: 0
             PathSvg { path: root.chargingShellC }
@@ -102,24 +109,31 @@ Item {
         scale: root.size / 16
         transformOrigin: Item.Center
         preferredRendererType: Shape.CurveRenderer
-        visible: root.juicePath.length > 0 || root.isCharging
+        visible: root.juicePath.length > 0
 
         ShapePath {
-            visible: root.juicePath.length > 0
             fillColor: root.fillColor
             strokeWidth: 0
             PathSvg { path: root.juicePath }
         }
+    }
+
+    Shape {
+        width: 16
+        height: 16
+        anchors.centerIn: parent
+        scale: root.size / 16
+        transformOrigin: Item.Center
+        preferredRendererType: Shape.CurveRenderer
+        visible: root.isCharging
 
         ShapePath {
-            visible: root.isCharging
             fillColor: root.fillColor
             strokeWidth: 0
             PathSvg { path: root.chargingFill }
         }
 
         ShapePath {
-            visible: root.isCharging
             fillColor: root.fillColor
             strokeWidth: 0
             PathSvg { path: root.lightningPath }
