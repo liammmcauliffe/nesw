@@ -20,26 +20,15 @@ Item {
         transformOrigin: Item.Center
         preferredRendererType: Shape.CurveRenderer
 
+        // rounded square with port cutouts — single even-odd path
         ShapePath {
-            strokeColor: root.color
-            strokeWidth: 4
             fillColor: root.color
-            joinStyle: ShapePath.RoundJoin
-            capStyle: ShapePath.RoundCap
-
-            PathSvg { 
-                path: "M 9 6 H 39 A 3 3 0 0 1 42 9 V 39 A 3 3 0 0 1 39 42 H 9 A 3 3 0 0 1 6 39 V 9 A 3 3 0 0 1 9 6 Z" 
-            }
-        }
-
-        ShapePath {
-            fillColor: "transparent"
-            strokeColor: "transparent"
             strokeWidth: 0
-            fillRule: ShapePath.EvenOddFill 
-
-            PathSvg { 
-                path: "M14,15 h20 v12 H14 Z M19,27 h10 v6 H19 Z" 
+            fillRule: ShapePath.OddEvenFill
+            PathSvg {
+                path: "M9,6 H39 A3,3 0 0 1 42,9 V39 A3,3 0 0 1 39,42 H9 A3,3 0 0 1 6,39 V9 A3,3 0 0 1 9,6 Z"
+                    + " M14,15 H34 V27 H14 Z"
+                    + " M19,27 H29 V33 H19 Z"
             }
         }
 
@@ -48,10 +37,7 @@ Item {
             strokeWidth: 4
             fillColor: "transparent"
             capStyle: ShapePath.RoundCap
-
-            PathSvg { 
-                path: "M21,15 v4 M27,15 v4" 
-            }
+            PathSvg { path: "M21,15 V19 M27,15 V19" }
         }
     }
 }

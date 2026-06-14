@@ -194,6 +194,7 @@ PanelWindow {
         if (!dev)
             return false
         return dev.state === ConnectionState.Connecting
+            || dev.state === ConnectionState.Disconnecting
     }
 
     readonly property string wifiGlyph: {
@@ -206,8 +207,15 @@ PanelWindow {
         const s = activeWifi.signalStrength
         if (s >= 0.75) return "high"
         if (s >= 0.50) return "medium"
-        if (s >= 0.25) return "low"
-        return "none"
+        return "low"
+    }
+
+    // brief scan only while associating — NM still reports connected signal without it
+    Binding {
+        target: wifiDevice
+        property: "scannerEnabled"
+        value: wifiConnecting
+        when: wifiDevice !== null
     }
 
     // click wifi icon to cycle glyphs; one more click after ethernet returns to live
@@ -340,8 +348,8 @@ PanelWindow {
         Item {
             id: networkIcon
             visible: root.showWifiIcon || root.showEthernetIcon
-            width: root.showWifiIcon ? 32 : 28
-            height: root.showWifiIcon ? 32 : 28
+            width: root.showWifiIcon ? 26 : 28
+            height: root.showWifiIcon ? 26 : 28
             anchors.verticalCenter: parent.verticalCenter
 
             WifiIcon {
@@ -349,7 +357,7 @@ PanelWindow {
                 glyph: root.wifiDebug ? root.displayWifiGlyph : root.wifiGlyph
                 color: "white"
                 shellColor: Colors.palette.m3onSurfaceVariant
-                size: 32
+                size: 26
                 anchors.centerIn: parent
             }
 

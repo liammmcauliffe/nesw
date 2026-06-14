@@ -10,12 +10,11 @@ Item {
     property string glyph: "high"
     property color color: "white"
     property color shellColor: "#a1a1aa"
-    property int size: 32
+    property int size: 26
 
     width: size
     height: size
 
-    readonly property real glyphScale: size / 34
     readonly property bool isConnecting: root.glyph === "connecting"
     property int connectFrame: 0
 
@@ -33,15 +32,16 @@ Item {
         interval: 260
         onTriggered: root.connectFrame = (root.connectFrame + 1) % 5
         onRunningChanged: {
-            if (!running) {
+            if (!running)
                 root.connectFrame = 0
-            }
         }
     }
 
     Shape {
-        anchors.fill: parent
-        scale: root.glyphScale
+        width: 34
+        height: 34
+        anchors.centerIn: parent
+        scale: root.size / 34
         transformOrigin: Item.Center
         preferredRendererType: Shape.CurveRenderer
 
