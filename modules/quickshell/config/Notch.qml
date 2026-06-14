@@ -258,57 +258,6 @@ PanelWindow {
         item: hitMask
     }
 
-    // special workspace glow — stroked outline behind the solid notch
-    Shape {
-        id: glowShape
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        width: root.notchWidth + root.notchRadius * 2
-        height: root.notchHeight
-        preferredRendererType: Shape.CurveRenderer
-
-        opacity: root.inSpecialWs ? 0.45 : 0
-        Behavior on opacity {
-            NumberAnimation { duration: 350; easing.type: Easing.OutCubic }
-        }
-
-        ShapePath {
-            fillColor: "transparent"
-            strokeColor: Colors.palette.m3primary
-            strokeWidth: 4
-
-            startX: 0
-            startY: 0
-            PathLine { x: 0; y: root.borderWidth }
-            PathArc {
-                x: root.notchRadius; y: root.borderWidth + root.notchRadius
-                radiusX: root.notchRadius; radiusY: root.notchRadius
-                direction: PathArc.Clockwise
-            }
-            PathLine { x: root.notchRadius; y: root.notchHeight - root.notchRadius }
-            PathArc {
-                x: root.notchRadius * 2; y: root.notchHeight
-                radiusX: root.notchRadius; radiusY: root.notchRadius
-                direction: PathArc.Counterclockwise
-            }
-            PathLine { x: glowShape.width - root.notchRadius * 2; y: root.notchHeight }
-            PathArc {
-                x: glowShape.width - root.notchRadius; y: root.notchHeight - root.notchRadius
-                radiusX: root.notchRadius; radiusY: root.notchRadius
-                direction: PathArc.Counterclockwise
-            }
-            PathLine { x: glowShape.width - root.notchRadius; y: root.borderWidth + root.notchRadius }
-            PathArc {
-                x: glowShape.width; y: root.borderWidth
-                radiusX: root.notchRadius; radiusY: root.notchRadius
-                direction: PathArc.Clockwise
-            }
-            PathLine { x: glowShape.width; y: 0 }
-            PathLine { x: 0; y: 0 }
-        }
-    }
-
     // shape
     // continuous loop matching the canvas arcTo path: travels along the 6px
     // top strip, dips down with an S-curve tangent to the strip's bottom edge,
@@ -389,23 +338,6 @@ PanelWindow {
             // right edge of the top strip, then back across the screen top
             PathLine { x: shape.width; y: 0 }
             PathLine { x: 0; y: 0 }
-        }
-    }
-
-    // special workspace indicator dot — always visible, no expand needed
-    Rectangle {
-        id: specialDot
-        width: 5
-        height: 5
-        radius: 2.5
-        color: Colors.palette.m3tertiary
-        anchors.horizontalCenter: parent.horizontalCenter
-        // sits centered on the bottom lip of the notch pill
-        y: root.notchHeight - height / 2
-
-        opacity: root.inSpecialWs ? 0.85 : 0
-        Behavior on opacity {
-            NumberAnimation { duration: 350; easing.type: Easing.OutCubic }
         }
     }
 
