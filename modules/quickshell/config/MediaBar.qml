@@ -33,18 +33,21 @@ PanelWindow {
 
     readonly property bool hasPlayer: Mpris.players.values.length > 0
 
-    visible: opacity > 0.01
-    opacity: hasPlayer ? 1 : 0
-    Behavior on opacity {
-        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
-    }
+    Item {
+        id: content
+        anchors.fill: parent
+        visible: opacity > 0.01
+        opacity: root.hasPlayer ? 1 : 0
+        Behavior on opacity {
+            NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+        }
 
-    Row {
-        id: row
-        anchors.left: parent.left
-        anchors.leftMargin: root.sideMargin
-        spacing: 16
-        y: Constants.borderWidth + (Constants.notchHeight - Constants.borderWidth - height) / 2
+        Row {
+            id: row
+            anchors.left: parent.left
+            anchors.leftMargin: root.sideMargin
+            spacing: 16
+            y: Constants.borderWidth + (Constants.notchHeight - Constants.borderWidth - height) / 2
 
         Item {
             width: skipBackIcon.size + 8
@@ -113,6 +116,7 @@ PanelWindow {
             width: 240
             maximumLineCount: 1
             anchors.verticalCenter: parent.verticalCenter
+        }
         }
     }
 }
