@@ -32,6 +32,9 @@ PanelWindow {
     readonly property int itemHeight: 70
     readonly property int maxResults: 8
     readonly property int panelRadius: 20
+    readonly property int resultsBlockHeight: maxResults * itemHeight + 8
+    readonly property int panelFullHeight: searchHeight + 1 + resultsBlockHeight
+    readonly property real panelTopMarginRatio: 0.17
 
     // neutral chrome — black card like the notch, translucent like the top bar
     readonly property color panelBg: "#d9000000"
@@ -126,35 +129,32 @@ PanelWindow {
         onClicked: root.open = false
     }
 
-    // floating card — anchored at its center so the spring pop stays in place
+    // pinned to a fixed screen position; scale pops from the top edge so nothing
+    // drifts upward when results load or the spring runs
     Item {
         id: panelHost
 
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: -parent.height * 0.13
+        anchors.top: parent.top
+        anchors.topMargin: parent.height * root.panelTopMarginRatio
         width: root.panelWidth
+        height: root.panelFullHeight
 
-        transformOrigin: Item.Center
-
-        readonly property int visCount: Math.min(root.results.length, root.maxResults)
-        readonly property bool hasResults: root.results.length > 0
-        readonly property bool showEmpty: !hasResults && root.query.length > 0
-        implicitHeight: panel.height
+        transformOrigin: Item.Top
 
         opacity: root.open ? 1 : 0
-        scale: root.open ? 1 : 0.86
+        scale: root.open ? 1 : 0.88
 
         Behavior on opacity {
             NumberAnimation {
-                duration: root.open ? 130 : 90
+                duration: root.open ? 120 : 80
                 easing.type: Easing.OutCubic
             }
         }
         Behavior on scale {
             SpringAnimation {
-                spring: 6.5
-                damping: 0.32
+                spring: 7
+                damping: 0.34
                 epsilon: 0.001
             }
         }
@@ -162,16 +162,15 @@ PanelWindow {
         Rectangle {
             id: panel
 
-            width: parent.width
-            readonly property int visCount: panelHost.visCount
-            readonly property bool hasResults: panelHost.hasResults
-            readonly property bool showEmpty: panelHost.showEmpty
-            height: root.searchHeight + (hasResults ? 1 + visCount * root.itemHeight + 6 : (showEmpty ? root.itemHeight : 0))
+            anchors.fill: parent
 
             radius: root.panelRadius
             color: root.panelBg
             border.width: 1
             border.color: "#14ffffff"
+
+            readonly property bool hasResults: root.results.length > 0
+            readonly property bool showEmpty: !hasResults && root.query.length > 0
 
             // keep panel clicks from reaching the dismiss layer
             MouseArea {
@@ -260,8 +259,7 @@ PanelWindow {
                 anchors.topMargin: 3
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 3
+                height: root.resultsBlockHeight - 6
                 clip: true
                 interactive: count > root.maxResults
                 boundsBehavior: Flickable.StopAtBounds
@@ -377,9 +375,10 @@ PanelWindow {
             }
 
             Text {
-                anchors.top: searchRow.bottom
+                anchors.top: divider.bottom
+                anchors.topMargin: 3
                 anchors.horizontalCenter: parent.horizontalCenter
-                height: root.itemHeight
+                height: root.resultsBlockHeight - 6
                 verticalAlignment: Text.AlignVCenter
                 visible: panel.showEmpty
                 text: "No results"
