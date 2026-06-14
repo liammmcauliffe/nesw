@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Shapes
 
+// TODO: replace with a proper ethernet glyph (current path is a placeholder)
 Item {
     id: root
 

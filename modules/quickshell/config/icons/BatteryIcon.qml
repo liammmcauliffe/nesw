@@ -3,10 +3,11 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Shapes
 
+// bootstrap icons battery glyphs (16x16), shell in shellColor and fill in color
 Item {
     id: root
 
-    // "empty" | "low" | "medium" | "high" | "full"
+    // "empty" | "low" | "medium" | "high" | "full" | "charging"
     property string glyph: "full"
     property bool saver: false
     property color color: "white"
@@ -16,50 +17,112 @@ Item {
     width: size
     height: size
 
-    // inset so the terminal nub isn't clipped at the edges
-    readonly property real glyphScale: size / 288
+    readonly property color fillColor: root.saver ? "#ffd600" : root.color
+    readonly property bool isCharging: root.glyph === "charging"
 
-    readonly property string shellPath: "M200,56H32A24,24,0,0,0,8,80v96a24,24,0,0,0,24,24H200a24,24,0,0,0,24-24V80A24,24,0,0,0,200,56Zm8,120a8,8,0,0,1-8,8H32a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H200a8,8,0,0,1,8,8Zm48-80v64a8,8,0,0,1-16,0V96a8,8,0,0,1,16,0Z"
+    readonly property string shellPath:
+        "M2 4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2"
+        + "zm10 1a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1"
+        + "zm4 3a1.5 1.5 0 0 1-1.5 1.5v-3A1.5 1.5 0 0 1 16 8"
+
+    readonly property string emptyShellPath:
+        "M0 6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2"
+        + "zm2-1a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1"
+        + "zm14 3a1.5 1.5 0 0 1-1.5 1.5v-3A1.5 1.5 0 0 1 16 8"
 
     readonly property var juicePaths: ({
-        low:    "M72,96v64a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V96a8,8,0,0,1,8-8H64A8,8,0,0,1,72,96",
-        medium: "M112,96v64a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V96a8,8,0,0,1,8-8h56A8,8,0,0,1,112,96",
-        high:   "M152,96v64a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V96a8,8,0,0,1,8-8h96A8,8,0,0,1,152,96",
-        full:   "M192,96v64a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V96a8,8,0,0,1,8-8H184A8,8,0,0,1,192,96"
+        low:    "M2 6h2v4H2z",
+        medium: "M2 6h5v4H2z",
+        high:   "M2 6h8v4H2z",
+        full:   "M2 6h10v4H2z"
     })
 
     readonly property string juicePath: root.juicePaths[root.glyph] ?? ""
 
+    readonly property string lightningPath:
+        "M9.585 2.568a.5.5 0 0 1 .226.58L8.677 6.832h1.99a.5.5 0 0 1 .364.843l-5.334 5.667"
+        + "a.5.5 0 0 1-.842-.49L5.99 9.167H4a.5.5 0 0 1-.364-.843l5.333-5.667a.5.5 0 0 1 .616-.09z"
+
+    readonly property string chargingShellA:
+        "M2 4h4.332l-.94 1H2a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h2.38l-.308 1H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2"
+
+    readonly property string chargingShellB:
+        "M2 6h2.45L2.908 7.639A1.5 1.5 0 0 0 3.313 10H2"
+        + "m8.595-2-.308 1H12a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H9.276l-.942 1H12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"
+
+    readonly property string chargingShellC:
+        "M12 10h-1.783l1.542-1.639q.146-.156.241-.34"
+        + "m0-3.354V6h-.646a1.5 1.5 0 0 1 .646.646"
+        + "M16 8a1.5 1.5 0 0 1-1.5 1.5v-3A1.5 1.5 0 0 1 16 8"
+
+    readonly property string chargingFill:
+        "M2 6h2.45L2.908 7.639A1.5 1.5 0 0 0 3.313 10H2z"
+
     Shape {
-        width: 256
-        height: 256
-        x: (root.width - width * root.glyphScale) / 2
-        y: (root.height - height * root.glyphScale) / 2
-        scale: root.glyphScale
-        transformOrigin: Item.TopLeft
+        width: 16
+        height: 16
+        anchors.centerIn: parent
+        scale: root.size / 16
+        transformOrigin: Item.Center
         preferredRendererType: Shape.CurveRenderer
 
         ShapePath {
+            visible: !root.isCharging
             fillColor: root.shellColor
             strokeWidth: 0
-            PathSvg { path: root.shellPath }
+            PathSvg { path: root.glyph === "empty" ? root.emptyShellPath : root.shellPath }
+        }
+
+        ShapePath {
+            visible: root.isCharging
+            fillColor: root.shellColor
+            strokeWidth: 0
+            PathSvg { path: root.chargingShellA }
+        }
+
+        ShapePath {
+            visible: root.isCharging
+            fillColor: root.shellColor
+            strokeWidth: 0
+            PathSvg { path: root.chargingShellB }
+        }
+
+        ShapePath {
+            visible: root.isCharging
+            fillColor: root.shellColor
+            strokeWidth: 0
+            PathSvg { path: root.chargingShellC }
         }
     }
 
     Shape {
-        width: 256
-        height: 256
-        x: (root.width - width * root.glyphScale) / 2
-        y: (root.height - height * root.glyphScale) / 2
-        scale: root.glyphScale
-        transformOrigin: Item.TopLeft
+        width: 16
+        height: 16
+        anchors.centerIn: parent
+        scale: root.size / 16
+        transformOrigin: Item.Center
         preferredRendererType: Shape.CurveRenderer
-        visible: root.juicePath.length > 0
+        visible: root.juicePath.length > 0 || root.isCharging
 
         ShapePath {
-            fillColor: root.saver ? "#ffd600" : root.color
+            visible: root.juicePath.length > 0
+            fillColor: root.fillColor
             strokeWidth: 0
             PathSvg { path: root.juicePath }
+        }
+
+        ShapePath {
+            visible: root.isCharging
+            fillColor: root.fillColor
+            strokeWidth: 0
+            PathSvg { path: root.chargingFill }
+        }
+
+        ShapePath {
+            visible: root.isCharging
+            fillColor: root.fillColor
+            strokeWidth: 0
+            PathSvg { path: root.lightningPath }
         }
     }
 }

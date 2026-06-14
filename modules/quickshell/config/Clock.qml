@@ -144,6 +144,8 @@ PanelWindow {
     readonly property bool isLow: percentage < 0.15 && !pluggedIn
 
     readonly property string glyph: {
+        if (pluggedIn)
+            return "charging"
         if (percentage >= 0.90) return "full"
         if (percentage >= 0.60) return "high"
         if (percentage >= 0.30) return "medium"
@@ -152,8 +154,7 @@ PanelWindow {
     }
 
     readonly property color batteryColor: {
-        if (isLow)      return Colors.palette.m3error
-        if (pluggedIn)  return "#4ade80"
+        if (isLow) return Colors.palette.m3error
         return "white"
     }
 
@@ -218,46 +219,8 @@ PanelWindow {
         when: wifiDevice !== null
     }
 
-    // click wifi icon to cycle glyphs; one more click after ethernet returns to live
-    property bool wifiDebug: false
-    property int wifiDebugStep: 0
-    readonly property var wifiDebugGlyphs: ["high", "medium", "low", "none", "connecting", "ethernet"]
-
-    readonly property string displayWifiGlyph: wifiDebug
-        ? wifiDebugGlyphs[wifiDebugStep]
-        : wifiGlyph
-
-    readonly property bool showWifiIcon: {
-        if (wifiDebug)
-            return wifiDebugGlyphs[wifiDebugStep] !== "ethernet"
-        return !onEthernet && wifiDevice !== null
-    }
-
-    readonly property bool showEthernetIcon: {
-        if (wifiDebug)
-            return wifiDebugGlyphs[wifiDebugStep] === "ethernet"
-        return onEthernet
-    }
-
-    function cycleWifiDebug() {
-        if (!wifiDebug) {
-            wifiDebug = true
-            wifiDebugStep = 0
-            return
-        }
-
-        const next = wifiDebugStep + 1
-        if (next >= wifiDebugGlyphs.length) {
-            wifiDebug = false
-            wifiDebugStep = 0
-            return
-        }
-
-        wifiDebugStep = next
-    }
-
-    readonly property bool showWifi: showWifiIcon
-    readonly property bool showEthernet: showEthernetIcon
+    readonly property bool showWifiIcon: !onEthernet && wifiDevice !== null
+    readonly property bool showEthernetIcon: onEthernet
 
     // same tick-step animation as the notch workspace number
     property var now: new Date()
@@ -354,7 +317,7 @@ PanelWindow {
 
             WifiIcon {
                 visible: root.showWifiIcon
-                glyph: root.wifiDebug ? root.displayWifiGlyph : root.wifiGlyph
+                glyph: root.wifiGlyph
                 color: "white"
                 shellColor: Colors.palette.m3onSurfaceVariant
                 size: 26
@@ -366,11 +329,6 @@ PanelWindow {
                 color: "white"
                 size: 28
                 anchors.centerIn: parent
-            }
-
-            TapHandler {
-                acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-                onTapped: root.cycleWifiDebug()
             }
         }
 
