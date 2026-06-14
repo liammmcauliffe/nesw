@@ -81,6 +81,7 @@ return {
     -- apps
     kbTerminal = "SUPER + Return",
     kbBrowser = "SUPER + W",
+    kbLauncher = "SUPER + space",
 
     -- misc
     kbSession = "CTRL + ALT + Delete",

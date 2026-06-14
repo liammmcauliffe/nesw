@@ -51,3 +51,4 @@ hl.layer_rule({ match = { namespace = "selection" }, animation = "fade" })
 hl.layer_rule({ match = { namespace = "launcher" }, animation = "popin 80%", blur = true })
 -- ignore_alpha keeps the blur off the transparent area under the corner fillets
 hl.layer_rule({ match = { namespace = "nesw-topbar" }, blur = true, ignore_alpha = 0.1 })
+hl.layer_rule({ match = { namespace = "nesw-launcher" }, blur = true, ignore_alpha = 0.1 })
