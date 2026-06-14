@@ -85,7 +85,7 @@ PanelWindow {
             color: "white"
             font.family: Fonts.family
             font.pixelSize: 18
-            font.weight: Fonts.weightSemiBold
+            font.weight: Fonts.weightBaseline
             anchors.verticalCenter: parent.verticalCenter
         }
     }
