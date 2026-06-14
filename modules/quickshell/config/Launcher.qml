@@ -128,6 +128,21 @@ PanelWindow {
         }
     }
 
+    // wayland only delivers clicks inside the input mask — without this the
+    // fullscreen overlay layer eats every click even when the launcher is closed
+    Item {
+        id: hitMask
+        x: 0
+        y: 0
+        width: root.open ? root.width : 0
+        height: root.open ? root.height : 0
+        visible: false
+    }
+
+    mask: Region {
+        item: hitMask
+    }
+
     // invisible full-screen hit target — click outside the card to dismiss
     MouseArea {
         anchors.fill: parent
