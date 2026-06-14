@@ -191,7 +191,7 @@ PanelWindow {
 
     readonly property string wifiGlyph: {
         if (!Networking.wifiEnabled || !Networking.wifiHardwareEnabled)
-            return "slash"
+            return "none"
         if (!activeWifi)
             return "none"
         const s = activeWifi.signalStrength
@@ -204,7 +204,7 @@ PanelWindow {
     // click wifi icon to cycle glyphs; one more click after ethernet returns to live
     property bool wifiDebug: false
     property int wifiDebugStep: 0
-    readonly property var wifiDebugGlyphs: ["high", "medium", "low", "none", "slash", "ethernet"]
+    readonly property var wifiDebugGlyphs: ["high", "medium", "low", "none", "ethernet"]
 
     readonly property string displayWifiGlyph: wifiDebug
         ? wifiDebugGlyphs[wifiDebugStep]
