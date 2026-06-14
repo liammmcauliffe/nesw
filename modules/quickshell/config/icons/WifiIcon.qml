@@ -15,15 +15,16 @@ Item {
     width: size
     height: size
 
-    readonly property real glyphScale: size / 288
+    readonly property real glyphScale: size / 34
+    readonly property real viewBoxY: 5 // viewBox origin is 0 -5
     readonly property bool isConnecting: root.glyph === "connecting"
 
     property int connectFrame: 0
 
-    // phosphor fill wifi-high — inner + mid arcs + dot (no outer arc)
-    readonly property string dotPath: "M144,204a16,16,0,1,1-16-16A16,16,0,0,1,144,204"
-    readonly property string barInner: "M175.07,155.3a80.05,80.05,0,0,0-94.14,0,12,12,0,0,0,14.14,19.4,56,56,0,0,1,65.86,0,12,12,0,1,0,14.14-19.4Z"
-    readonly property string barMid: "M207.45,119.64a128,128,0,0,0-158.9,0,12,12,0,0,0,14.9,18.81,104,104,0,0,1,129.1,0,12,12,0,0,0,14.9-18.81"
+    // fontisto wifi — outer arc omitted (same 2-bar + dot layout as before)
+    readonly property string dotPath: "M16.807,27.2a1.6,1.6,0,1,1,0,3.2a1.6,1.6,0,1,1,0,-3.2"
+    readonly property string barInner: "m16.815 24 5.475-5.415-.87-.713c-1.188-.938-2.708-1.505-4.359-1.505-.089 0-.178.002-.266.005h.013c-.02 0-.043 0-.066 0-1.712 0-3.293.563-4.567 1.515l.02-.014-.862.713.795.787 3.96 3.915z"
+    readonly property string barMid: "m27.405 12.03c-2.783-2.531-6.498-4.08-10.575-4.08-.002 0-.005 0-.007 0h-.667l-.007.015c-3.847.159-7.313 1.674-9.958 4.076l.013-.012-.787.713 3.893 3.855.72-.63c1.791-1.606 4.171-2.587 6.78-2.587s4.989.982 6.79 2.596l-.01-.008.72.63 3.893-3.854z"
 
     function barFill(layer) {
         const active = root.color
@@ -72,10 +73,10 @@ Item {
     }
 
     Shape {
-        width: 256
-        height: 256
+        width: 34
+        height: 34
         x: (root.width - width * root.glyphScale) / 2
-        y: (root.height - height * root.glyphScale) / 2
+        y: (root.height - height * root.glyphScale) / 2 + root.viewBoxY * root.glyphScale
         scale: root.glyphScale
         transformOrigin: Item.TopLeft
         preferredRendererType: Shape.CurveRenderer
