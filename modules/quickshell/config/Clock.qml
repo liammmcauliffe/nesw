@@ -73,69 +73,30 @@ PanelWindow {
             || state === UPowerDeviceState.PendingDischarge
     }
 
-    function devicePluggedIn(device) {
+    function pluggedInFromDevice(device) {
         if (!device || !device.ready)
-            return false
+            return null
 
         if (isChargingState(device.state))
             return true
 
-        if (device.changeRate > 0.5)
-            return true
+        if (isDischargingState(device.state))
+            return false
 
-        if (device.timeToFull > 0 && device.timeToEmpty <= 0)
-            return true
-
-        const icon = device.iconName ?? ""
-        if (icon.includes("charging") || icon.includes("plugged") || icon.includes("ac-adapter"))
-            return true
-
-        return false
-    }
-
-    function linePowerOnline(device) {
-        return device.type === UPowerDeviceType.LinePower
-            && device.isPresent
-            && device.powerSupply
+        return null
     }
 
     readonly property bool pluggedIn: {
-        if (!batteryDisplay.ready)
-            return false
-
         const pb = primaryBattery
-        if (pb && pb.ready) {
-            if (isDischargingState(pb.state))
-                return false
-            if (devicePluggedIn(pb))
-                return true
-        }
+        let onAc = pluggedInFromDevice(pb)
+        if (onAc !== null)
+            return onAc
 
-        if (batteryDisplay.ready) {
-            if (isDischargingState(batteryDisplay.state))
-                return false
-            if (devicePluggedIn(batteryDisplay))
-                return true
-        }
+        onAc = pluggedInFromDevice(batteryDisplay)
+        if (onAc !== null)
+            return onAc
 
-        const list = UPower.devices.values
-
-        for (let i = 0; i < list.length; i++) {
-            if (linePowerOnline(list[i]))
-                return true
-        }
-
-        for (let i = 0; i < list.length; i++) {
-            const d = list[i]
-            if (d.type === UPowerDeviceType.Battery && d.isPresent && d.ready) {
-                if (isDischargingState(d.state))
-                    return false
-                if (devicePluggedIn(d))
-                    return true
-            }
-        }
-
-        if (UPower.onBattery)
+        if (!batteryDisplay.ready)
             return false
 
         return !UPower.onBattery
@@ -339,8 +300,8 @@ PanelWindow {
             shellColor: Colors.palette.m3onSurfaceVariant
             size: 32
             anchors.verticalCenter: parent.verticalCenter
-            Behavior on color { ColorAnimation { duration: 300 } }
-            Behavior on shellColor { ColorAnimation { duration: 300 } }
+            Behavior on color { ColorAnimation { duration: 150 } }
+            Behavior on shellColor { ColorAnimation { duration: 150 } }
         }
 
         Text {

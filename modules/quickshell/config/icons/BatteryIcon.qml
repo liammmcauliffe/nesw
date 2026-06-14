@@ -22,7 +22,7 @@ Item {
         "zm2-1a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1" +
         "zm14 3a1.5 1.5 0 0 1-1.5 1.5v-3A1.5 1.5 0 0 1 16 8"
 
-    readonly property string fillPath: {
+    readonly property string levelFill: {
         if (root.glyph === "low")    return "M2 6h2v4H2z"
         if (root.glyph === "medium") return "M2 6h5v4H2z"
         if (root.glyph === "high")   return "M2 6h8v4H2z"
@@ -45,48 +45,32 @@ Item {
         "l5.333-5.667a.5.5 0 0 1 .616-.09z " +
         "M2 6h2.45L2.908 7.639A1.5 1.5 0 0 0 3.313 10H2z"
 
+    readonly property string shellPath: root.isCharging ? root.chargingShell : root.normalShell
+    readonly property string accentPath: root.isCharging ? root.chargingAccent : root.levelFill
+
     Shape {
-        visible: !root.isCharging
         x: 0; y: 0; width: 16; height: 16
         transform: Scale { xScale: root.s; yScale: root.s }
         preferredRendererType: Shape.CurveRenderer
+
         ShapePath {
-            fillColor: root.shellColor; strokeWidth: 0
-            fillRule: ShapePath.OddEvenFill
-            PathSvg { path: root.normalShell }
+            fillColor: root.shellColor
+            strokeWidth: 0
+            fillRule: root.isCharging ? ShapePath.WindingFill : ShapePath.OddEvenFill
+            PathSvg { path: root.shellPath }
         }
     }
 
     Shape {
-        visible: !root.isCharging && root.fillPath.length > 0
         x: 0; y: 0; width: 16; height: 16
         transform: Scale { xScale: root.s; yScale: root.s }
         preferredRendererType: Shape.CurveRenderer
-        ShapePath {
-            fillColor: root.color; strokeWidth: 0
-            PathSvg { path: root.fillPath }
-        }
-    }
+        opacity: root.accentPath.length > 0 ? 1 : 0
 
-    Shape {
-        visible: root.isCharging
-        x: 0; y: 0; width: 16; height: 16
-        transform: Scale { xScale: root.s; yScale: root.s }
-        preferredRendererType: Shape.CurveRenderer
         ShapePath {
-            fillColor: root.shellColor; strokeWidth: 0
-            PathSvg { path: root.chargingShell }
-        }
-    }
-
-    Shape {
-        visible: root.isCharging
-        x: 0; y: 0; width: 16; height: 16
-        transform: Scale { xScale: root.s; yScale: root.s }
-        preferredRendererType: Shape.CurveRenderer
-        ShapePath {
-            fillColor: root.color; strokeWidth: 0
-            PathSvg { path: root.chargingAccent }
+            fillColor: root.color
+            strokeWidth: 0
+            PathSvg { path: root.accentPath }
         }
     }
 }
