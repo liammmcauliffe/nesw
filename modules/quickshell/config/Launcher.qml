@@ -35,8 +35,9 @@ PanelWindow {
     readonly property int itemHeight: 70
     readonly property int maxResults: 8
     readonly property int panelRadius: 20
-    readonly property int panelPadding: 8
-    readonly property int rowRadius: panelRadius - panelPadding
+    readonly property int panelPadding: 16
+    readonly property int rowRadius: 8
+    readonly property int emptyBlockHeight: itemHeight * 2
     readonly property int openHintWidth: 96
     readonly property real panelTopMarginRatio: 0.17
 
@@ -44,7 +45,7 @@ PanelWindow {
     readonly property bool showEmpty: query.length > 0 && results.length === 0
     readonly property bool showResultsBlock: visCount > 0 || showEmpty
     readonly property int resultsHeight: showResultsBlock
-        ? panelPadding * 2 + (showEmpty ? itemHeight : visCount * itemHeight)
+        ? panelPadding * 2 + (showEmpty ? emptyBlockHeight : visCount * itemHeight)
         : 0
     readonly property int panelHeight: searchHeight + (showResultsBlock ? 1 + resultsHeight : 0)
 
@@ -195,9 +196,9 @@ PanelWindow {
             target: panelHost
             property: "scale"
             to: 1
-            duration: 460
+            duration: 220
             easing.type: Easing.OutBack
-            easing.overshoot: 1.45
+            easing.overshoot: 1.05
         }
 
         NumberAnimation {
@@ -205,7 +206,7 @@ PanelWindow {
             target: panelHost
             property: "opacity"
             to: 1
-            duration: 100
+            duration: 220
             easing.type: Easing.OutCubic
         }
 
@@ -263,7 +264,7 @@ PanelWindow {
                     anchors.left: parent.left
                     anchors.leftMargin: 70
                     anchors.right: selectedAppBadge.left
-                    anchors.rightMargin: 12
+                    anchors.rightMargin: 20
                     height: parent.height
                     verticalAlignment: TextInput.AlignVCenter
                     clip: true
@@ -400,7 +401,7 @@ PanelWindow {
                         anchors.fill: parent
                         radius: root.rowRadius
                         color: Colors.palette.m3primary
-                        opacity: appRow.active ? 0.14 : 0
+                        opacity: appRow.active ? 0.22 : 0
                         Behavior on opacity {
                             NumberAnimation {
                                 duration: 80
@@ -451,7 +452,7 @@ PanelWindow {
 
                     Column {
                         anchors.left: parent.left
-                        anchors.leftMargin: 73
+                        anchors.leftMargin: 72
                         anchors.right: parent.right
                         anchors.rightMargin: appRow.active ? root.openHintWidth : 16
                         anchors.verticalCenter: parent.verticalCenter
@@ -464,7 +465,7 @@ PanelWindow {
                             color: root.textPrimary
                             font.family: Fonts.family
                             font.pixelSize: 20
-                            font.weight: Fonts.weightBaseline
+                            font.weight: appRow.active ? Fonts.weightBold : Fonts.weightBaseline
                         }
                         Text {
                             width: parent.width
@@ -516,18 +517,22 @@ PanelWindow {
                 }
             }
 
-            Text {
+            Item {
                 anchors.top: divider.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
                 anchors.topMargin: root.panelPadding
-                anchors.bottom: parent.bottom
                 anchors.bottomMargin: root.panelPadding
-                anchors.horizontalCenter: parent.horizontalCenter
-                verticalAlignment: Text.AlignVCenter
+                anchors.bottom: parent.bottom
                 visible: root.showEmpty
-                text: "No results"
-                color: root.textSecondary
-                font.family: Fonts.family
-                font.pixelSize: 20
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "No results"
+                    color: root.textSecondary
+                    font.family: Fonts.family
+                    font.pixelSize: 20
+                }
             }
         }
     }
