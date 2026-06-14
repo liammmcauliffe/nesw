@@ -251,7 +251,7 @@ PanelWindow {
                 height: root.searchHeight
 
                 SearchIcon {
-                    size: 25
+                    size: 26
                     color: root.textSecondary
                     anchors.left: parent.left
                     anchors.leftMargin: 28
@@ -500,7 +500,7 @@ PanelWindow {
                         }
 
                         ReturnKeyIcon {
-                            size: 22
+                            size: 26
                             color: root.textSecondary
                             anchors.verticalCenter: parent.verticalCenter
                         }

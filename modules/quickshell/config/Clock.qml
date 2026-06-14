@@ -272,8 +272,8 @@ PanelWindow {
         Item {
             id: networkIcon
             visible: root.showWifiIcon || root.showEthernetIcon
-            width: root.showWifiIcon ? 26 : 28
-            height: root.showWifiIcon ? 26 : 28
+            width: 26
+            height: 26
             anchors.verticalCenter: parent.verticalCenter
 
             WifiIcon {
@@ -288,7 +288,7 @@ PanelWindow {
             EthernetIcon {
                 visible: root.showEthernetIcon
                 color: "white"
-                size: 28
+                size: 26
                 anchors.centerIn: parent
             }
         }
@@ -298,7 +298,7 @@ PanelWindow {
             glyph: root.glyph
             color: root.batteryColor
             shellColor: Colors.palette.m3onSurfaceVariant
-            size: 32
+            size: 26
             anchors.verticalCenter: parent.verticalCenter
             Behavior on color { ColorAnimation { duration: 150 } }
             Behavior on shellColor { ColorAnimation { duration: 150 } }
