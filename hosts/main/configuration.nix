@@ -14,6 +14,7 @@
   networking.hostName = "main"; # must match the flake target
   networking.networkmanager.enable = true;
   time.timeZone = "America/New_York";
+  environment.variables.TZ = config.time.timeZone;
   i18n.defaultLocale = "en_US.UTF-8";
 
   # enable flakes

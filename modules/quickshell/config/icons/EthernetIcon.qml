@@ -7,7 +7,7 @@ Item {
     id: root
 
     property color color: "white"
-    property int size: 32
+    property int size: 24
 
     width: size
     height: size
@@ -25,8 +25,8 @@ Item {
         }
 
         transform: Scale {
-            xScale: root.size / 256
-            yScale: root.size / 256
+            xScale: root.size / 288
+            yScale: root.size / 288
         }
     }
 }

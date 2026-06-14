@@ -271,14 +271,14 @@ PanelWindow {
             glyph: root.wifiGlyph
             color: "white"
             shellColor: Colors.palette.m3onSurfaceVariant
-            size: 32
+            size: 24
             anchors.verticalCenter: parent.verticalCenter
         }
 
         EthernetIcon {
             visible: root.showEthernet
             color: "white"
-            size: 32
+            size: 24
             anchors.verticalCenter: parent.verticalCenter
         }
 
