@@ -47,6 +47,7 @@ PanelWindow {
     readonly property PwNode audioSink: Pipewire.defaultAudioSink
     readonly property real volume: audioSink && audioSink.audio ? audioSink.audio.volume : 0
     readonly property bool muted: audioSink && audioSink.audio ? audioSink.audio.muted : false
+    readonly property real volumeStep: 0.05
 
     // audioMode swaps the notch content from the workspace ruler to the volume hud
     property bool audioMode: false
@@ -174,6 +175,10 @@ PanelWindow {
         audioMode = true
         expanded = true
         audioTimer.restart()
+    }
+
+    function bumpVolume(delta) {
+        setVolume(volume + delta)
     }
 
     function animateSlideTo(ws) {
@@ -455,20 +460,44 @@ PanelWindow {
                 NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
             }
 
-            VolumeIcon {
-                id: volIconMin
-                glyph: "none"
-                size: 20
+            Item {
+                width: volIconMin.size + 8
+                height: parent.height
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
+
+                VolumeIcon {
+                    id: volIconMin
+                    glyph: "none"
+                    size: 20
+                    anchors.centerIn: parent
+                }
+
+                TapHandler {
+                    enabled: root.audioMode
+                    acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                    onTapped: root.bumpVolume(-root.volumeStep)
+                }
             }
 
-            VolumeIcon {
-                id: volIconMax
-                glyph: "high"
-                size: 20
+            Item {
+                width: volIconMax.size + 8
+                height: parent.height
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
+
+                VolumeIcon {
+                    id: volIconMax
+                    glyph: "high"
+                    size: 20
+                    anchors.centerIn: parent
+                }
+
+                TapHandler {
+                    enabled: root.audioMode
+                    acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                    onTapped: root.bumpVolume(root.volumeStep)
+                }
             }
 
             Item {
@@ -577,7 +606,7 @@ PanelWindow {
         // focused workspace is left untouched
         DragHandler {
             id: wsDrag
-            enabled: !root.audioMode
+            enabled: root.expanded && !root.audioMode
             target: null
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
 
@@ -588,7 +617,6 @@ PanelWindow {
                     slideAnim.stop()
                     wsDrag.startOffset = root.slideOffset
                     collapseTimer.stop()
-                    root.expanded = true
                 } else {
                     root.commitWorkspaceDrag()
                 }

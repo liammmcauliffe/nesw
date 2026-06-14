@@ -26,7 +26,15 @@ PanelWindow {
     readonly property int sideMargin: 24
     readonly property int clockFontSize: 18
 
-    mask: Region {}
+    Item {
+        id: hitMask
+        anchors.fill: parent
+        visible: false
+    }
+
+    mask: Region {
+        item: hitMask
+    }
 
     // battery — DisplayDevice/onBattery lie on some machines; fall through several checks
     readonly property var batteryDisplay: UPower.displayDevice
@@ -205,15 +213,19 @@ PanelWindow {
     function cycleWifiDebug() {
         if (!wifiDebug) {
             wifiDebug = true
+            const idx = wifiDebugGlyphs.indexOf(wifiGlyph)
+            wifiDebugStep = idx >= 0 ? (idx + 1) % wifiDebugGlyphs.length : 0
+            return
+        }
+
+        const next = wifiDebugStep + 1
+        if (next >= wifiDebugGlyphs.length) {
+            wifiDebug = false
             wifiDebugStep = 0
             return
         }
 
-        wifiDebugStep++
-        if (wifiDebugStep >= wifiDebugGlyphs.length) {
-            wifiDebug = false
-            wifiDebugStep = 0
-        }
+        wifiDebugStep = next
     }
 
     readonly property bool showWifi: !onEthernet && wifiDevice !== null
@@ -319,9 +331,9 @@ PanelWindow {
                 size: 28
             }
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: root.cycleWifiDebug()
+            TapHandler {
+                acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                onTapped: root.cycleWifiDebug()
             }
         }
 
