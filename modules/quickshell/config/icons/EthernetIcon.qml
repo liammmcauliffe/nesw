@@ -7,7 +7,7 @@ Item {
     id: root
 
     property color color: "white"
-    property int size: 24
+    property int size: 28
 
     width: size
     height: size

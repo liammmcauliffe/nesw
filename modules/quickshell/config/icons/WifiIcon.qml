@@ -10,7 +10,7 @@ Item {
     property string glyph: "high"
     property color color: "white"
     property color shellColor: "#a1a1aa"
-    property int size: 24
+    property int size: 28
 
     width: size
     height: size

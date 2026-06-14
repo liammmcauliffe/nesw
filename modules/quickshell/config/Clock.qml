@@ -193,6 +193,29 @@ PanelWindow {
         return "none"
     }
 
+    // click wifi icon to cycle glyphs; one more click after slash returns to live
+    property bool wifiDebug: false
+    property int wifiDebugStep: 0
+    readonly property var wifiDebugGlyphs: ["high", "medium", "low", "none", "slash"]
+
+    readonly property string displayWifiGlyph: wifiDebug
+        ? wifiDebugGlyphs[wifiDebugStep]
+        : wifiGlyph
+
+    function cycleWifiDebug() {
+        if (!wifiDebug) {
+            wifiDebug = true
+            wifiDebugStep = 0
+            return
+        }
+
+        wifiDebugStep++
+        if (wifiDebugStep >= wifiDebugGlyphs.length) {
+            wifiDebug = false
+            wifiDebugStep = 0
+        }
+    }
+
     readonly property bool showWifi: !onEthernet && wifiDevice !== null
     readonly property bool showEthernet: onEthernet
 
@@ -282,19 +305,30 @@ PanelWindow {
         spacing: 28
         y: root.borderWidth + (root.notchHeight - root.borderWidth - height) / 2
 
-        WifiIcon {
-            visible: root.showWifi
-            glyph: root.wifiGlyph
-            color: "white"
-            shellColor: Colors.palette.m3onSurfaceVariant
-            size: 24
+        Item {
+            visible: root.showWifi || root.wifiDebug
+            width: wifiIcon.width
+            height: wifiIcon.height
             anchors.verticalCenter: parent.verticalCenter
+
+            WifiIcon {
+                id: wifiIcon
+                glyph: root.displayWifiGlyph
+                color: "white"
+                shellColor: Colors.palette.m3onSurfaceVariant
+                size: 28
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.cycleWifiDebug()
+            }
         }
 
         EthernetIcon {
             visible: root.showEthernet
             color: "white"
-            size: 24
+            size: 28
             anchors.verticalCenter: parent.verticalCenter
         }
 
