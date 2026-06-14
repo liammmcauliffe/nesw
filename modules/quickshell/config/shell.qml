@@ -1,4 +1,4 @@
-import Quickshell 1.0
+import Quickshell
 
 ShellRoot {
     TopBar {}

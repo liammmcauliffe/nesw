@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Shapes 1.15
-import Quickshell 1.0
-import Quickshell.Wayland 1.0
+import Quickshell
+import Quickshell.Wayland
 
 PanelWindow {
     id: root

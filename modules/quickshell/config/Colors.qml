@@ -2,8 +2,8 @@ pragma Singleton
 pragma ComponentBehavior: Bound
 
 import QtQuick 2.15
-import Quickshell 1.0
-import Quickshell.Io 1.0
+import Quickshell
+import Quickshell.Io
 
 // the palette ships with dark defaults and is hot-reloaded from a generated
 // scheme.json (e.g. produced by matugen/wallust) when present
