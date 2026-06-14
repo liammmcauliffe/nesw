@@ -53,6 +53,11 @@ PanelWindow {
     // armed after startup so the initial pipewire sync doesn't pop the hud
     property bool audioReady: false
 
+    readonly property bool inSpecialWs: {
+        const ws = Hyprland.focusedWorkspace;
+        return ws ? ws.id < 0 : false;
+    }
+
     // volume/muted are invalid unless the node is bound; tracking binds it
     PwObjectTracker {
         objects: [root.audioSink]
@@ -229,6 +234,57 @@ PanelWindow {
 
     mask: Region {
         item: hitMask
+    }
+
+    // special workspace glow — stroked outline behind the solid notch
+    Shape {
+        id: glowShape
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        width: root.notchWidth + root.notchRadius * 2
+        height: root.notchHeight
+        preferredRendererType: Shape.CurveRenderer
+
+        opacity: root.inSpecialWs ? 0.45 : 0
+        Behavior on opacity {
+            NumberAnimation { duration: 350; easing.type: Easing.OutCubic }
+        }
+
+        ShapePath {
+            fillColor: "transparent"
+            strokeColor: Colors.palette.m3primary
+            strokeWidth: 4
+
+            startX: 0
+            startY: 0
+            PathLine { x: 0; y: root.borderWidth }
+            PathArc {
+                x: root.notchRadius; y: root.borderWidth + root.notchRadius
+                radiusX: root.notchRadius; radiusY: root.notchRadius
+                direction: PathArc.Clockwise
+            }
+            PathLine { x: root.notchRadius; y: root.notchHeight - root.notchRadius }
+            PathArc {
+                x: root.notchRadius * 2; y: root.notchHeight
+                radiusX: root.notchRadius; radiusY: root.notchRadius
+                direction: PathArc.Counterclockwise
+            }
+            PathLine { x: glowShape.width - root.notchRadius * 2; y: root.notchHeight }
+            PathArc {
+                x: glowShape.width - root.notchRadius; y: root.notchHeight - root.notchRadius
+                radiusX: root.notchRadius; radiusY: root.notchRadius
+                direction: PathArc.Counterclockwise
+            }
+            PathLine { x: glowShape.width - root.notchRadius; y: root.borderWidth + root.notchRadius }
+            PathArc {
+                x: glowShape.width; y: root.borderWidth
+                radiusX: root.notchRadius; radiusY: root.notchRadius
+                direction: PathArc.Clockwise
+            }
+            PathLine { x: glowShape.width; y: 0 }
+            PathLine { x: 0; y: 0 }
+        }
     }
 
     // shape
