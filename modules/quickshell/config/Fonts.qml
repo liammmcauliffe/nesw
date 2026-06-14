@@ -15,4 +15,7 @@ Singleton {
     readonly property int weightBaseline: Font.Medium
     readonly property int weightSemiBold: Font.DemiBold
     readonly property int weightBold: Font.Bold
+
+    // equal-width digits — clock splits each digit into its own cell
+    readonly property var featuresTabular: ({ "tnum": 1 })
 }

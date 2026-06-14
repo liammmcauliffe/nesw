@@ -214,6 +214,7 @@ PanelWindow {
                         font.family: Fonts.family
                         font.pixelSize: root.clockFontSize
                         font.weight: Fonts.weightBaseline
+                        font.features: Fonts.featuresTabular
                     }
                 }
             }

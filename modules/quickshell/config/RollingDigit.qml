@@ -9,6 +9,7 @@ Item {
     property string family: Fonts.family
     property int fontWeight: Fonts.weightBaseline
     property color color: "white"
+    property var fontFeatures: Fonts.featuresTabular
 
     readonly property real lineHeight: measureLine.height
 
@@ -25,6 +26,7 @@ Item {
         font.pixelSize: root.fontSize
         font.family: root.family
         font.weight: root.fontWeight
+        font.features: root.fontFeatures
         text: "0"
     }
 
@@ -34,6 +36,7 @@ Item {
         font.pixelSize: root.fontSize
         font.family: root.family
         font.weight: root.fontWeight
+        font.features: root.fontFeatures
         text: "0"
     }
 
@@ -81,13 +84,14 @@ Item {
                 required property int index
                 width: root.implicitWidth
                 height: root.lineHeight
-                horizontalAlignment: Text.AlignHCenter
+                horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
                 text: index % 10
                 color: root.color
                 font.pixelSize: root.fontSize
                 font.family: root.family
                 font.weight: root.fontWeight
+                font.features: root.fontFeatures
             }
         }
     }
