@@ -20,17 +20,14 @@ Item {
         transformOrigin: Item.Center
         preferredRendererType: Shape.CurveRenderer
 
-        // matches masked SVG: rounded square with port + pin cutouts
         ShapePath {
             fillColor: root.color
             strokeWidth: 0
             fillRule: ShapePath.OddEvenFill
+            
             PathSvg {
-                path: "M9,6 H39 A3,3 0 0 1 42,9 V39 A3,3 0 0 1 39,42 H9 A3,3 0 0 1 6,39 V9 A3,3 0 0 1 9,6 Z"
-                    + " M14,15 H34 V27 H14 Z"
-                    + " M19,27 H29 V33 H19 Z"
-                    + " M19,15 H23 V19 H19 Z"
-                    + " M25,15 H29 V19 H25 Z"
+                path: "M9,4 H39 A5,5 0 0 1 44,9 V39 A5,5 0 0 1 39,44 H9 A5,5 0 0 1 4,39 V9 A5,5 0 0 1 9,4 Z"
+                    + " M14,13 H34 A2,2 0 0 1 36,15 V27 A2,2 0 0 1 34,29 H31 V33 A2,2 0 0 1 29,35 H19 A2,2 0 0 1 17,33 V29 H14 A2,2 0 0 1 12,27 V15 A2,2 0 0 1 14,13 Z"
             }
         }
     }
