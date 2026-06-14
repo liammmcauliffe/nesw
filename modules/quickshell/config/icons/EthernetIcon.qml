@@ -20,7 +20,7 @@ Item {
         transformOrigin: Item.Center
         preferredRendererType: Shape.CurveRenderer
 
-        // rounded square with port cutouts — single even-odd path
+        // mask-equivalent: rounded square minus port cutouts
         ShapePath {
             fillColor: root.color
             strokeWidth: 0
@@ -37,7 +37,7 @@ Item {
             strokeWidth: 4
             fillColor: "transparent"
             capStyle: ShapePath.RoundCap
-            PathSvg { path: "M21,15 V19 M27,15 V19" }
+            PathSvg { path: "M21,19 V15 M27,19 V15" }
         }
     }
 }

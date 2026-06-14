@@ -18,9 +18,9 @@ Item {
     readonly property bool isConnecting: root.glyph === "connecting"
     property int connectFrame: 0
 
-    readonly property string barOuter: "M16.807 0h-.045C10.572 0 4.942 2.4.752 6.319l.013-.012L0 7.02l3.862 3.826.72-.66c3.201-2.952 7.494-4.763 12.21-4.763s9.009 1.81 12.222 4.774l-.012-.011.72.66 3.862-3.826-.765-.713A23.3 23.3 0 0 0 16.845 0h-.041.002z"
-    readonly property string barMid: "M27.405 12.03A15.67 15.67 0 0 0 16.83 7.95h-.674l-.007.015a15.72 15.72 0 0 0-9.958 4.076l.013-.012-.787.713 3.893 3.855.72-.63c1.791-1.606 4.171-2.587 6.78-2.587s4.989.982 6.79 2.596l-.01-.008.72.63 3.893-3.854z"
-    readonly property string barInner: "m16.815 24 5.475-5.415-.87-.713a7.02 7.02 0 0 0-4.625-1.5h.013-.066a7.6 7.6 0 0 0-4.567 1.515l.02-.014-.862.713.795.787 3.96 3.915z"
+    readonly property string barOuter: "M5.465 25.035c.445.445 1.101.422 1.523-.023 5.532-5.883 12.844-8.977 21.024-8.977 8.226 0 15.562 3.117 21.07 9 .398.399 1.032.399 1.453-.047l3.118-3.117c.374-.398.374-.914.07-1.289-5.297-6.516-15.258-11.32-25.711-11.32S7.598 14.066 2.3 20.582c-.328.375-.305.89.07 1.29z"
+    readonly property string barMid: "M9.375 9.399c.469.492 1.078.445 1.523-.07 2.719-3.024 7.125-5.204 11.649-5.157 4.57-.047 8.953 2.203 11.695 5.227.445.468 1.031.468 1.477-.024l3.492-3.445c.375-.375.422-.867.07-1.266-3.398-4.195-9.703-7.289-16.734-7.289s-13.336 3.117-16.735 7.29c-.351.398-.304.866.07 1.265z"
+    readonly property string barInner: "M22.547 21.703c.492 0 .937-.258 1.804-1.101l5.485-5.274c.351-.328.422-.843.117-1.242-1.477-1.898-4.242-3.539-7.406-3.539-3.235 0-6.047 1.711-7.5 3.68-.211.328-.14.773.21 1.101l5.485 5.274c.867.843 1.313 1.101 1.805 1.101"
 
     readonly property bool _showInner: root.glyph === "high" || root.glyph === "medium" || root.glyph === "low" || (root.isConnecting && (root.connectFrame === 0 || root.connectFrame === 4))
     readonly property bool _showMid:   root.glyph === "high" || root.glyph === "medium" || (root.isConnecting && (root.connectFrame === 1 || root.connectFrame === 3))
@@ -38,14 +38,12 @@ Item {
     }
 
     Shape {
-        width: 34
-        height: 34
+        width: 56
+        height: 56
         anchors.centerIn: parent
-        scale: root.size / 34
+        scale: root.size / 56
         transformOrigin: Item.Center
         preferredRendererType: Shape.CurveRenderer
-
-        transform: Translate { x: 0; y: 5 }
 
         ShapePath {
             fillColor: root._showOuter ? root.color : root.shellColor
