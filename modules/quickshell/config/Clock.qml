@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.UPower
+import Quickshell.Networking
 import "icons"
 
 PanelWindow {
@@ -148,6 +149,53 @@ PanelWindow {
         return "white"
     }
 
+    readonly property var wifiDevice: {
+        const list = Networking.devices.values
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].type === DeviceType.Wifi)
+                return list[i]
+        }
+        return null
+    }
+
+    readonly property var ethernetDevice: {
+        const list = Networking.devices.values
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].type === DeviceType.Wired)
+                return list[i]
+        }
+        return null
+    }
+
+    readonly property bool onEthernet: ethernetDevice && ethernetDevice.connected
+
+    readonly property var activeWifi: {
+        const dev = wifiDevice
+        if (!dev)
+            return null
+        const nets = dev.networks.values
+        for (let i = 0; i < nets.length; i++) {
+            if (nets[i].connected)
+                return nets[i]
+        }
+        return null
+    }
+
+    readonly property string wifiGlyph: {
+        if (!Networking.wifiEnabled || !Networking.wifiHardwareEnabled)
+            return "slash"
+        if (!activeWifi)
+            return "none"
+        const s = activeWifi.signalStrength
+        if (s >= 0.75) return "high"
+        if (s >= 0.50) return "medium"
+        if (s >= 0.25) return "low"
+        return "none"
+    }
+
+    readonly property bool showWifi: !onEthernet && wifiDevice !== null
+    readonly property bool showEthernet: onEthernet
+
     // same tick-step animation as the notch workspace number
     property real minuteSlide: 0
     property bool clockReady: false
@@ -217,6 +265,22 @@ PanelWindow {
         anchors.rightMargin: root.sideMargin
         spacing: 28
         y: root.borderWidth + (root.notchHeight - root.borderWidth - height) / 2
+
+        WifiIcon {
+            visible: root.showWifi
+            glyph: root.wifiGlyph
+            color: "white"
+            shellColor: Colors.palette.m3onSurfaceVariant
+            size: 32
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        EthernetIcon {
+            visible: root.showEthernet
+            color: "white"
+            size: 32
+            anchors.verticalCenter: parent.verticalCenter
+        }
 
         BatteryIcon {
             visible: root.showBattery
