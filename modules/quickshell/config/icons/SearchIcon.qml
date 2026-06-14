@@ -1,7 +1,7 @@
 pragma ComponentBehavior: Bound
 
-import QtQuick
-import QtQuick.Shapes
+import QtQuick 2.15
+import QtQuick.Shapes 1.15
 
 // phosphor fill-weight magnifying-glass glyph
 Item {

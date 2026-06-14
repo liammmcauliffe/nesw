@@ -32,27 +32,27 @@ for i = 1, 10 do
 end
 
 -- go to workspace -1/+1
-hl.bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "-1" }))
-hl.bind("SUPER + mouse_up", hl.dsp.focus({ workspace = "+1" }))
+hl.bind(vars.kbNextWsMouse, hl.dsp.focus({ workspace = "-1" }))
+hl.bind(vars.kbPrevWsMouse, hl.dsp.focus({ workspace = "+1" }))
 hl.bind(vars.kbPrevWs, hl.dsp.focus({ workspace = "-1" }), { repeating = true })
 hl.bind(vars.kbNextWs, hl.dsp.focus({ workspace = "+1" }), { repeating = true })
 hl.bind("SUPER + Page_Up", hl.dsp.focus({ workspace = "-1" }), { repeating = true })
 hl.bind("SUPER + Page_Down", hl.dsp.focus({ workspace = "+1" }), { repeating = true })
 
 -- go to workspace group -1/+1
-hl.bind("CTRL + SUPER + mouse_down", hl.dsp.focus({ workspace = "-10" }))
-hl.bind("CTRL + SUPER + mouse_up", hl.dsp.focus({ workspace = "+10" }))
+hl.bind(vars.kbNextWsGroupMouse, hl.dsp.focus({ workspace = "-10" }))
+hl.bind(vars.kbPrevWsGroupMouse, hl.dsp.focus({ workspace = "+10" }))
 hl.bind("SUPER + grave", ws_jump(-10))
 hl.bind("SUPER + Minus", ws_jump(10))
 
 -- toggle special workspace
-hl.bind("SUPER + S", hl.dsp.workspace.toggle_special("special"))
+hl.bind(vars.kbToggleSpecialWs, hl.dsp.workspace.toggle_special("special"))
 
 -- move window to workspace -1/+1
 hl.bind("SUPER + ALT + Page_Up", hl.dsp.window.move({ workspace = "-1" }), { repeating = true })
 hl.bind("SUPER + ALT + Page_Down", hl.dsp.window.move({ workspace = "+1" }), { repeating = true })
-hl.bind("SUPER + ALT + mouse_down", hl.dsp.window.move({ workspace = "-1" }))
-hl.bind("SUPER + ALT + mouse_up", hl.dsp.window.move({ workspace = "+1" }))
+hl.bind(vars.kbMoveWinNextWsMouse, hl.dsp.window.move({ workspace = "-1" }))
+hl.bind(vars.kbMoveWinPrevWsMouse, hl.dsp.window.move({ workspace = "+1" }))
 hl.bind("CTRL + SUPER + SHIFT + right", hl.dsp.window.move({ workspace = "+1" }), { repeating = true })
 hl.bind("CTRL + SUPER + SHIFT + left", hl.dsp.window.move({ workspace = "-1" }), { repeating = true })
 

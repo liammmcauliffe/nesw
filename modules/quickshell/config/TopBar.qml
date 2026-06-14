@@ -1,7 +1,7 @@
-import QtQuick
-import QtQuick.Shapes
-import Quickshell
-import Quickshell.Wayland
+import QtQuick 2.15
+import QtQuick.Shapes 1.15
+import Quickshell 1.0
+import Quickshell.Wayland 1.0
 
 // translucent dark band across the top of the screen, blurred by hyprland
 // (see the nesw-topbar layer rule). sits beneath the notch and clock so the

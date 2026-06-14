@@ -1,5 +1,9 @@
 local vars = require("variables")
 
+local home = os.getenv("HOME") or ""
+local nesw_dir = os.getenv("NESW_DIR") or (home .. "/nesw")
+hl.env("NESW_DIR", nesw_dir)
+
 -- theme
 hl.env("QT_QPA_PLATFORMTHEME", "qtengine")
 hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")

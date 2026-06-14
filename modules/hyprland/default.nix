@@ -20,6 +20,9 @@
   wayland.windowManager.hyprland = {
     enable = true;
   };
+  # Symlink the Lua config tree into ~/.config/hypr for rapid iteration without
+  # a full rebuild. If Hyprland's native Nix module gains better Lua support,
+  # this could be migrated to Nix-generated settings instead.
   xdg.configFile."hypr" = {
     source = ./.;
     recursive = true;

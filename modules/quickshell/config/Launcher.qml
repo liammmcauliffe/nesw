@@ -1,9 +1,9 @@
 pragma ComponentBehavior: Bound
 
-import QtQuick
-import Quickshell
-import Quickshell.Wayland
-import Quickshell.Io
+import QtQuick 2.15
+import Quickshell 1.0
+import Quickshell.Wayland 1.0
+import Quickshell.Io 1.0
 import "icons"
 
 // spotlight-style app launcher: a floating neutral card, no dimmed backdrop.

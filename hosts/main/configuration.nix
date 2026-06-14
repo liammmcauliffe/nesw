@@ -1,4 +1,4 @@
-{ config, pkgs, hyprland, ... }:
+{ config, pkgs, hyprland, userName, ... }:
 
 {
   imports = [ ./hardware-configuration.nix ];
@@ -79,8 +79,7 @@
     nerd-fonts.jetbrains-mono
   ];
 
-  # hardcode your username here (e.g. "liam")
-  users.users."liam" = {
+  users.users.${userName} = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
     shell = pkgs.fish;

@@ -1,12 +1,11 @@
 pragma ComponentBehavior: Bound
 
-import QtQuick
-import QtQuick.Shapes
-import Quickshell
-import Quickshell.Wayland
-import Quickshell.Hyprland
-import Quickshell.Services.Pipewire
-import "icons"
+import QtQuick 2.15
+import QtQuick.Shapes 1.15
+import Quickshell 1.0
+import Quickshell.Wayland 1.0
+import Quickshell.Hyprland 1.0
+import Quickshell.Services.Pipewire 1.0
 
 PanelWindow {
     id: root
@@ -17,7 +16,7 @@ PanelWindow {
     anchors.left: true
     anchors.right: true
 
-    implicitHeight: hitHeight
+    implicitHeight: Constants.hitHeight
     color: "transparent"
 
     WlrLayershell.layer: WlrLayer.Top
@@ -25,29 +24,13 @@ PanelWindow {
     // always equal the window-to-border gap on the sides/bottom: both come
     // out to (gaps_out - borderWidth), so they stay in sync however hyprland
     // gaps are tuned
-    exclusiveZone: notchHeight - borderWidth
+    exclusiveZone: Constants.notchHeight - Constants.borderWidth
     WlrLayershell.namespace: "nesw-notch"
-
-    // notch
-    readonly property int minWidth: 300
-    readonly property int maxWidth: 360
-    readonly property int notchHeight: 40
-    readonly property int notchRadius: 15
-    readonly property int borderWidth: 6
-    readonly property int notchPadding: 16
-    readonly property int hitHeight: 120
-    readonly property color notchColor: "black"
-
-    // ruler
-    readonly property int stepPx: 46
-    readonly property int rulerBuffer: 5
-    readonly property int frameInset: 4
 
     // audio
     readonly property PwNode audioSink: Pipewire.defaultAudioSink
     readonly property real volume: audioSink && audioSink.audio ? audioSink.audio.volume : 0
     readonly property bool muted: audioSink && audioSink.audio ? audioSink.audio.muted : false
-    readonly property real volumeStep: 0.05
 
     // audioMode swaps the notch content from the workspace ruler to the volume hud
     property bool audioMode: false
@@ -89,11 +72,11 @@ PanelWindow {
     onMutedChanged: showAudio()
 
     property bool expanded: false
-    property real notchWidth: Math.min(maxWidth, Math.max(minWidth, expanded ? maxWidth : minWidth))
+    property real notchWidth: Math.min(Constants.maxWidth, Math.max(Constants.minWidth, expanded ? Constants.maxWidth : Constants.minWidth))
     property real slideOffset: 0
 
     // workspace whose tick sits at the center notch (counts up as ticks pass under)
-    readonly property int displayNumber: Math.max(1, Math.round(1 - slideOffset / stepPx))
+    readonly property int displayNumber: Math.max(1, Math.round(1 - slideOffset / Constants.stepPx))
 
     readonly property int activeWs: {
         const ws = Hyprland.focusedWorkspace;
@@ -122,13 +105,13 @@ PanelWindow {
         return s;
     }
 
-    readonly property int rulerMax: Math.max(activeWs, maxOccupied, displayNumber) + rulerBuffer
+    readonly property int rulerMax: Math.max(activeWs, maxOccupied, displayNumber) + Constants.rulerBuffer
 
     property bool slideReady: false
 
     Component.onCompleted: {
         Hyprland.refreshMonitors();
-        slideOffset = -(activeWs - 1) * stepPx
+        slideOffset = -(activeWs - 1) * Constants.stepPx
         slideReady = true
     }
 
@@ -182,7 +165,7 @@ PanelWindow {
     }
 
     function animateSlideTo(ws) {
-        const target = -(ws - 1) * stepPx
+        const target = -(ws - 1) * Constants.stepPx
         const fromWs = displayNumber
 
         if (Math.abs(slideOffset - target) < 0.5) {
@@ -209,7 +192,7 @@ PanelWindow {
         slideAnim.stop()
         slideAnim.duration = 160
         slideAnim.from = slideOffset
-        slideAnim.to = -(ws - 1) * stepPx
+        slideAnim.to = -(ws - 1) * Constants.stepPx
         slideAnim.start()
         goToWorkspace(ws)
     }
@@ -228,7 +211,7 @@ PanelWindow {
         id: audioTimer
         interval: 2000
         onTriggered: {
-            if (hoverHandler.hovered || audioDrag.containsMouse) {
+            if (hoverHandler.hovered || audioHud.dragContainsMouse) {
                 restart();
                 return;
             }
@@ -272,12 +255,12 @@ PanelWindow {
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
 
-        width: root.notchWidth + root.notchRadius * 2
-        height: root.notchHeight
+        width: root.notchWidth + Constants.notchRadius * 2
+        height: Constants.notchHeight
         preferredRendererType: Shape.CurveRenderer
 
         ShapePath {
-            fillColor: root.notchColor
+            fillColor: Constants.notchColor
             strokeWidth: 0
 
             startX: 0
@@ -286,57 +269,57 @@ PanelWindow {
             // left edge of the top strip
             PathLine {
                 x: 0
-                y: root.borderWidth
+                y: Constants.borderWidth
             }
 
             // S-curve: strip bottom edge flares into the left notch wall
             PathArc {
-                x: root.notchRadius
-                y: root.borderWidth + root.notchRadius
-                radiusX: root.notchRadius
-                radiusY: root.notchRadius
+                x: Constants.notchRadius
+                y: Constants.borderWidth + Constants.notchRadius
+                radiusX: Constants.notchRadius
+                radiusY: Constants.notchRadius
                 direction: PathArc.Clockwise
             }
 
             PathLine {
-                x: root.notchRadius
-                y: root.notchHeight - root.notchRadius
+                x: Constants.notchRadius
+                y: Constants.notchHeight - Constants.notchRadius
             }
 
             // bottom-left rounded corner
             PathArc {
-                x: root.notchRadius * 2
-                y: root.notchHeight
-                radiusX: root.notchRadius
-                radiusY: root.notchRadius
+                x: Constants.notchRadius * 2
+                y: Constants.notchHeight
+                radiusX: Constants.notchRadius
+                radiusY: Constants.notchRadius
                 direction: PathArc.Counterclockwise
             }
 
             PathLine {
-                x: shape.width - root.notchRadius * 2
-                y: root.notchHeight
+                x: shape.width - Constants.notchRadius * 2
+                y: Constants.notchHeight
             }
 
             // bottom-right rounded corner
             PathArc {
-                x: shape.width - root.notchRadius
-                y: root.notchHeight - root.notchRadius
-                radiusX: root.notchRadius
-                radiusY: root.notchRadius
+                x: shape.width - Constants.notchRadius
+                y: Constants.notchHeight - Constants.notchRadius
+                radiusX: Constants.notchRadius
+                radiusY: Constants.notchRadius
                 direction: PathArc.Counterclockwise
             }
 
             PathLine {
-                x: shape.width - root.notchRadius
-                y: root.borderWidth + root.notchRadius
+                x: shape.width - Constants.notchRadius
+                y: Constants.borderWidth + Constants.notchRadius
             }
 
             // S-curve back up to the strip's bottom edge
             PathArc {
                 x: shape.width
-                y: root.borderWidth
-                radiusX: root.notchRadius
-                radiusY: root.notchRadius
+                y: Constants.borderWidth
+                radiusX: Constants.notchRadius
+                radiusY: Constants.notchRadius
                 direction: PathArc.Clockwise
             }
 
@@ -350,9 +333,9 @@ PanelWindow {
     Item {
         id: content
         anchors.horizontalCenter: parent.horizontalCenter
-        y: root.borderWidth
-        width: root.notchWidth - root.notchPadding * 2
-        height: root.notchHeight - root.borderWidth
+        y: Constants.borderWidth
+        width: root.notchWidth - Constants.notchPadding * 2
+        height: Constants.notchHeight - Constants.borderWidth
         clip: true
 
         // in audio mode the slider needs pointer events, so lift content above
@@ -364,194 +347,26 @@ PanelWindow {
             NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
         }
 
-        Row {
-            id: strip
-            height: parent.height
-            x: content.width / 2 - root.stepPx / 2 + root.slideOffset
-
-            opacity: root.expanded && !root.audioMode ? 1 : 0
-            Behavior on opacity {
-                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
-            }
-
-            Repeater {
-                model: root.rulerMax
-
-                delegate: Item {
-                    id: tick
-                    required property int index
-
-                    readonly property int wsNumber: index + 1
-                    readonly property bool isActive: wsNumber === root.displayNumber
-                    readonly property bool isOccupied: root.occupied[wsNumber] === true
-
-                    width: root.stepPx
-                    height: content.height
-
-                    Repeater {
-                        // +3 fills the midpoint to the next workspace tick
-                        model: [-2, -1, 1, 2, 3]
-
-                        delegate: Rectangle {
-                            required property int modelData
-
-                            // hide the sub-ticks before the first workspace
-                            visible: !(tick.wsNumber === 1 && modelData < 0)
-
-                            width: 1
-                            height: 6
-                            radius: 0.5
-                            color: root.inSpecialWs ? Colors.palette.m3tertiary : Colors.palette.m3onSurfaceVariant
-                            opacity: 0.3
-                            x: tick.width / 2 + modelData * (root.stepPx / 6) - width / 2
-                            anchors.verticalCenter: tick.verticalCenter
-                        }
-                    }
-
-                    Rectangle {
-                        width: 2
-                        height: tick.isActive ? content.height - root.frameInset * 2
-                              : tick.isOccupied ? 14 : 9
-                        radius: 1
-                        color: root.inSpecialWs ? Colors.palette.m3tertiary
-                             : tick.isActive ? Colors.palette.m3primary
-                             : tick.isOccupied ? Colors.palette.m3onSurface
-                             : Colors.palette.m3onSurfaceVariant
-                        opacity: tick.isActive || tick.isOccupied ? 1 : 0.5
-                        anchors.horizontalCenter: tick.horizontalCenter
-                        anchors.verticalCenter: tick.verticalCenter
-
-                        Behavior on height {
-                            NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
-                        }
-
-                        Behavior on color {
-                            ColorAnimation { duration: 180 }
-                        }
-                    }
-                }
-            }
+        WorkspaceRuler {
+            anchors.fill: parent
+            slideOffset: root.slideOffset
+            expanded: root.expanded
+            audioMode: root.audioMode
+            inSpecialWs: root.inSpecialWs
+            displayNumber: root.displayNumber
+            rulerMax: root.rulerMax
+            occupied: root.occupied
         }
 
-        Text {
-            text: root.inSpecialWs ? "S" : root.displayNumber
-            color: Colors.palette.m3primary
-            font.family: Fonts.family
-            font.pixelSize: Fonts.sizeNotch
-            font.weight: Fonts.weightBold
-            anchors.left: content.horizontalCenter
-            anchors.leftMargin: 6
-            anchors.verticalCenter: content.verticalCenter
-
-            opacity: root.expanded && !root.audioMode ? 1 : 0
-            Behavior on opacity {
-                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
-            }
-        }
-
-        // audio hud: static speaker glyphs flank a draggable level bar tinted
-        // with the workspace accent (m3primary)
-        Item {
+        AudioHud {
             id: audioHud
             anchors.fill: parent
-            visible: opacity > 0
-            opacity: root.expanded && root.audioMode ? 1 : 0
-            Behavior on opacity {
-                NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
-            }
-
-            Item {
-                id: volMinHit
-                width: volIconMin.size + 8
-                height: parent.height
-                anchors.left: parent.left
-                anchors.verticalCenter: parent.verticalCenter
-
-                VolumeIcon {
-                    id: volIconMin
-                    glyph: "none"
-                    size: 20
-                    anchors.centerIn: parent
-                }
-
-                TapHandler {
-                    enabled: root.audioMode
-                    acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-                    onTapped: root.bumpVolume(-root.volumeStep)
-                }
-            }
-
-            Item {
-                id: volMaxHit
-                width: volIconMax.size + 8
-                height: parent.height
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-
-                VolumeIcon {
-                    id: volIconMax
-                    glyph: "high"
-                    size: 20
-                    anchors.centerIn: parent
-                }
-
-                TapHandler {
-                    enabled: root.audioMode
-                    acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-                    onTapped: root.bumpVolume(root.volumeStep)
-                }
-            }
-
-            Item {
-                id: track
-                height: 20
-                anchors.left: volMinHit.right
-                anchors.leftMargin: 12
-                anchors.right: volMaxHit.left
-                anchors.rightMargin: 12
-                anchors.verticalCenter: parent.verticalCenter
-
-                // animate the level, not the pixel width: while the notch expands
-                // track.width keeps changing, so binding the fill to level * width
-                // lets it stretch in lockstep instead of chasing a width animation
-                // toward a target that is still moving
-                property real level: Math.max(0, Math.min(1, root.volume))
-                Behavior on level {
-                    NumberAnimation { duration: 90; easing.type: Easing.OutCubic }
-                }
-
-                Rectangle {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    height: 6
-                    radius: height / 2
-                    color: Colors.palette.m3onSurfaceVariant
-                    opacity: 0.3
-                }
-
-                Rectangle {
-                    anchors.left: parent.left
-                    anchors.verticalCenter: parent.verticalCenter
-                    height: 6
-                    radius: height / 2
-                    width: track.level * track.width
-                    color: Colors.palette.m3primary
-                    opacity: root.muted ? 0.4 : 1
-                }
-
-                MouseArea {
-                    id: audioDrag
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    preventStealing: true
-                    onPressed: mouse => root.setVolume(mouse.x / track.width)
-                    onPositionChanged: mouse => {
-                        if (audioDrag.pressed)
-                            root.setVolume(mouse.x / track.width)
-                    }
-                }
-            }
+            expanded: root.expanded
+            audioMode: root.audioMode
+            volume: root.volume
+            muted: root.muted
+            onRequestSetVolume: fraction => root.setVolume(fraction)
+            onRequestBumpVolume: delta => root.bumpVolume(delta)
         }
     }
 
@@ -561,7 +376,7 @@ PanelWindow {
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         width: root.notchWidth
-        height: root.expanded ? root.hitHeight : root.notchHeight
+        height: root.expanded ? Constants.hitHeight : Constants.notchHeight
 
         Behavior on height {
             NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
@@ -637,7 +452,7 @@ PanelWindow {
             enabled: root.expanded && !root.audioMode
             acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
             onTapped: eventPoint => {
-                const steps = Math.round((eventPoint.position.x - hit.width / 2) / root.stepPx)
+                const steps = Math.round((eventPoint.position.x - hit.width / 2) / Constants.stepPx)
                 root.goToWorkspace(root.displayNumber + steps)
             }
         }

@@ -1,0 +1,8 @@
+{ ... }: {
+  # Put machine-specific or experimental overrides here.
+  # This file is imported by hosts/main/home.nix when hosts/main/local.nix exists.
+  #
+  # Examples:
+  # home.packages = [ pkgs.somePackage ];
+  # programs.git.enable = true;
+}

@@ -1,5 +1,7 @@
 local vars = require("variables")
-local home = os.getenv("HOME")
+local home = os.getenv("HOME") or error("HOME not set")
+local nesw_dir = os.getenv("NESW_DIR") or (home .. "/nesw")
+local quickshell_config = nesw_dir .. "/modules/quickshell/config"
 
 hl.on("hyprland.start", function()
 
@@ -22,5 +24,5 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("mpris-proxy")
 
     -- shell
-    hl.exec_cmd("qs -p " .. home .. "/.config/quickshell")
+    hl.exec_cmd("qs -p " .. quickshell_config)
 end)

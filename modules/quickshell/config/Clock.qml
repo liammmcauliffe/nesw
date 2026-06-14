@@ -1,8 +1,8 @@
-import QtQuick
-import Quickshell
-import Quickshell.Wayland
-import Quickshell.Services.UPower
-import Quickshell.Networking
+import QtQuick 2.15
+import Quickshell 1.0
+import Quickshell.Wayland 1.0
+import Quickshell.Services.UPower 1.0
+import Quickshell.Networking 1.0
 import "icons"
 
 PanelWindow {

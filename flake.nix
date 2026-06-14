@@ -21,12 +21,14 @@
   outputs = { nixpkgs, hyprland, home-manager, zen-browser, quickshell, ... }:
     let
       system = "x86_64-linux";
+      # change this to your system username before the first rebuild
+      userName = "liam";
     in
     {
       # change "main" if you want a different hostname
       nixosConfigurations.main = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit hyprland; };
+        specialArgs = { inherit hyprland userName; };
         modules = [
           ./hosts/main/configuration.nix
           home-manager.nixosModules.home-manager
@@ -34,8 +36,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit zen-browser quickshell; };
-            # hardcode your username here (e.g. "liam")
-            home-manager.users."liam" = {
+            home-manager.users.${userName} = {
               imports = [ ./hosts/main/home.nix ];
               home.stateVersion = "26.05";
             };

@@ -1,8 +1,14 @@
-local home = os.getenv("HOME")
-local hyprland = home .. "/nesw/modules/hyprland"
-package.path = package.path .. ";" .. home .. "/nesw/modules/hyprland/?.lua"
+local home = os.getenv("HOME") or error("HOME not set")
+local nesw_dir = os.getenv("NESW_DIR") or (home .. "/nesw")
+local hyprland_dir = nesw_dir .. "/modules/hyprland"
+package.path = package.path
+    .. ";"
+    .. hyprland_dir
+    .. "/?.lua;"
+    .. hyprland_dir
+    .. "/?/init.lua"
 
--- os.execute("cp -L --no-preserve=mode --update=none " .. hyprland .. "/scheme/default.lua " .. hyprland .. "/scheme/current.lua")
+-- os.execute("cp -L --no-preserve=mode --update=none " .. hyprland_dir .. "/scheme/default.lua " .. hyprland_dir .. "/scheme/current.lua")
 
 hl.monitor({
     output = "",

@@ -56,6 +56,12 @@ return {
     kbGoToWsGroup = "SUPER + CTRL + ALT",
     kbNextWs = "CTRL + SUPER + Right",
     kbPrevWs = "CTRL + SUPER + Left",
+    kbNextWsMouse = "SUPER + mouse_down",
+    kbPrevWsMouse = "SUPER + mouse_up",
+    kbNextWsGroupMouse = "CTRL + SUPER + mouse_down",
+    kbPrevWsGroupMouse = "CTRL + SUPER + mouse_up",
+    kbMoveWinNextWsMouse = "SUPER + ALT + mouse_down",
+    kbMoveWinPrevWsMouse = "SUPER + ALT + mouse_up",
     kbToggleSpecialWs = "SUPER + S",
 
     -- window groups
