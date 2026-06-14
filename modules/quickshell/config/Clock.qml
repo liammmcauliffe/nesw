@@ -26,21 +26,17 @@ PanelWindow {
 
     mask: Region {}
 
-    readonly property var bat: UPower.displayDevice
-
-    readonly property bool showBattery: bat && bat.ready && bat.isLaptopBattery
+    readonly property bool showBattery: UPower.displayDevice.ready && UPower.displayDevice.isPresent
 
     readonly property bool charging: showBattery
-        ? bat.state === UPowerDeviceState.Charging
-          || bat.state === UPowerDeviceState.FullyCharged
-        : false
+        && (UPower.displayDevice.state === UPowerDeviceState.Charging
+            || UPower.displayDevice.state === UPowerDeviceState.PendingCharge)
 
-    // UPower reports 0–1, not 0–100
-    readonly property real percentage: showBattery ? bat.percentage : 0
+    readonly property bool pluggedIn: showBattery && !UPower.onBattery
 
-    readonly property int percentageText: Math.round(percentage * 100)
+    readonly property real percentage: showBattery ? UPower.displayDevice.percentage : 0
 
-    readonly property bool isLow: percentage < 0.15 && !charging
+    readonly property bool isLow: percentage < 0.15 && !pluggedIn
 
     readonly property string glyph: {
         if (percentage >= 0.90) return "full"
@@ -51,10 +47,11 @@ PanelWindow {
     }
 
     readonly property color batteryColor: {
-        if (charging) return Colors.palette.m3primary
-        if (isLow)    return Colors.palette.m3error
+        if (isLow)     return Colors.palette.m3error
         return "white"
     }
+
+    readonly property color boltColor: pluggedIn ? Colors.palette.m3primary : "white"
 
     SystemClock {
         id: clock
@@ -68,28 +65,16 @@ PanelWindow {
         spacing: 14
         y: root.borderWidth + (root.notchHeight - root.borderWidth - height) / 2
 
-        Row {
+        BatteryIcon {
             visible: root.showBattery
-            spacing: 6
-
-            BatteryIcon {
-                glyph: root.glyph
-                charging: root.charging
-                color: root.batteryColor
-                size: 16
-                anchors.verticalCenter: parent.verticalCenter
-                Behavior on color { ColorAnimation { duration: 300 } }
-            }
-
-            Text {
-                text: root.percentageText + "%"
-                color: root.batteryColor
-                font.family: Fonts.family
-                font.pixelSize: 16
-                font.weight: Fonts.weightSemiBold
-                anchors.verticalCenter: parent.verticalCenter
-                Behavior on color { ColorAnimation { duration: 300 } }
-            }
+            glyph: root.glyph
+            charging: root.charging
+            color: root.batteryColor
+            boltColor: root.boltColor
+            size: 22
+            anchors.verticalCenter: parent.verticalCenter
+            Behavior on color { ColorAnimation { duration: 300 } }
+            Behavior on boltColor { ColorAnimation { duration: 300 } }
         }
 
         Text {

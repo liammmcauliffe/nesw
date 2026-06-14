@@ -11,6 +11,7 @@ Item {
     property bool charging: false
     property bool saver: false
     property color color: "white"
+    property color boltColor: color
     property int size: 20
 
     width: size
@@ -45,20 +46,21 @@ Item {
         }
     }
 
-    // smaller bolt centered on the battery body
+    // smaller bolt centered on the battery body — accent color on white shell
     Shape {
-        readonly property real boltScale: root.glyphScale * 0.38
+        readonly property real boltScale: root.glyphScale * 0.42
         width: 256
         height: 256
         x: (root.width - width * boltScale) / 2
-        y: (root.height - height * boltScale) / 2 + root.size * 0.04
+        y: (root.height - height * boltScale) / 2 + root.size * 0.02
         scale: boltScale
         transformOrigin: Item.TopLeft
         preferredRendererType: Shape.CurveRenderer
         visible: root.charging
+        z: 1
 
         ShapePath {
-            fillColor: root.color
+            fillColor: root.boltColor
             strokeWidth: 0
             PathSvg { path: root.boltPath }
         }
