@@ -34,16 +34,21 @@ PanelWindow {
     readonly property int itemHeight: 70
     readonly property int maxResults: 8
     readonly property int panelRadius: 20
+    readonly property int panelPadding: 8
+    readonly property int rowRadius: panelRadius - panelPadding
+    readonly property int openHintWidth: 108
     readonly property real panelTopMarginRatio: 0.17
 
     readonly property int visCount: Math.min(results.length, maxResults)
-    readonly property int resultsHeight: visCount > 0 || (query.length > 0 && results.length === 0)
-        ? visCount * itemHeight + 6
+    readonly property bool showEmpty: query.length > 0 && results.length === 0
+    readonly property bool showResultsBlock: visCount > 0 || showEmpty
+    readonly property int resultsHeight: showResultsBlock
+        ? panelPadding * 2 + (showEmpty ? itemHeight : visCount * itemHeight)
         : 0
-    readonly property int panelHeight: searchHeight + (resultsHeight > 0 ? 1 + resultsHeight : 0)
+    readonly property int panelHeight: searchHeight + (showResultsBlock ? 1 + resultsHeight : 0)
 
-    // neutral chrome — black card like the notch, translucent like the top bar
-    readonly property color panelBg: "#d9000000"
+    // neutral chrome — black card, mostly opaque
+    readonly property color panelBg: "#f0000000"
     readonly property color textPrimary: "#f2f2f2"
     readonly property color textSecondary: "#888888"
     readonly property color textPlaceholder: "#555555"
@@ -166,9 +171,9 @@ PanelWindow {
             color: root.panelBg
             border.width: 1
             border.color: "#14ffffff"
+            clip: true
 
             readonly property bool hasResults: root.results.length > 0
-            readonly property bool showEmpty: !hasResults && root.query.length > 0
 
             MouseArea {
                 anchors.fill: parent
@@ -191,8 +196,8 @@ PanelWindow {
                     id: searchInput
                     anchors.left: parent.left
                     anchors.leftMargin: 70
-                    anchors.right: parent.right
-                    anchors.rightMargin: 25
+                    anchors.right: clearBtn.left
+                    anchors.rightMargin: 12
                     height: parent.height
                     verticalAlignment: TextInput.AlignVCenter
                     clip: true
@@ -238,6 +243,38 @@ PanelWindow {
                         visible: searchInput.text.length === 0
                     }
                 }
+
+                Item {
+                    id: clearBtn
+                    width: 36
+                    height: 36
+                    anchors.right: parent.right
+                    anchors.rightMargin: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: searchInput.text.length > 0
+                    opacity: visible ? 1 : 0
+                    Behavior on opacity {
+                        NumberAnimation { duration: 100 }
+                    }
+
+                    ClearIcon {
+                        size: 22
+                        color: root.textSecondary
+                        anchors.centerIn: parent
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            searchInput.text = "";
+                            root.query = "";
+                            list.currentIndex = 0;
+                            searchInput.forceActiveFocus();
+                        }
+                    }
+                }
             }
 
             Rectangle {
@@ -246,16 +283,19 @@ PanelWindow {
                 width: parent.width
                 height: 1
                 color: root.dividerColor
-                visible: panel.hasResults || panel.showEmpty
+                visible: panel.hasResults || root.showEmpty
             }
 
             ListView {
                 id: list
                 anchors.top: divider.bottom
-                anchors.topMargin: 3
                 anchors.left: parent.left
                 anchors.right: parent.right
-                height: root.visCount * root.itemHeight
+                anchors.bottom: parent.bottom
+                anchors.leftMargin: root.panelPadding
+                anchors.rightMargin: root.panelPadding
+                anchors.topMargin: root.panelPadding
+                anchors.bottomMargin: root.panelPadding
                 clip: true
                 interactive: count > root.maxResults
                 boundsBehavior: Flickable.StopAtBounds
@@ -275,11 +315,7 @@ PanelWindow {
 
                     Rectangle {
                         anchors.fill: parent
-                        anchors.leftMargin: 6
-                        anchors.rightMargin: 6
-                        anchors.topMargin: 2
-                        anchors.bottomMargin: 2
-                        radius: 11
+                        radius: root.rowRadius
                         color: Colors.palette.m3primary
                         opacity: appRow.active ? 0.14 : 0
                         Behavior on opacity {
@@ -294,7 +330,7 @@ PanelWindow {
                         width: 36
                         height: 36
                         anchors.left: parent.left
-                        anchors.leftMargin: 28
+                        anchors.leftMargin: 20
                         anchors.verticalCenter: parent.verticalCenter
                         sourceSize.width: 36
                         sourceSize.height: 36
@@ -315,7 +351,7 @@ PanelWindow {
                         height: 36
                         radius: 11
                         anchors.left: parent.left
-                        anchors.leftMargin: 28
+                        anchors.leftMargin: 20
                         anchors.verticalCenter: parent.verticalCenter
                         color: "#22ffffff"
                         visible: appIcon.status !== Image.Ready
@@ -332,11 +368,11 @@ PanelWindow {
 
                     Column {
                         anchors.left: parent.left
-                        anchors.leftMargin: 81
+                        anchors.leftMargin: 73
                         anchors.right: parent.right
-                        anchors.rightMargin: 22
+                        anchors.rightMargin: appRow.active ? root.openHintWidth : 16
                         anchors.verticalCenter: parent.verticalCenter
-                        spacing: 1
+                        spacing: 2
 
                         Text {
                             width: parent.width
@@ -359,6 +395,44 @@ PanelWindow {
                         }
                     }
 
+                    Row {
+                        id: openHint
+                        spacing: 10
+                        anchors.right: parent.right
+                        anchors.rightMargin: 16
+                        anchors.verticalCenter: parent.verticalCenter
+                        visible: appRow.active
+                        opacity: visible ? 1 : 0
+                        Behavior on opacity {
+                            NumberAnimation { duration: 80 }
+                        }
+
+                        Text {
+                            text: "Open"
+                            color: root.textSecondary
+                            font.family: Fonts.family
+                            font.pixelSize: 16
+                            font.weight: Fonts.weightBaseline
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Rectangle {
+                            width: 32
+                            height: 32
+                            radius: 8
+                            color: "transparent"
+                            border.width: 1
+                            border.color: "#33ffffff"
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            ReturnKeyIcon {
+                                size: 18
+                                color: root.textSecondary
+                                anchors.centerIn: parent
+                            }
+                        }
+                    }
+
                     MouseArea {
                         anchors.fill: parent
                         hoverEnabled: true
@@ -371,11 +445,12 @@ PanelWindow {
 
             Text {
                 anchors.top: divider.bottom
-                anchors.topMargin: 3
+                anchors.topMargin: root.panelPadding
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: root.panelPadding
                 anchors.horizontalCenter: parent.horizontalCenter
-                height: root.itemHeight
                 verticalAlignment: Text.AlignVCenter
-                visible: panel.showEmpty
+                visible: root.showEmpty
                 text: "No results"
                 color: root.textSecondary
                 font.family: Fonts.family
