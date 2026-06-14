@@ -8,11 +8,9 @@ Item {
 
     // "empty" | "low" | "medium" | "high" | "full"
     property string glyph: "full"
-    property bool charging: false
     property bool saver: false
     property color color: "white"
     property color shellColor: "#a1a1aa"
-    property color boltColor: color
     property int size: 20
 
     width: size
@@ -31,8 +29,6 @@ Item {
     })
 
     readonly property string juicePath: root.juicePaths[root.glyph] ?? ""
-
-    readonly property string boltPath: "M213.85,125.46l-112,120a8,8,0,0,1-13.69-7l14.66-73.33L45.19,143.49a8,8,0,0,1-3-13l112-120a8,8,0,0,1,13.69,7L153.18,90.9l57.63,21.61a8,8,0,0,1,3,12.95Z"
 
     Shape {
         width: 256
@@ -64,25 +60,6 @@ Item {
             fillColor: root.saver ? "#ffd600" : root.color
             strokeWidth: 0
             PathSvg { path: root.juicePath }
-        }
-    }
-
-    Shape {
-        readonly property real boltScale: root.glyphScale * 0.42
-        width: 256
-        height: 256
-        x: (root.width - width * boltScale) / 2
-        y: (root.height - height * boltScale) / 2 + root.size * 0.02
-        scale: boltScale
-        transformOrigin: Item.TopLeft
-        preferredRendererType: Shape.CurveRenderer
-        visible: root.charging
-        z: 1
-
-        ShapePath {
-            fillColor: root.boltColor
-            strokeWidth: 0
-            PathSvg { path: root.boltPath }
         }
     }
 }

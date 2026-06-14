@@ -1,7 +1,6 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Services.UPower
 import "icons"
 
 PanelWindow {
@@ -23,18 +22,13 @@ PanelWindow {
     readonly property int notchHeight: 40
     readonly property int borderWidth: 6
     readonly property int sideMargin: 24
+    readonly property int clockFontSize: 18
 
     mask: Region {}
 
-    readonly property bool showBattery: UPower.displayDevice.ready && UPower.displayDevice.isPresent
-
-    readonly property bool charging: showBattery
-        && (UPower.displayDevice.state === UPowerDeviceState.Charging
-            || UPower.displayDevice.state === UPowerDeviceState.PendingCharge)
-
-    readonly property bool pluggedIn: showBattery && !UPower.onBattery
-
-    readonly property real percentage: showBattery ? UPower.displayDevice.percentage : 0
+    readonly property bool showBattery: BatteryStatus.showBattery
+    readonly property bool pluggedIn: BatteryStatus.pluggedIn
+    readonly property real percentage: BatteryStatus.percentage
 
     readonly property bool isLow: percentage < 0.15 && !pluggedIn
 
@@ -47,15 +41,64 @@ PanelWindow {
     }
 
     readonly property color batteryColor: {
-        if (isLow)     return Colors.palette.m3error
+        if (isLow)      return Colors.palette.m3error
+        if (pluggedIn)  return "#4ade80"
         return "white"
     }
 
-    readonly property color boltColor: pluggedIn ? Colors.palette.m3primary : "white"
+    property var segments: []
+
+    function rebuildSegments() {
+        const s = Qt.formatDateTime(clock.date, "ddd MMM d  h:mm AP")
+        const next = []
+        let buf = ""
+
+        for (let i = 0; i < s.length; i++) {
+            const c = s.charAt(i)
+            if (c >= "0" && c <= "9") {
+                if (buf.length) {
+                    next.push({ type: "static", text: buf })
+                    buf = ""
+                }
+                next.push({ type: "digit", value: parseInt(c, 10) })
+            } else {
+                buf += c
+            }
+        }
+
+        if (buf.length)
+            next.push({ type: "static", text: buf })
+
+        segments = next
+    }
 
     SystemClock {
         id: clock
         precision: SystemClock.Minutes
+        onDateChanged: root.rebuildSegments()
+    }
+
+    Component.onCompleted: rebuildSegments()
+
+    Component {
+        id: staticSegment
+        Text {
+            property string segmentText: ""
+            text: segmentText
+            color: "white"
+            font.family: Fonts.family
+            font.pixelSize: root.clockFontSize
+            font.weight: Fonts.weightBaseline
+        }
+    }
+
+    Component {
+        id: digitSegment
+        RollingDigit {
+            digit: 0
+            fontSize: root.clockFontSize
+            color: "white"
+        }
     }
 
     Row {
@@ -68,25 +111,48 @@ PanelWindow {
         BatteryIcon {
             visible: root.showBattery
             glyph: root.glyph
-            charging: root.charging
             color: root.batteryColor
             shellColor: Colors.palette.m3onSurfaceVariant
-            boltColor: root.boltColor
             size: 32
             anchors.verticalCenter: parent.verticalCenter
             Behavior on color { ColorAnimation { duration: 300 } }
             Behavior on shellColor { ColorAnimation { duration: 300 } }
-            Behavior on boltColor { ColorAnimation { duration: 300 } }
         }
 
-        Text {
-            id: label
-            text: Qt.formatDateTime(clock.date, "ddd MMM d  h:mm AP")
-            color: "white"
-            font.family: Fonts.family
-            font.pixelSize: 18
-            font.weight: Fonts.weightBaseline
+        Row {
+            id: clockRow
+            spacing: 0
             anchors.verticalCenter: parent.verticalCenter
+
+            Repeater {
+                model: root.segments
+
+                delegate: Loader {
+                    required property int index
+                    required property var modelData
+
+                    readonly property var seg: modelData
+
+                    width: item ? item.implicitWidth : 0
+                    height: item ? item.implicitHeight : 0
+
+                    sourceComponent: seg.type === "digit" ? digitSegment : staticSegment
+
+                    Binding {
+                        when: item && seg.type === "digit"
+                        target: item
+                        property: "digit"
+                        value: seg.value
+                    }
+
+                    Binding {
+                        when: item && seg.type === "static"
+                        target: item
+                        property: "segmentText"
+                        value: seg.text
+                    }
+                }
+            }
         }
     }
 }
