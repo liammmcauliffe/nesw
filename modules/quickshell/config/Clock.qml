@@ -162,29 +162,6 @@ PanelWindow {
 
     Component.onCompleted: rebuildSegments()
 
-    Component {
-        id: staticSegment
-        Text {
-            property string segmentText: ""
-            text: segmentText
-            color: "white"
-            font.family: Fonts.family
-            font.pixelSize: root.clockFontSize
-            font.weight: Fonts.weightBaseline
-            width: implicitWidth
-            height: implicitHeight
-        }
-    }
-
-    Component {
-        id: digitSegment
-        RollingDigit {
-            digit: 0
-            fontSize: root.clockFontSize
-            color: "white"
-        }
-    }
-
     Row {
         id: row
         anchors.right: parent.right
@@ -211,29 +188,32 @@ PanelWindow {
             Repeater {
                 model: root.segments
 
-                delegate: Loader {
+                delegate: Item {
                     required property int index
                     required property var modelData
 
                     readonly property var seg: modelData
+                    readonly property bool isDigit: seg.type === "digit"
 
-                    implicitWidth: item ? item.implicitWidth : 0
-                    implicitHeight: item ? item.implicitHeight : 0
+                    implicitWidth: isDigit ? digit.implicitWidth : label.implicitWidth
+                    implicitHeight: isDigit ? digit.implicitHeight : label.implicitHeight
 
-                    sourceComponent: seg.type === "digit" ? digitSegment : staticSegment
-
-                    Binding {
-                        when: item && seg.type === "digit"
-                        target: item
-                        property: "digit"
-                        value: seg.value
+                    RollingDigit {
+                        id: digit
+                        visible: parent.isDigit
+                        digit: parent.isDigit ? parent.seg.value : 0
+                        fontSize: root.clockFontSize
+                        color: "white"
                     }
 
-                    Binding {
-                        when: item && seg.type === "static"
-                        target: item
-                        property: "segmentText"
-                        value: seg.text
+                    Text {
+                        id: label
+                        visible: !parent.isDigit
+                        text: parent.isDigit ? "" : parent.seg.text
+                        color: "white"
+                        font.family: Fonts.family
+                        font.pixelSize: root.clockFontSize
+                        font.weight: Fonts.weightBaseline
                     }
                 }
             }
