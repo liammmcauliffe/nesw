@@ -197,11 +197,25 @@ PanelWindow {
     readonly property bool showEthernet: onEthernet
 
     // same tick-step animation as the notch workspace number
+    property var now: new Date()
     property real minuteSlide: 0
     property bool clockReady: false
 
     function minuteIndex(d) {
         return Math.floor(d.getTime() / 60000)
+    }
+
+    function formatClock(d) {
+        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        let hours = d.getHours()
+        const ampm = hours >= 12 ? "PM" : "AM"
+        hours = hours % 12
+        if (hours === 0)
+            hours = 12
+        const mm = String(d.getMinutes()).padStart(2, "0")
+        return days[d.getDay()] + " " + months[d.getMonth()] + " " + d.getDate()
+            + "  " + hours + ":" + mm + " " + ampm
     }
 
     function slideDuration(fromIdx, toIdx) {
@@ -212,7 +226,7 @@ PanelWindow {
     }
 
     function animateToNow() {
-        const target = minuteIndex(clock.date)
+        const target = minuteIndex(now)
         if (Math.abs(minuteSlide - target) < 0.5) {
             minuteSlide = target
             return
@@ -225,21 +239,22 @@ PanelWindow {
         minuteAnim.start()
     }
 
-    readonly property string clockText: {
-        if (!clockReady)
-            return Qt.formatDateTime(clock.date, "ddd MMM d  h:mm AP")
-        return Qt.formatDateTime(
-            new Date(Math.round(minuteSlide) * 60000),
-            "ddd MMM d  h:mm AP"
-        )
-    }
+    readonly property string clockText: formatClock(
+        clockReady
+            ? new Date(Math.round(minuteSlide) * 60000)
+            : now
+    )
 
-    SystemClock {
-        id: clock
-        precision: SystemClock.Minutes
-        onDateChanged: {
+    Timer {
+        id: minuteTimer
+        interval: 60000 - (Date.now() % 60000) + 50
+        running: true
+        repeat: true
+        onTriggered: {
+            interval = 60000
+            now = new Date()
             if (!root.clockReady) {
-                root.minuteSlide = root.minuteIndex(clock.date)
+                root.minuteSlide = root.minuteIndex(now)
                 root.clockReady = true
                 return
             }
@@ -248,7 +263,8 @@ PanelWindow {
     }
 
     Component.onCompleted: {
-        minuteSlide = minuteIndex(clock.date)
+        now = new Date()
+        minuteSlide = minuteIndex(now)
         clockReady = true
     }
 

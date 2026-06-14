@@ -21,7 +21,6 @@ hl.on("hyprland.start", function()
     -- forward bluetooth media commands to mpris
     hl.exec_cmd("mpris-proxy")
 
-    -- shell — Qt needs TZ; session may not inherit /etc/localtime on its own
-    local tz = os.getenv("TZ") or "America/New_York"
-    hl.exec_cmd("env TZ=" .. tz .. " qs -p " .. home .. "/.config/quickshell")
+    -- shell
+    hl.exec_cmd("qs -p " .. home .. "/.config/quickshell")
 end)
