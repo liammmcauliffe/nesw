@@ -70,10 +70,12 @@ PanelWindow {
             glyph: root.glyph
             charging: root.charging
             color: root.batteryColor
+            shellColor: Colors.palette.m3onSurfaceVariant
             boltColor: root.boltColor
             size: 28
             anchors.verticalCenter: parent.verticalCenter
             Behavior on color { ColorAnimation { duration: 300 } }
+            Behavior on shellColor { ColorAnimation { duration: 300 } }
             Behavior on boltColor { ColorAnimation { duration: 300 } }
         }
 
