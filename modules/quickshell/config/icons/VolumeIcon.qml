@@ -11,7 +11,7 @@ Item {
     // "none" | "low" | "high" | "slash"
     property string glyph: "high"
     property color color: "white"
-    property int size: 20
+    property int size: 24
 
     width: size
     height: size

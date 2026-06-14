@@ -84,10 +84,10 @@ Item {
 
     Text {
         text: root.inSpecialWs ? "S" : root.indicatorWs
-        color: Colors.palette.m3primary
+        color: "white"
         font.family: Fonts.family
         font.pixelSize: Fonts.sizeNotch
-        font.weight: Fonts.weightBold
+        font.weight: Font.Black
         anchors.left: root.horizontalCenter
         anchors.leftMargin: 6
         anchors.verticalCenter: root.verticalCenter

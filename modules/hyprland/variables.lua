@@ -80,10 +80,6 @@ return {
     kbToggleWindowFloating = "SUPER + ALT + space",
     kbCloseWindow = "SUPER + Q",
 
-    -- special workspaces toggles
-    kbMusic = "SUPER + M",
-    kbCommunication = "SUPER + D",
-
     -- apps
     kbTerminal = "SUPER + Return",
     kbBrowser = "SUPER + W",

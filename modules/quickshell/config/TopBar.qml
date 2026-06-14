@@ -29,7 +29,7 @@ PanelWindow {
     // matches the border frame so the fillets sit on its inner edge and
     // mirror the screen's bottom corners exactly
     readonly property int borderWidth: Constants.borderWidth
-    readonly property int cornerRadius: 23
+    readonly property int cornerRadius: Constants.cornerRadius
     readonly property color barColor: "#59000000"
 
     // fully click-through

@@ -30,16 +30,16 @@ PanelWindow {
     WlrLayershell.keyboardFocus: root.open ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
     // geometry (~40% larger than original)
-    readonly property int panelWidth: 784
+    readonly property int panelWidth: Math.min(Constants.launcherWidth, Math.floor(width * 0.88))
     readonly property int searchHeight: 76
     readonly property int itemHeight: 70
     readonly property int maxResults: 8
     readonly property int panelRadius: 20
     readonly property int panelPadding: 16
     readonly property int rowRadius: 8
-    readonly property int emptyBlockHeight: itemHeight * 2
+    readonly property int emptyBlockHeight: itemHeight
     readonly property int openHintWidth: 96
-    readonly property real panelTopMarginRatio: 0.17
+    readonly property real panelTopMarginRatio: Constants.launcherTopMarginRatio
 
     readonly property int visCount: Math.min(results.length, maxResults)
     readonly property bool showEmpty: query.length > 0 && results.length === 0
@@ -224,7 +224,7 @@ PanelWindow {
             target: panelHost
             property: "opacity"
             to: 0
-            duration: 70
+            duration: 100
             easing.type: Easing.OutCubic
         }
 
@@ -237,7 +237,7 @@ PanelWindow {
             radius: root.panelRadius
             color: root.panelBg
             border.width: 1
-            border.color: "#14ffffff"
+            border.color: "#22ffffff"
             clip: true
 
             readonly property bool hasResults: root.results.length > 0
@@ -297,6 +297,12 @@ PanelWindow {
                             event.accepted = true;
                         } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
                             root.launch(root.results[list.currentIndex]);
+                            event.accepted = true;
+                        } else if (event.key === Qt.Key_Tab && !(event.modifiers & Qt.ShiftModifier) && list.count > 0) {
+                            list.currentIndex = (list.currentIndex + 1) % list.count;
+                            event.accepted = true;
+                        } else if (event.key === Qt.Key_Tab && (event.modifiers & Qt.ShiftModifier) && list.count > 0) {
+                            list.currentIndex = (list.currentIndex - 1 + list.count) % list.count;
                             event.accepted = true;
                         }
                     }

@@ -14,14 +14,13 @@ PanelWindow {
     anchors.right: true
 
     implicitWidth: row.implicitWidth + sideMargin * 2
-    implicitHeight: notchHeight
+    implicitHeight: Constants.notchHeight
     color: "transparent"
 
     WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     WlrLayershell.namespace: "nesw-clock"
 
-    readonly property int notchHeight: 40
     readonly property int borderWidth: Constants.borderWidth
     readonly property int sideMargin: 24
     readonly property int clockFontSize: 18
@@ -266,8 +265,8 @@ PanelWindow {
         id: row
         anchors.right: parent.right
         anchors.rightMargin: root.sideMargin
-        spacing: 28
-        y: root.borderWidth + (root.notchHeight - root.borderWidth - height) / 2
+        spacing: 16
+        y: root.borderWidth + (Constants.notchHeight - root.borderWidth - height) / 2
 
         Item {
             id: networkIcon

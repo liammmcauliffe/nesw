@@ -5,3 +5,6 @@ ReturnKeyIcon 1.0 ReturnKeyIcon.qml
 BatteryIcon 1.0 BatteryIcon.qml
 WifiIcon 1.0 WifiIcon.qml
 EthernetIcon 1.0 EthernetIcon.qml
+SkipBackIcon 1.0 SkipBackIcon.qml
+SkipForwardIcon 1.0 SkipForwardIcon.qml
+PlayPauseIcon 1.0 PlayPauseIcon.qml
