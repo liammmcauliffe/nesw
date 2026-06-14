@@ -396,7 +396,7 @@ PanelWindow {
                             width: 1
                             height: 6
                             radius: 0.5
-                            color: Colors.palette.m3onSurfaceVariant
+                            color: root.inSpecialWs ? Colors.palette.m3tertiary : Colors.palette.m3onSurfaceVariant
                             opacity: 0.3
                             x: tick.width / 2 + modelData * (root.stepPx / 6) - width / 2
                             anchors.verticalCenter: tick.verticalCenter
@@ -408,7 +408,8 @@ PanelWindow {
                         height: tick.isActive ? content.height - root.frameInset * 2
                               : tick.isOccupied ? 14 : 9
                         radius: 1
-                        color: tick.isActive ? Colors.palette.m3primary
+                        color: root.inSpecialWs ? Colors.palette.m3tertiary
+                             : tick.isActive ? Colors.palette.m3primary
                              : tick.isOccupied ? Colors.palette.m3onSurface
                              : Colors.palette.m3onSurfaceVariant
                         opacity: tick.isActive || tick.isOccupied ? 1 : 0.5
@@ -429,17 +430,13 @@ PanelWindow {
 
         Text {
             text: root.inSpecialWs ? "S" : root.displayNumber
-            color: root.inSpecialWs ? Colors.palette.m3tertiary : Colors.palette.m3primary
+            color: Colors.palette.m3primary
             font.family: Fonts.family
             font.pixelSize: Fonts.sizeNotch
             font.weight: Fonts.weightBold
             anchors.left: content.horizontalCenter
             anchors.leftMargin: 6
             anchors.verticalCenter: content.verticalCenter
-
-            Behavior on color {
-                ColorAnimation { duration: 200 }
-            }
 
             opacity: root.expanded && !root.audioMode ? 1 : 0
             Behavior on opacity {
