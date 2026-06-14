@@ -19,7 +19,9 @@ PanelWindow {
     }
 
     color: "transparent"
-    visible: mapped
+    // stay mapped always — toggling visibility remaps the layer and hyprland
+    // animates that with "slide bottom" (see animations.lua layersIn)
+    visible: true
 
     exclusionMode: ExclusionMode.Ignore
     WlrLayershell.layer: WlrLayer.Overlay
@@ -32,9 +34,13 @@ PanelWindow {
     readonly property int itemHeight: 70
     readonly property int maxResults: 8
     readonly property int panelRadius: 20
-    readonly property int resultsBlockHeight: maxResults * itemHeight + 8
-    readonly property int panelFullHeight: searchHeight + 1 + resultsBlockHeight
     readonly property real panelTopMarginRatio: 0.17
+
+    readonly property int visCount: Math.min(results.length, maxResults)
+    readonly property int resultsHeight: visCount > 0 || (query.length > 0 && results.length === 0)
+        ? visCount * itemHeight + 6
+        : 0
+    readonly property int panelHeight: searchHeight + (resultsHeight > 0 ? 1 + resultsHeight : 0)
 
     // neutral chrome — black card like the notch, translucent like the top bar
     readonly property color panelBg: "#d9000000"
@@ -44,7 +50,6 @@ PanelWindow {
     readonly property color dividerColor: "#18ffffff"
 
     property bool open: false
-    property bool mapped: false
     property string query: ""
 
     readonly property var results: {
@@ -77,13 +82,10 @@ PanelWindow {
 
     onOpenChanged: {
         if (open) {
-            mapped = true;
             query = "";
             searchInput.text = "";
             list.currentIndex = 0;
             focusTimer.start();
-        } else {
-            unmapTimer.start();
         }
     }
 
@@ -102,11 +104,6 @@ PanelWindow {
         id: focusTimer
         interval: 30
         onTriggered: searchInput.forceActiveFocus()
-    }
-    Timer {
-        id: unmapTimer
-        interval: 180
-        onTriggered: root.mapped = false
     }
 
     IpcHandler {
@@ -129,8 +126,6 @@ PanelWindow {
         onClicked: root.open = false
     }
 
-    // pinned to a fixed screen position; scale pops from the top edge so nothing
-    // drifts upward when results load or the spring runs
     Item {
         id: panelHost
 
@@ -138,31 +133,34 @@ PanelWindow {
         anchors.top: parent.top
         anchors.topMargin: parent.height * root.panelTopMarginRatio
         width: root.panelWidth
-        height: root.panelFullHeight
+        height: root.panelHeight
 
         transformOrigin: Item.Top
+        enabled: root.open
+        visible: root.open || panelHost.opacity > 0.01
 
         opacity: root.open ? 1 : 0
-        scale: root.open ? 1 : 0.88
+        scale: root.open ? 1 : 0.92
 
         Behavior on opacity {
             NumberAnimation {
-                duration: root.open ? 120 : 80
+                duration: root.open ? 110 : 80
                 easing.type: Easing.OutCubic
             }
         }
         Behavior on scale {
-            SpringAnimation {
-                spring: 7
-                damping: 0.34
-                epsilon: 0.001
+            NumberAnimation {
+                duration: root.open ? 340 : 120
+                easing.type: root.open ? Easing.OutBack : Easing.InCubic
+                easing.overshoot: 1.12
             }
         }
 
         Rectangle {
             id: panel
 
-            anchors.fill: parent
+            width: parent.width
+            height: parent.height
 
             radius: root.panelRadius
             color: root.panelBg
@@ -172,12 +170,10 @@ PanelWindow {
             readonly property bool hasResults: root.results.length > 0
             readonly property bool showEmpty: !hasResults && root.query.length > 0
 
-            // keep panel clicks from reaching the dismiss layer
             MouseArea {
                 anchors.fill: parent
             }
 
-            // search row
             Item {
                 id: searchRow
                 width: parent.width
@@ -250,7 +246,7 @@ PanelWindow {
                 width: parent.width
                 height: 1
                 color: root.dividerColor
-                visible: panel.hasResults
+                visible: panel.hasResults || panel.showEmpty
             }
 
             ListView {
@@ -259,7 +255,7 @@ PanelWindow {
                 anchors.topMargin: 3
                 anchors.left: parent.left
                 anchors.right: parent.right
-                height: root.resultsBlockHeight - 6
+                height: root.visCount * root.itemHeight
                 clip: true
                 interactive: count > root.maxResults
                 boundsBehavior: Flickable.StopAtBounds
@@ -277,7 +273,6 @@ PanelWindow {
 
                     readonly property bool active: ListView.isCurrentItem
 
-                    // only the selected row picks up the accent
                     Rectangle {
                         anchors.fill: parent
                         anchors.leftMargin: 6
@@ -378,7 +373,7 @@ PanelWindow {
                 anchors.top: divider.bottom
                 anchors.topMargin: 3
                 anchors.horizontalCenter: parent.horizontalCenter
-                height: root.resultsBlockHeight - 6
+                height: root.itemHeight
                 verticalAlignment: Text.AlignVCenter
                 visible: panel.showEmpty
                 text: "No results"
