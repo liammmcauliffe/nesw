@@ -72,6 +72,13 @@ PanelWindow {
         }
     }
 
+    onInSpecialWsChanged: {
+        if (inSpecialWs) {
+            audioMode = false
+            reveal()
+        }
+    }
+
     // volume/muted are invalid unless the node is bound; tracking binds it
     PwObjectTracker {
         objects: [root.audioSink]
@@ -385,6 +392,23 @@ PanelWindow {
         }
     }
 
+    // special workspace indicator dot — always visible, no expand needed
+    Rectangle {
+        id: specialDot
+        width: 5
+        height: 5
+        radius: 2.5
+        color: Colors.palette.m3tertiary
+        anchors.horizontalCenter: parent.horizontalCenter
+        // sits centered on the bottom lip of the notch pill
+        y: root.notchHeight - height / 2
+
+        opacity: root.inSpecialWs ? 0.85 : 0
+        Behavior on opacity {
+            NumberAnimation { duration: 350; easing.type: Easing.OutCubic }
+        }
+    }
+
     // content
     Item {
         id: content
@@ -472,14 +496,18 @@ PanelWindow {
         }
 
         Text {
-            text: root.displayNumber
-            color: Colors.palette.m3primary
+            text: root.inSpecialWs ? "S" : root.displayNumber
+            color: root.inSpecialWs ? Colors.palette.m3tertiary : Colors.palette.m3primary
             font.family: Fonts.family
             font.pixelSize: Fonts.sizeNotch
             font.weight: Fonts.weightBold
             anchors.left: content.horizontalCenter
             anchors.leftMargin: 6
             anchors.verticalCenter: content.verticalCenter
+
+            Behavior on color {
+                ColorAnimation { duration: 200 }
+            }
 
             opacity: root.expanded && !root.audioMode ? 1 : 0
             Behavior on opacity {
