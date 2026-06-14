@@ -157,10 +157,14 @@ PanelWindow {
         minuteAnim.start()
     }
 
-    readonly property string clockText: Qt.formatDateTime(
-        new Date(Math.round(minuteSlide) * 60000),
-        "ddd MMM d  h:mm AP"
-    )
+    readonly property string clockText: {
+        if (!clockReady)
+            return Qt.formatDateTime(clock.date, "ddd MMM d  h:mm AP")
+        return Qt.formatDateTime(
+            new Date(Math.round(minuteSlide) * 60000),
+            "ddd MMM d  h:mm AP"
+        )
+    }
 
     SystemClock {
         id: clock
@@ -173,6 +177,11 @@ PanelWindow {
             }
             root.animateToNow()
         }
+    }
+
+    Component.onCompleted: {
+        minuteSlide = minuteIndex(clock.date)
+        clockReady = true
     }
 
     NumberAnimation {
