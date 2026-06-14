@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
+import "icons"
 
 // spotlight-style app launcher: a floating neutral card, no dimmed backdrop.
 // opened/closed over IPC: qs ipc call launcher toggle

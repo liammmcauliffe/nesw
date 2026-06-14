@@ -6,6 +6,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import Quickshell.Services.Pipewire
+import "icons"
 
 PanelWindow {
     id: root
