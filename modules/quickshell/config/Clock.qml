@@ -171,6 +171,8 @@ PanelWindow {
             font.family: Fonts.family
             font.pixelSize: root.clockFontSize
             font.weight: Fonts.weightBaseline
+            width: implicitWidth
+            height: implicitHeight
         }
     }
 
@@ -215,8 +217,8 @@ PanelWindow {
 
                     readonly property var seg: modelData
 
-                    width: item ? item.implicitWidth : 0
-                    height: item ? item.implicitHeight : 0
+                    implicitWidth: item ? item.implicitWidth : 0
+                    implicitHeight: item ? item.implicitHeight : 0
 
                     sourceComponent: seg.type === "digit" ? digitSegment : staticSegment
 

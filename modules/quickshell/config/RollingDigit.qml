@@ -14,6 +14,8 @@ Item {
 
     implicitWidth: measureChar.implicitWidth
     implicitHeight: lineHeight
+    width: implicitWidth
+    height: implicitHeight
     clip: true
 
     property real position: 0
