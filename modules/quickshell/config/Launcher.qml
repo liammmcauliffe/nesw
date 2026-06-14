@@ -36,7 +36,7 @@ PanelWindow {
     readonly property int panelRadius: 20
     readonly property int panelPadding: 8
     readonly property int rowRadius: panelRadius - panelPadding
-    readonly property int openHintWidth: 108
+    readonly property int openHintWidth: 96
     readonly property real panelTopMarginRatio: 0.17
 
     readonly property int visCount: Math.min(results.length, maxResults)
@@ -84,6 +84,10 @@ PanelWindow {
             };
         }).filter(e => e.rank >= 0).sort((x, y) => x.rank - y.rank || x.app.name.toLowerCase().localeCompare(y.app.name.toLowerCase())).map(e => e.app);
     }
+
+    readonly property var selectedApp: results.length > 0 && list.currentIndex >= 0
+        ? results[list.currentIndex]
+        : null
 
     onOpenChanged: {
         if (open) {
@@ -196,7 +200,7 @@ PanelWindow {
                     id: searchInput
                     anchors.left: parent.left
                     anchors.leftMargin: 70
-                    anchors.right: clearBtn.left
+                    anchors.right: selectedAppBadge.left
                     anchors.rightMargin: 12
                     height: parent.height
                     verticalAlignment: TextInput.AlignVCenter
@@ -245,33 +249,50 @@ PanelWindow {
                 }
 
                 Item {
-                    id: clearBtn
+                    id: selectedAppBadge
                     width: 36
                     height: 36
                     anchors.right: parent.right
                     anchors.rightMargin: 20
                     anchors.verticalCenter: parent.verticalCenter
-                    visible: searchInput.text.length > 0
+                    visible: root.results.length > 0
                     opacity: visible ? 1 : 0
                     Behavior on opacity {
                         NumberAnimation { duration: 100 }
                     }
 
-                    ClearIcon {
-                        size: 22
-                        color: root.textSecondary
-                        anchors.centerIn: parent
+                    Image {
+                        id: selectedIcon
+                        anchors.fill: parent
+                        sourceSize.width: 36
+                        sourceSize.height: 36
+                        fillMode: Image.PreserveAspectFit
+                        smooth: true
+                        asynchronous: true
+                        source: {
+                            const app = root.selectedApp;
+                            if (!app || !app.icon)
+                                return "";
+                            return app.icon.startsWith("/") ? "file://" + app.icon : Quickshell.iconPath(app.icon, true);
+                        }
+                        visible: status === Image.Ready
                     }
 
-                    MouseArea {
+                    Rectangle {
                         anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            searchInput.text = "";
-                            root.query = "";
-                            list.currentIndex = 0;
-                            searchInput.forceActiveFocus();
+                        radius: 11
+                        color: "#22ffffff"
+                        visible: selectedIcon.status !== Image.Ready
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: root.selectedApp && root.selectedApp.name
+                                ? root.selectedApp.name.charAt(0).toUpperCase()
+                                : "?"
+                            color: root.textSecondary
+                            font.family: Fonts.family
+                            font.pixelSize: 17
+                            font.weight: Fonts.weightBold
                         }
                     }
                 }
@@ -416,20 +437,10 @@ PanelWindow {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        Rectangle {
-                            width: 32
-                            height: 32
-                            radius: 8
-                            color: "transparent"
-                            border.width: 1
-                            border.color: "#33ffffff"
+                        ReturnKeyIcon {
+                            size: 22
+                            color: root.textSecondary
                             anchors.verticalCenter: parent.verticalCenter
-
-                            ReturnKeyIcon {
-                                size: 18
-                                color: root.textSecondary
-                                anchors.centerIn: parent
-                            }
                         }
                     }
 
