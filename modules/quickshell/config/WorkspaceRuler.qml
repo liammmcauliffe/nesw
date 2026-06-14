@@ -9,7 +9,7 @@ Item {
     property bool expanded: false
     property bool audioMode: false
     property bool inSpecialWs: false
-    property int displayNumber: 1
+    property int indicatorWs: 1
     property int rulerMax: 1
     property var occupied: ({})
 
@@ -31,7 +31,7 @@ Item {
                 required property int index
 
                 readonly property int wsNumber: index + 1
-                readonly property bool isActive: wsNumber === root.displayNumber
+                readonly property bool isActive: wsNumber === root.indicatorWs
                 readonly property bool isOccupied: root.occupied[wsNumber] === true
 
                 width: Constants.stepPx
@@ -83,14 +83,13 @@ Item {
     }
 
     Text {
-        text: root.inSpecialWs ? "S" : root.displayNumber
+        text: root.inSpecialWs ? "S" : root.indicatorWs
         color: Colors.palette.m3primary
         font.family: Fonts.family
         font.pixelSize: Fonts.sizeNotch
         font.weight: Fonts.weightBold
-        anchors.left: root.horizontalCenter
-        anchors.leftMargin: 6
-        anchors.verticalCenter: root.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
 
         opacity: root.expanded && !root.audioMode ? 1 : 0
         Behavior on opacity {

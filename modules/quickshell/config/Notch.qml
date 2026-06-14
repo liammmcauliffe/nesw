@@ -76,11 +76,8 @@ PanelWindow {
     property real notchWidth: Math.min(Constants.maxWidth, Math.max(Constants.minWidth, expanded ? Constants.maxWidth : Constants.minWidth))
     property real slideOffset: 0
 
-    // workspace whose tick sits at the center notch
-    readonly property int displayNumber: {
-        const centerOffset = contentWidth / 2 - Constants.stepPx / 2
-        return Math.max(1, Math.round(1 + (centerOffset - slideOffset) / Constants.stepPx))
-    }
+    // workspace whose tick sits at the center notch (derived while scrubbing)
+    readonly property int displayNumber: Math.max(1, Math.round(1 - slideOffset / Constants.stepPx))
 
     readonly property int activeWs: {
         const ws = Hyprland.focusedWorkspace;
@@ -112,17 +109,15 @@ PanelWindow {
     readonly property int rulerMax: Math.max(activeWs, maxOccupied, displayNumber) + Constants.rulerBuffer
 
     property bool slideReady: false
+    property bool workspaceScrubbing: false
+
+    // shown in the notch — active workspace unless the user is scrubbing
+    readonly property int indicatorWs: workspaceScrubbing ? displayNumber : activeWs
 
     Component.onCompleted: {
         Hyprland.refreshMonitors();
         slideOffset = slideTargetForWs(activeWs)
         slideReady = true
-    }
-
-    onNotchWidthChanged: {
-        if (!slideReady || wsDrag.active)
-            return
-        slideOffset = slideTargetForWs(displayNumber)
     }
 
     Timer {
@@ -154,8 +149,7 @@ PanelWindow {
     }
 
     function slideTargetForWs(ws) {
-        const centerOffset = contentWidth / 2 - Constants.stepPx / 2
-        return centerOffset - (ws - 1) * Constants.stepPx
+        return -(ws - 1) * Constants.stepPx
     }
 
     function reveal() {
@@ -248,11 +242,9 @@ PanelWindow {
 
     Behavior on slideOffset {
         enabled: !wsDrag.active
-        SpringAnimation {
-            spring: 2
-            damping: 0.25
-            mass: 0.8
-            epsilon: 0.01
+        NumberAnimation {
+            duration: 280
+            easing.type: Easing.OutCubic
         }
     }
 
@@ -391,7 +383,7 @@ PanelWindow {
             expanded: root.expanded
             audioMode: root.audioMode
             inSpecialWs: root.inSpecialWs
-            displayNumber: root.displayNumber
+            indicatorWs: root.indicatorWs
             rulerMax: root.rulerMax
             occupied: root.occupied
         }
@@ -471,9 +463,11 @@ PanelWindow {
 
             onActiveChanged: {
                 if (wsDrag.active) {
+                    root.workspaceScrubbing = true
                     wsDrag.startOffset = root.slideOffset
                     collapseTimer.stop()
                 } else {
+                    root.workspaceScrubbing = false
                     root.commitWorkspaceDrag()
                 }
             }
