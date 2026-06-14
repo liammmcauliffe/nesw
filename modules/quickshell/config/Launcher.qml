@@ -26,12 +26,12 @@ PanelWindow {
     WlrLayershell.namespace: "nesw-launcher"
     WlrLayershell.keyboardFocus: root.open ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-    // geometry
-    readonly property int panelWidth: 560
-    readonly property int searchHeight: 54
-    readonly property int itemHeight: 50
+    // geometry (~40% larger than original)
+    readonly property int panelWidth: 784
+    readonly property int searchHeight: 76
+    readonly property int itemHeight: 70
     readonly property int maxResults: 8
-    readonly property int panelRadius: 14
+    readonly property int panelRadius: 20
 
     // neutral chrome — black card like the notch, translucent like the top bar
     readonly property color panelBg: "#d9000000"
@@ -126,14 +126,16 @@ PanelWindow {
         onClicked: root.open = false
     }
 
-    // floating card
+    // floating card — anchored at its center so the spring pop stays in place
     Item {
         id: panelHost
 
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: parent.height * 0.17
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: -parent.height * 0.13
         width: root.panelWidth
+
+        transformOrigin: Item.Center
 
         readonly property int visCount: Math.min(root.results.length, root.maxResults)
         readonly property bool hasResults: root.results.length > 0
@@ -141,18 +143,18 @@ PanelWindow {
         implicitHeight: panel.height
 
         opacity: root.open ? 1 : 0
-        scale: root.open ? 1 : 0.94
+        scale: root.open ? 1 : 0.86
 
         Behavior on opacity {
             NumberAnimation {
-                duration: root.open ? 140 : 100
+                duration: root.open ? 130 : 90
                 easing.type: Easing.OutCubic
             }
         }
         Behavior on scale {
             SpringAnimation {
-                spring: 5.5
-                damping: 0.38
+                spring: 6.5
+                damping: 0.32
                 epsilon: 0.001
             }
         }
@@ -171,13 +173,6 @@ PanelWindow {
             border.width: 1
             border.color: "#14ffffff"
 
-            Behavior on height {
-                NumberAnimation {
-                    duration: 120
-                    easing.type: Easing.OutCubic
-                }
-            }
-
             // keep panel clicks from reaching the dismiss layer
             MouseArea {
                 anchors.fill: parent
@@ -190,25 +185,25 @@ PanelWindow {
                 height: root.searchHeight
 
                 SearchIcon {
-                    size: 18
+                    size: 25
                     color: root.textSecondary
                     anchors.left: parent.left
-                    anchors.leftMargin: 20
+                    anchors.leftMargin: 28
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
                 TextInput {
                     id: searchInput
                     anchors.left: parent.left
-                    anchors.leftMargin: 50
+                    anchors.leftMargin: 70
                     anchors.right: parent.right
-                    anchors.rightMargin: 18
+                    anchors.rightMargin: 25
                     height: parent.height
                     verticalAlignment: TextInput.AlignVCenter
                     clip: true
 
                     font.family: Fonts.family
-                    font.pixelSize: 16
+                    font.pixelSize: 22
                     font.weight: Fonts.weightBaseline
                     color: root.textPrimary
                     selectionColor: "#33ffffff"
@@ -291,7 +286,7 @@ PanelWindow {
                         anchors.rightMargin: 6
                         anchors.topMargin: 2
                         anchors.bottomMargin: 2
-                        radius: 8
+                        radius: 11
                         color: Colors.palette.m3primary
                         opacity: appRow.active ? 0.14 : 0
                         Behavior on opacity {
@@ -303,13 +298,13 @@ PanelWindow {
 
                     Image {
                         id: appIcon
-                        width: 26
-                        height: 26
+                        width: 36
+                        height: 36
                         anchors.left: parent.left
-                        anchors.leftMargin: 20
+                        anchors.leftMargin: 28
                         anchors.verticalCenter: parent.verticalCenter
-                        sourceSize.width: 26
-                        sourceSize.height: 26
+                        sourceSize.width: 36
+                        sourceSize.height: 36
                         fillMode: Image.PreserveAspectFit
                         smooth: true
                         asynchronous: true
@@ -323,11 +318,11 @@ PanelWindow {
                     }
 
                     Rectangle {
-                        width: 26
-                        height: 26
-                        radius: 8
+                        width: 36
+                        height: 36
+                        radius: 11
                         anchors.left: parent.left
-                        anchors.leftMargin: 20
+                        anchors.leftMargin: 28
                         anchors.verticalCenter: parent.verticalCenter
                         color: "#22ffffff"
                         visible: appIcon.status !== Image.Ready
@@ -337,16 +332,16 @@ PanelWindow {
                             text: appRow.modelData && appRow.modelData.name ? appRow.modelData.name.charAt(0).toUpperCase() : "?"
                             color: root.textSecondary
                             font.family: Fonts.family
-                            font.pixelSize: 12
+                            font.pixelSize: 17
                             font.weight: Fonts.weightBold
                         }
                     }
 
                     Column {
                         anchors.left: parent.left
-                        anchors.leftMargin: 58
+                        anchors.leftMargin: 81
                         anchors.right: parent.right
-                        anchors.rightMargin: 16
+                        anchors.rightMargin: 22
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 1
 
@@ -354,15 +349,10 @@ PanelWindow {
                             width: parent.width
                             text: appRow.modelData ? appRow.modelData.name : ""
                             elide: Text.ElideRight
-                            color: appRow.active ? Colors.palette.m3primary : root.textPrimary
+                            color: root.textPrimary
                             font.family: Fonts.family
-                            font.pixelSize: 14
-                            font.weight: appRow.active ? Fonts.weightSemiBold : Fonts.weightBaseline
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: 80
-                                }
-                            }
+                            font.pixelSize: 20
+                            font.weight: Fonts.weightBaseline
                         }
                         Text {
                             width: parent.width
@@ -371,7 +361,7 @@ PanelWindow {
                             elide: Text.ElideRight
                             color: root.textSecondary
                             font.family: Fonts.family
-                            font.pixelSize: 12
+                            font.pixelSize: 17
                             font.weight: Fonts.weightBaseline
                         }
                     }
@@ -395,7 +385,7 @@ PanelWindow {
                 text: "No results"
                 color: root.textSecondary
                 font.family: Fonts.family
-                font.pixelSize: 14
+                font.pixelSize: 20
             }
         }
     }
