@@ -62,7 +62,7 @@ PanelWindow {
         id: row
         anchors.right: parent.right
         anchors.rightMargin: root.sideMargin
-        spacing: 14
+        spacing: 28
         y: root.borderWidth + (root.notchHeight - root.borderWidth - height) / 2
 
         BatteryIcon {
@@ -84,7 +84,7 @@ PanelWindow {
             text: Qt.formatDateTime(clock.date, "ddd MMM d  h:mm AP")
             color: "white"
             font.family: Fonts.family
-            font.pixelSize: 16
+            font.pixelSize: 18
             font.weight: Fonts.weightSemiBold
             anchors.verticalCenter: parent.verticalCenter
         }
