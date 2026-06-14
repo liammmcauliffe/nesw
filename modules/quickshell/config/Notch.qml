@@ -461,6 +461,7 @@ PanelWindow {
             }
 
             Item {
+                id: volMinHit
                 width: volIconMin.size + 8
                 height: parent.height
                 anchors.left: parent.left
@@ -481,6 +482,7 @@ PanelWindow {
             }
 
             Item {
+                id: volMaxHit
                 width: volIconMax.size + 8
                 height: parent.height
                 anchors.right: parent.right
@@ -503,9 +505,9 @@ PanelWindow {
             Item {
                 id: track
                 height: 20
-                anchors.left: volIconMin.right
+                anchors.left: volMinHit.right
                 anchors.leftMargin: 12
-                anchors.right: volIconMax.left
+                anchors.right: volMaxHit.left
                 anchors.rightMargin: 12
                 anchors.verticalCenter: parent.verticalCenter
 

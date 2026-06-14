@@ -201,20 +201,31 @@ PanelWindow {
         return "none"
     }
 
-    // click wifi icon to cycle glyphs; one more click after slash returns to live
+    // click wifi icon to cycle glyphs; one more click after ethernet returns to live
     property bool wifiDebug: false
     property int wifiDebugStep: 0
-    readonly property var wifiDebugGlyphs: ["high", "medium", "low", "none", "slash"]
+    readonly property var wifiDebugGlyphs: ["high", "medium", "low", "none", "slash", "ethernet"]
 
     readonly property string displayWifiGlyph: wifiDebug
         ? wifiDebugGlyphs[wifiDebugStep]
         : wifiGlyph
 
+    readonly property bool showWifiIcon: {
+        if (wifiDebug)
+            return wifiDebugGlyphs[wifiDebugStep] !== "ethernet"
+        return !onEthernet && wifiDevice !== null
+    }
+
+    readonly property bool showEthernetIcon: {
+        if (wifiDebug)
+            return wifiDebugGlyphs[wifiDebugStep] === "ethernet"
+        return onEthernet
+    }
+
     function cycleWifiDebug() {
         if (!wifiDebug) {
             wifiDebug = true
-            const idx = wifiDebugGlyphs.indexOf(wifiGlyph)
-            wifiDebugStep = idx >= 0 ? (idx + 1) % wifiDebugGlyphs.length : 0
+            wifiDebugStep = 0
             return
         }
 
@@ -228,8 +239,8 @@ PanelWindow {
         wifiDebugStep = next
     }
 
-    readonly property bool showWifi: !onEthernet && wifiDevice !== null
-    readonly property bool showEthernet: onEthernet
+    readonly property bool showWifi: showWifiIcon
+    readonly property bool showEthernet: showEthernetIcon
 
     // same tick-step animation as the notch workspace number
     property var now: new Date()
@@ -318,14 +329,14 @@ PanelWindow {
         y: root.borderWidth + (root.notchHeight - root.borderWidth - height) / 2
 
         Item {
-            visible: root.showWifi || root.wifiDebug
+            visible: root.showWifiIcon
             width: wifiIcon.width
             height: wifiIcon.height
             anchors.verticalCenter: parent.verticalCenter
 
             WifiIcon {
                 id: wifiIcon
-                glyph: root.displayWifiGlyph
+                glyph: root.wifiDebug ? root.displayWifiGlyph : root.wifiGlyph
                 color: "white"
                 shellColor: Colors.palette.m3onSurfaceVariant
                 size: 28
@@ -338,7 +349,7 @@ PanelWindow {
         }
 
         EthernetIcon {
-            visible: root.showEthernet
+            visible: root.showEthernetIcon
             color: "white"
             size: 28
             anchors.verticalCenter: parent.verticalCenter

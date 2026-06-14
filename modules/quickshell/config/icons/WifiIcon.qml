@@ -16,6 +16,7 @@ Item {
     height: size
 
     readonly property real glyphScale: size / 288
+    readonly property bool isSlash: root.glyph === "slash"
 
     // phosphor fill wifi-high, split inner → outer + dot
     readonly property string dotPath: "M144,204a16,16,0,1,1-16-16A16,16,0,0,1,144,204"
@@ -27,7 +28,7 @@ Item {
         const active = root.color
         const grey = root.shellColor
 
-        if (root.glyph === "none")
+        if (root.isSlash || root.glyph === "none")
             return grey
 
         if (root.glyph === "low") {
@@ -46,7 +47,6 @@ Item {
     }
 
     Shape {
-        visible: root.glyph !== "slash"
         width: 256
         height: 256
         x: (root.width - width * root.glyphScale) / 2
@@ -81,7 +81,7 @@ Item {
     }
 
     Shape {
-        visible: root.glyph === "slash"
+        visible: root.isSlash
         width: 256
         height: 256
         x: (root.width - width * root.glyphScale) / 2
@@ -142,12 +142,6 @@ Item {
             capStyle: ShapePath.RoundCap
             joinStyle: ShapePath.RoundJoin
             PathSvg { path: "M200,129a115.84,115.84,0,0,0-34-18.66" }
-        }
-
-        ShapePath {
-            fillColor: root.color
-            strokeWidth: 0
-            PathSvg { path: "M128,188a16,16,0,1,1,0,32a16,16,0,1,1,0,-32" }
         }
     }
 }
