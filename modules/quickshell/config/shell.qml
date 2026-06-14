@@ -5,5 +5,6 @@ ShellRoot {
     Border {}
     Notch {}
     Clock {}
+    Battery {}
     Launcher {}
 }

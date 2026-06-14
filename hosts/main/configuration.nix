@@ -61,6 +61,8 @@
   # bluetooth
   hardware.bluetooth.enable = true;
 
+  services.upower.enable = true;
+
   # basic packages
   environment.systemPackages = with pkgs; [
     git

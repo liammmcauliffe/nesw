@@ -2,3 +2,4 @@ module icons
 VolumeIcon 1.0 VolumeIcon.qml
 SearchIcon 1.0 SearchIcon.qml
 ReturnKeyIcon 1.0 ReturnKeyIcon.qml
+BatteryIcon 1.0 BatteryIcon.qml
