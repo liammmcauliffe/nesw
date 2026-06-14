@@ -71,7 +71,7 @@ PanelWindow {
             charging: root.charging
             color: root.batteryColor
             boltColor: root.boltColor
-            size: 22
+            size: 28
             anchors.verticalCenter: parent.verticalCenter
             Behavior on color { ColorAnimation { duration: 300 } }
             Behavior on boltColor { ColorAnimation { duration: 300 } }
