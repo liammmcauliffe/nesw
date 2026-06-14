@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Services.UPower
 import "icons"
 
 PanelWindow {
@@ -26,9 +27,90 @@ PanelWindow {
 
     mask: Region {}
 
-    readonly property bool showBattery: BatteryStatus.showBattery
-    readonly property bool pluggedIn: BatteryStatus.pluggedIn
-    readonly property real percentage: BatteryStatus.percentage
+    // battery — DisplayDevice/onBattery lie on some machines; fall through several checks
+    readonly property var batteryDisplay: UPower.displayDevice
+
+    readonly property var primaryBattery: {
+        const list = UPower.devices.values
+        for (let i = 0; i < list.length; i++) {
+            const d = list[i]
+            if (d.isLaptopBattery && d.isPresent)
+                return d
+        }
+        return null
+    }
+
+    readonly property var powerSource: primaryBattery ?? (batteryDisplay.ready ? batteryDisplay : null)
+
+    readonly property bool showBattery: {
+        if (primaryBattery)
+            return primaryBattery.isPresent
+        return batteryDisplay.ready && batteryDisplay.isPresent
+    }
+
+    readonly property real percentage: {
+        const src = powerSource
+        return src ? src.percentage : 0
+    }
+
+    function isChargingState(state) {
+        return state === UPowerDeviceState.Charging
+            || state === UPowerDeviceState.PendingCharge
+            || state === UPowerDeviceState.FullyCharged
+    }
+
+    function devicePluggedIn(device) {
+        if (!device || !device.ready)
+            return false
+
+        if (isChargingState(device.state))
+            return true
+
+        if (device.changeRate > 0.5)
+            return true
+
+        if (device.timeToFull > 0 && device.timeToEmpty <= 0)
+            return true
+
+        const icon = device.iconName ?? ""
+        if (icon.includes("charging") || icon.includes("plugged") || icon.includes("ac-adapter"))
+            return true
+
+        return false
+    }
+
+    function linePowerOnline(device) {
+        return device.type === UPowerDeviceType.LinePower
+            && device.isPresent
+            && device.powerSupply
+    }
+
+    readonly property bool pluggedIn: {
+        if (!UPower.onBattery)
+            return true
+
+        const list = UPower.devices.values
+
+        for (let i = 0; i < list.length; i++) {
+            if (linePowerOnline(list[i]))
+                return true
+        }
+
+        const pb = primaryBattery
+        if (pb && devicePluggedIn(pb))
+            return true
+
+        if (batteryDisplay.ready && devicePluggedIn(batteryDisplay))
+            return true
+
+        for (let i = 0; i < list.length; i++) {
+            const d = list[i]
+            if (d.type === UPowerDeviceType.Battery && d.isPresent && devicePluggedIn(d))
+                return true
+        }
+
+        return false
+    }
 
     readonly property bool isLow: percentage < 0.15 && !pluggedIn
 
