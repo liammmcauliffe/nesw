@@ -53,9 +53,23 @@ PanelWindow {
     // armed after startup so the initial pipewire sync doesn't pop the hud
     property bool audioReady: false
 
+    // Hyprland keeps the normal workspace as focusedWorkspace while a special
+    // workspace is open — check the monitor's specialWorkspace field instead
     readonly property bool inSpecialWs: {
-        const ws = Hyprland.focusedWorkspace;
-        return ws ? ws.id < 0 : false;
+        const mon = Hyprland.monitorFor(root.screen);
+        if (!mon)
+            return false;
+        const special = mon.lastIpcObject.specialWorkspace;
+        const name = special ? (special.name ?? "") : "";
+        return name.length > 0;
+    }
+
+    Connections {
+        target: Hyprland
+        function onRawEvent(event) {
+            if (event.name === "activespecialv2" || event.name === "activespecial")
+                Hyprland.refreshMonitors();
+        }
     }
 
     // volume/muted are invalid unless the node is bound; tracking binds it
@@ -105,6 +119,7 @@ PanelWindow {
     property bool slideReady: false
 
     Component.onCompleted: {
+        Hyprland.refreshMonitors();
         slideOffset = -(activeWs - 1) * stepPx
         slideReady = true
     }
