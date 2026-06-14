@@ -329,30 +329,32 @@ PanelWindow {
         y: root.borderWidth + (root.notchHeight - root.borderWidth - height) / 2
 
         Item {
-            visible: root.showWifiIcon
-            width: wifiIcon.width
-            height: wifiIcon.height
+            id: networkIcon
+            visible: root.showWifiIcon || root.showEthernetIcon
+            width: 28
+            height: 28
             anchors.verticalCenter: parent.verticalCenter
 
             WifiIcon {
-                id: wifiIcon
+                visible: root.showWifiIcon
                 glyph: root.wifiDebug ? root.displayWifiGlyph : root.wifiGlyph
                 color: "white"
                 shellColor: Colors.palette.m3onSurfaceVariant
                 size: 28
+                anchors.centerIn: parent
+            }
+
+            EthernetIcon {
+                visible: root.showEthernetIcon
+                color: "white"
+                size: 28
+                anchors.centerIn: parent
             }
 
             TapHandler {
                 acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
                 onTapped: root.cycleWifiDebug()
             }
-        }
-
-        EthernetIcon {
-            visible: root.showEthernetIcon
-            color: "white"
-            size: 28
-            anchors.verticalCenter: parent.verticalCenter
         }
 
         BatteryIcon {
