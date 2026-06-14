@@ -44,35 +44,17 @@ Hyprland is configured in Lua, split across `modules/hyprland/`:
 
 ### Quickshell
 
-`modules/quickshell/config/shell.qml` loads two panels:
+`modules/quickshell/config/shell.qml` loads:
 
-- **Notch** — animated workspace indicator with scroll/tap to switch
+- **TopBar** — blurred top band
 - **Border** — rounded screen frame overlay
+- **Notch** — animated workspace indicator with scroll/tap to switch
+- **Clock** — top-right date and time
+- **Launcher** — app launcher (`SUPER + space`, or `qs ipc call launcher toggle`)
 
 **Colors** is a singleton that hot-reloads a Material 3 palette from `~/.local/state/nesw/scheme.json` (optional; defaults are baked in). Write `colors` or `colours` keys — both work for external tools like matugen/wallust.
 
-**Fonts** — Quickshell uses [Satoshi](https://www.fontshare.com/fonts/satoshi) exclusively. The font is not bundled in this repo; install it locally before starting the shell.
-
-#### Satoshi font setup
-
-1. Open [fontshare.com/fonts/satoshi](https://www.fontshare.com/fonts/satoshi) and download the family.
-2. Extract the `.otf` files into `~/.local/share/fonts/satoshi/`:
-
-```bash
-mkdir -p ~/.local/share/fonts/satoshi
-# move Satoshi-*.otf from the zip into that directory
-fc-cache -fv ~/.local/share/fonts
-```
-
-At minimum, include `Satoshi-Regular.otf` and `Satoshi-Bold.otf` (the notch workspace number uses bold). Flat installs in `~/.local/share/fonts/` also work if you prefer not to use a subfolder.
-
-3. Restart Quickshell (or log out of Hyprland) so Qt picks up the font.
-
-```bash
-pkill qs; qs -p ~/.config/quickshell
-```
-
-If Satoshi is missing, the shell falls back to the system `Satoshi` family name and may render with a substitute font until the files are installed.
+**Fonts** — Quickshell uses DM Sans, installed system-wide via `fonts.packages` in `hosts/main/configuration.nix`.
 
 ## Fresh install
 
@@ -121,7 +103,7 @@ While you are in `configuration.nix`, adjust `time.timeZone` and `i18n.defaultLo
 sudo nixos-rebuild switch --flake .#main
 ```
 
-Install the Satoshi font for Quickshell (see [Satoshi font setup](#satoshi-font-setup) above), then reboot, log into a TTY, and start Hyprland:
+Reboot, log into a TTY, and start Hyprland:
 
 ```bash
 Hyprland
@@ -148,6 +130,7 @@ Defined in `modules/hyprland/variables.lua` and `config/keybinds.lua`. Highlight
 |---------|--------|
 | `SUPER + Return` | Terminal (ghostty) |
 | `SUPER + W` | Browser (zen-beta) |
+| `SUPER + space` | App launcher |
 | `SUPER + 1–0` | Focus workspace |
 | `SUPER + CTRL + 1–0` | Move window to workspace |
 | `SUPER + S` | Toggle special workspace |
@@ -165,7 +148,6 @@ Volume keys and `SUPER + SHIFT + M` control PipeWire via `wpctl`.
 | Window rules | `modules/hyprland/config/rules.lua` |
 | Autostart | `modules/hyprland/config/execs.lua` |
 | Notch / border UI | `modules/quickshell/config/` |
-| Quickshell font | `~/.local/share/fonts/satoshi/` (Satoshi from Fontshare) |
 | Color scheme output path | `modules/quickshell/config/Colors.qml` |
 | Neovim | `modules/nvim/config/` |
 | Terminal | `modules/ghostty/default.nix` |
