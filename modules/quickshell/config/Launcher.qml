@@ -164,19 +164,19 @@ PanelWindow {
         visible: root.open || panelHost.opacity > 0.01
 
         opacity: root.open ? 1 : 0
-        scale: root.open ? 1 : 0.92
+        scale: root.open ? 1 : 0.82
 
         Behavior on opacity {
             NumberAnimation {
-                duration: root.open ? 110 : 80
+                duration: root.open ? 100 : 70
                 easing.type: Easing.OutCubic
             }
         }
         Behavior on scale {
             NumberAnimation {
-                duration: root.open ? 340 : 120
-                easing.type: root.open ? Easing.OutBack : Easing.InCubic
-                easing.overshoot: 1.12
+                duration: root.open ? 460 : 100
+                easing.type: root.open ? Easing.OutBack : Easing.InQuart
+                easing.overshoot: root.open ? 1.45 : 0
             }
         }
 
