@@ -9,8 +9,8 @@
     theme = "Vague"
     font-family = "Monaspace Neon"
     font-size = 14
-    window-padding-x = 4
-    window-padding-y = 4
+    window-padding-x = 10
+    window-padding-y = 10
     window-decoration = true
     cursor-style=block
     adjust-cell-height=35%

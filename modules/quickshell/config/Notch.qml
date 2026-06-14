@@ -20,11 +20,9 @@ PanelWindow {
     color: "transparent"
 
     WlrLayershell.layer: WlrLayer.Top
-    // reserving (notchHeight - borderWidth) makes the notch-to-window gap
-    // always equal the window-to-border gap on the sides/bottom: both come
-    // out to (gaps_out - borderWidth), so they stay in sync however hyprland
-    // gaps are tuned
-    exclusiveZone: Constants.notchHeight - Constants.borderWidth
+    // reserving (notchHeight - borderWidth + 4) keeps the notch-to-window gap
+    // aligned with the side/bottom window gaps after thinning the screen frame
+    exclusiveZone: Constants.notchHeight - Constants.borderWidth + 4
     WlrLayershell.namespace: "nesw-notch"
 
     // audio
@@ -247,7 +245,7 @@ PanelWindow {
     }
 
     // shape
-    // continuous loop matching the canvas arcTo path: travels along the 6px
+    // continuous loop matching the canvas arcTo path: travels along the top
     // top strip, dips down with an S-curve tangent to the strip's bottom edge,
     // runs across the bottom, and curves back up to meet the strip again
     Shape {

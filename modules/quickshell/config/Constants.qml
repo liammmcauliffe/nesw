@@ -11,7 +11,7 @@ Singleton {
     readonly property int maxWidth: 360
     readonly property int notchHeight: 40
     readonly property int notchRadius: 15
-    readonly property int borderWidth: 6
+    readonly property int borderWidth: 4
     readonly property int notchPadding: 16
     readonly property int hitHeight: 120
     readonly property color notchColor: "black"

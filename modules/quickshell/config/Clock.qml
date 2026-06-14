@@ -22,7 +22,7 @@ PanelWindow {
     WlrLayershell.namespace: "nesw-clock"
 
     readonly property int notchHeight: 40
-    readonly property int borderWidth: 6
+    readonly property int borderWidth: Constants.borderWidth
     readonly property int sideMargin: 24
     readonly property int clockFontSize: 18
 

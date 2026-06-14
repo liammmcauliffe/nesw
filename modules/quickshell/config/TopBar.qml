@@ -28,7 +28,7 @@ PanelWindow {
     readonly property int barHeight: 40
     // matches the border frame so the fillets sit on its inner edge and
     // mirror the screen's bottom corners exactly
-    readonly property int borderWidth: 6
+    readonly property int borderWidth: Constants.borderWidth
     readonly property int cornerRadius: 23
     readonly property color barColor: "#59000000"
 
@@ -50,7 +50,7 @@ PanelWindow {
             PathLine { x: shape.width; y: 0 }
 
             // down the right edge past the bar bottom (the border strip
-            // overlays the outer 6px, so this edge stays hidden behind it)
+            // overlays the outer frame strip, so this edge stays hidden behind it)
             PathLine {
                 x: shape.width
                 y: root.barHeight + root.cornerRadius

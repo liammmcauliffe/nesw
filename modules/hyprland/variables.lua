@@ -1,4 +1,4 @@
--- local scheme = require("scheme.current")
+local scheme = require("scheme.current")
 
 return {
     -- apps
@@ -28,19 +28,19 @@ return {
     -- shadowColor = "rgba(" .. scheme.surface .. "d4)",
 
     -- gaps
-    -- the 6px screen border sits inside gaps_out, so the visible gap between
-    -- windows and the border/notch is (windowGapsOut - 6) on all sides
-    workspaceGaps = 12,
+    -- the 4px screen border sits inside gaps_out, so the visible gap between
+    -- windows and the border/notch is (windowGapsOut - 4) on all sides
+    workspaceGaps = 18,
     windowGapsIn = 4,
-    windowGapsOut = 12,
-    singleWindowGapsOut = 12,
+    windowGapsOut = 18,
+    singleWindowGapsOut = 24,
 
     -- window styling
     windowOpacity = 0.95,
     windowRounding = 15,
-    windowBorderSize = 1,
-    -- activeWindowBorderColor = "rgba(" .. scheme.primary .. "e6)",
-    -- inactiveWindowBorderColor = "rgba(" .. scheme.onSurfaceVariant .. "11)",
+    windowBorderSize = 2,
+    activeWindowBorderColor = "rgba(" .. scheme.primary .. "e6)",
+    inactiveWindowBorderColor = "rgba(" .. scheme.onSurfaceVariant .. "11)",
 
     -- misc
     volumeStep = 5,

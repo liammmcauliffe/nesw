@@ -20,7 +20,7 @@ PanelWindow {
     WlrLayershell.namespace: "nesw-border"
 
     // frame style
-    readonly property int thickness: 6
+    readonly property int thickness: Constants.borderWidth
     readonly property int rounding: 23
     readonly property color frameColor: "black"
 
