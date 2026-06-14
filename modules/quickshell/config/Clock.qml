@@ -128,39 +128,59 @@ PanelWindow {
         return "white"
     }
 
-    property var segments: []
+    // same tick-step animation as the notch workspace number
+    property real minuteSlide: 0
+    property bool clockReady: false
 
-    function rebuildSegments() {
-        const s = Qt.formatDateTime(clock.date, "ddd MMM d  h:mm AP")
-        const next = []
-        let buf = ""
+    function minuteIndex(d) {
+        return Math.floor(d.getTime() / 60000)
+    }
 
-        for (let i = 0; i < s.length; i++) {
-            const c = s.charAt(i)
-            if (c >= "0" && c <= "9") {
-                if (buf.length) {
-                    next.push({ type: "static", text: buf })
-                    buf = ""
-                }
-                next.push({ type: "digit", value: parseInt(c, 10) })
-            } else {
-                buf += c
-            }
+    function slideDuration(fromIdx, toIdx) {
+        const dist = Math.abs(toIdx - fromIdx)
+        if (dist === 0)
+            return 0
+        return Math.min(450, Math.max(60, dist * 40))
+    }
+
+    function animateToNow() {
+        const target = minuteIndex(clock.date)
+        if (Math.abs(minuteSlide - target) < 0.5) {
+            minuteSlide = target
+            return
         }
 
-        if (buf.length)
-            next.push({ type: "static", text: buf })
-
-        segments = next
+        minuteAnim.stop()
+        minuteAnim.duration = slideDuration(Math.round(minuteSlide), target)
+        minuteAnim.from = minuteSlide
+        minuteAnim.to = target
+        minuteAnim.start()
     }
+
+    readonly property string clockText: Qt.formatDateTime(
+        new Date(Math.round(minuteSlide) * 60000),
+        "ddd MMM d  h:mm AP"
+    )
 
     SystemClock {
         id: clock
         precision: SystemClock.Minutes
-        onDateChanged: root.rebuildSegments()
+        onDateChanged: {
+            if (!root.clockReady) {
+                root.minuteSlide = root.minuteIndex(clock.date)
+                root.clockReady = true
+                return
+            }
+            root.animateToNow()
+        }
     }
 
-    Component.onCompleted: rebuildSegments()
+    NumberAnimation {
+        id: minuteAnim
+        target: root
+        property: "minuteSlide"
+        easing.type: Easing.Linear
+    }
 
     Row {
         id: row
@@ -180,44 +200,14 @@ PanelWindow {
             Behavior on shellColor { ColorAnimation { duration: 300 } }
         }
 
-        Row {
-            id: clockRow
-            spacing: 0
+        Text {
+            id: clockLabel
+            text: root.clockText
+            color: "white"
+            font.family: Fonts.family
+            font.pixelSize: root.clockFontSize
+            font.weight: Fonts.weightBaseline
             anchors.verticalCenter: parent.verticalCenter
-
-            Repeater {
-                model: root.segments
-
-                delegate: Item {
-                    required property int index
-                    required property var modelData
-
-                    readonly property var seg: modelData
-                    readonly property bool isDigit: seg.type === "digit"
-
-                    implicitWidth: isDigit ? digit.implicitWidth : label.implicitWidth
-                    implicitHeight: isDigit ? digit.implicitHeight : label.implicitHeight
-
-                    RollingDigit {
-                        id: digit
-                        visible: parent.isDigit
-                        digit: parent.isDigit ? parent.seg.value : 0
-                        fontSize: root.clockFontSize
-                        color: "white"
-                    }
-
-                    Text {
-                        id: label
-                        visible: !parent.isDigit
-                        text: parent.isDigit ? "" : parent.seg.text
-                        color: "white"
-                        font.family: Fonts.family
-                        font.pixelSize: root.clockFontSize
-                        font.weight: Fonts.weightBaseline
-                        font.features: Fonts.featuresTabular
-                    }
-                }
-            }
         }
     }
 }
