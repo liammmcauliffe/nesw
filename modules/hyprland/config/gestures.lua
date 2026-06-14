@@ -3,8 +3,6 @@ local vars = require("variables")
 -- gesture config
 hl.config({
     gestures = {
-        workspace_swipe = true,
-        workspace_swipe_fingers = vars.workspaceSwipeFingers,
         workspace_swipe_distance = 700,
         workspace_swipe_cancel_ratio = 0.15,
         workspace_swipe_min_speed_to_force = 5,
@@ -14,7 +12,8 @@ hl.config({
     },
 })
 
--- gestures
+-- gestures (Hyprland 0.51+: workspace swipe is a gesture action, not a toggle)
+hl.gesture({ fingers = vars.workspaceSwipeFingers, direction = "horizontal", action = "workspace" })
 hl.gesture({ fingers = vars.gestureFingers, direction = "up", action = "special", arg = "special" })
 hl.gesture({
     fingers = vars.gestureFingersMore,
