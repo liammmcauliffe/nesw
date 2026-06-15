@@ -68,6 +68,8 @@
     git
     tree-sitter
     app2unit
+    grim
+    slurp
   ];
 
   # fonts

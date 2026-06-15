@@ -84,6 +84,7 @@ return {
     kbTerminal = "SUPER + Return",
     kbBrowser = "SUPER + W",
     kbLauncher = "SUPER + space",
+    kbScreenshot = "SUPER + SHIFT + S",
 
     -- misc
     kbSession = "CTRL + ALT + Delete",

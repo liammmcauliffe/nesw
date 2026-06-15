@@ -112,6 +112,7 @@ hl.bind(vars.kbTerminal, hl.dsp.exec_cmd("app2unit -- " .. vars.terminal))
 hl.bind(vars.kbBrowser, hl.dsp.exec_cmd("app2unit -- " .. vars.browser))
 -- launcher: toggle the quickshell app launcher over IPC
 hl.bind(vars.kbLauncher, hl.dsp.exec_cmd("qs ipc call launcher toggle"))
+hl.bind(vars.kbScreenshot, hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | wl-copy"))
 
 -- volume
 hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true })
