@@ -61,23 +61,44 @@ PanelWindow {
 
     readonly property string historyPath: `${Quickshell.env("HOME")}/.local/state/nesw/launcher-history.json`
     property var launchHistory: ({})
+    property int historyEpoch: 0
+
+    function historyKey(entry) {
+        if (!entry)
+            return "";
+        return entry.id || entry.name || "";
+    }
 
     function loadHistory(text) {
         if (!text)
             return;
         try {
             launchHistory = JSON.parse(text);
+            historyEpoch++;
         } catch (e) {}
     }
 
-    function saveHistory(appId) {
-        launchHistory[appId] = Date.now();
+    function persistHistory() {
         const json = JSON.stringify(launchHistory);
-        historyWriter.command = [
-            "sh", "-c",
-            `mkdir -p ~/.local/state/nesw && printf '%s' '${json}' > '${root.historyPath}'`
-        ];
-        historyWriter.running = true;
+        const dir = `${Quickshell.env("HOME")}/.local/state/nesw`;
+        const path = root.historyPath;
+        Quickshell.execDetached({
+            command: [
+                "sh", "-c",
+                `mkdir -p '${dir}' && printf '%s' '${json.replace(/'/g, "'\\''")}' > '${path}'`
+            ],
+        });
+    }
+
+    function saveHistory(entry) {
+        const key = historyKey(entry);
+        if (!key)
+            return;
+        const next = Object.assign({}, launchHistory);
+        next[key] = Date.now();
+        launchHistory = next;
+        historyEpoch++;
+        persistHistory();
     }
 
     FileView {
@@ -87,19 +108,15 @@ PanelWindow {
         onLoaded: root.loadHistory(text())
     }
 
-    Process {
-        id: historyWriter
-        command: []
-    }
-
     readonly property var results: {
+        const _epoch = historyEpoch;
         const q = query.trim().toLowerCase();
         const all = DesktopEntries.applications.values.filter(a => a && !a.noDisplay);
 
         if (q.length === 0) {
             return all.slice().sort((a, b) => {
-                const ta = root.launchHistory[a.id || a.name] || 0;
-                const tb = root.launchHistory[b.id || b.name] || 0;
+                const ta = root.launchHistory[root.historyKey(a)] || 0;
+                const tb = root.launchHistory[root.historyKey(b)] || 0;
                 if (tb !== ta)
                     return tb - ta;
                 return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
@@ -149,7 +166,7 @@ PanelWindow {
     function launch(entry): void {
         if (!entry)
             return;
-        saveHistory(entry.id || entry.name);
+        saveHistory(entry);
         entry.execute();
         open = false;
     }
