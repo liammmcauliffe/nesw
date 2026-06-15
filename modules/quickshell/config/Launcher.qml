@@ -231,10 +231,10 @@ PanelWindow {
         Behavior on y {
             enabled: panelHost.springEnabled
             SpringAnimation {
-                spring: 5
-                damping: 0.7
-                mass: 0.55
-                epsilon: 0.5
+                spring: 10
+                damping: 0.45
+                mass: 0.4
+                epsilon: 0.25
             }
         }
 
