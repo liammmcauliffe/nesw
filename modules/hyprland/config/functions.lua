@@ -30,14 +30,19 @@ end
 
 -- resize active window
 local function resize_active_window(width_pct, height_pct)
-    local w = 800
-    local h = 600
     local win = hl.get_active_window()
-    if win and win.size then
-        w = win.size.x * (width_pct / 100)
-        h = win.size.y * (height_pct / 100)
-        return { x = w, y = h, relative = true }
+    if not (win and win.size) then
+        hl.dispatch(hl.dsp.focus({ window = "previous" }))
+        win = hl.get_active_window()
     end
+    if not (win and win.size) then
+        return nil
+    end
+    return {
+        x = win.size.x * (width_pct / 100),
+        y = win.size.y * (height_pct / 100),
+        relative = true
+    }
 end
 
 -- resizer
