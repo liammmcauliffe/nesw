@@ -33,8 +33,8 @@ PanelWindow {
     // audioMode swaps the notch content from the workspace ruler to the volume hud
     property bool audioMode: false
     property bool isVolumeChanging: false
-    // armed after startup so the initial pipewire sync doesn't pop the hud
-    property bool audioReady: false
+    // armed on first volume sync so pipewire's initial value doesn't pop the hud
+    property real _lastVolume: -1
 
     // Hyprland keeps the normal workspace as focusedWorkspace while a special
     // workspace is open — check the monitor's specialWorkspace field instead
@@ -69,8 +69,20 @@ PanelWindow {
         objects: [root.audioSink]
     }
 
-    onVolumeChanged: showAudio()
-    onMutedChanged: showAudio()
+    onVolumeChanged: {
+        if (_lastVolume < 0) {
+            _lastVolume = volume;
+            return;
+        }
+        if (Math.abs(volume - _lastVolume) > 0.001) {
+            _lastVolume = volume;
+            showAudio();
+        }
+    }
+
+    onMutedChanged: {
+        showAudio();
+    }
 
     property bool expanded: false
     property real notchWidth: Math.min(Constants.maxWidth, Math.max(Constants.minWidth, expanded ? Constants.maxWidth : Constants.minWidth))
@@ -121,12 +133,6 @@ PanelWindow {
     }
 
     Timer {
-        interval: 1000
-        running: true
-        onTriggered: root.audioReady = true
-    }
-
-    Timer {
         id: audioLockTimer
         interval: 800
         repeat: false
@@ -158,8 +164,6 @@ PanelWindow {
     }
 
     function showAudio() {
-        if (!audioReady)
-            return
         isVolumeChanging = true
         audioMode = true
         expanded = true
