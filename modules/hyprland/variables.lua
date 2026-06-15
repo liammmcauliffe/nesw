@@ -65,8 +65,8 @@ return {
     kbToggleSpecialWs = "SUPER + S",
 
     -- window groups
-    kbWindowGroupCycleNext = "ALT + TAB",
-    kbWindowGroupCyclePrev = "SHIFT + ALT + TAB",
+    kbWindowGroupCycleNext = "ALT + Tab",
+    kbWindowGroupCyclePrev = "SHIFT + ALT + Tab",
     kbUngroup = "SUPER + U",
     kbToggleGroup = "SUPER + Comma",
 
