@@ -12,6 +12,7 @@
       gcc
       gnumake
       lua-language-server
+      nil
     ];
 
     # add neovim plugins here

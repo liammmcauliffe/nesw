@@ -12,5 +12,6 @@ vim.lsp.config("lua_ls", {
 })
 
 vim.lsp.enable({
-    "lua_ls"
+    "lua_ls",
+    "nil_ls"
 })
