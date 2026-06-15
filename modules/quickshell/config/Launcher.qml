@@ -220,40 +220,51 @@ PanelWindow {
         width: root.panelWidth
         height: root.panelHeight
 
-        property bool springEnabled: false
-        readonly property real naturalY: parent.height * root.panelTopMarginRatio
+        // scale from center so it reads as depth, not growth from an edge
+        transformOrigin: Item.Center
+
+        property bool useSpring: false
 
         enabled: root.open
         visible: opacity > 0.01
 
         opacity: 0
+        scale: 0.82
 
-        Behavior on y {
-            enabled: panelHost.springEnabled
+        // spring only active during open — close uses its own NumberAnimation
+        Behavior on scale {
+            enabled: panelHost.useSpring
             SpringAnimation {
-                spring: 10
-                damping: 0.45
-                mass: 0.4
-                epsilon: 0.25
+                spring: 18
+                damping: 0.52
+                mass: 0.32
+                epsilon: 0.001
             }
         }
 
+        NumberAnimation {
+            id: closeScale
+            target: panelHost
+            property: "scale"
+            to: 0.82
+            duration: 85
+            easing.type: Easing.InQuart
+        }
+
         function playOpen() {
-            openOpacity.stop();
+            closeScale.stop();
             closeOpacity.stop();
-            springEnabled = false;
-            y = Constants.notchHeight;
+            useSpring = false;
+            scale = 0.82;
             opacity = 0;
-            springEnabled = true;
-            y = naturalY;
+            useSpring = true;
+            scale = 1.0;
             openOpacity.start();
         }
 
         function playClose() {
-            openOpacity.stop();
-            closeOpacity.stop();
-            springEnabled = true;
-            y = Constants.notchHeight;
+            useSpring = false;
+            closeScale.start();
             closeOpacity.start();
         }
 
@@ -271,7 +282,7 @@ PanelWindow {
             target: panelHost
             property: "opacity"
             to: 0
-            duration: 90
+            duration: 85
             easing.type: Easing.OutCubic
         }
 
