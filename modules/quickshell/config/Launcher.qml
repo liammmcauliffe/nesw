@@ -507,7 +507,7 @@ PanelWindow {
                         anchors.left: parent.left
                         anchors.leftMargin: 72
                         anchors.right: parent.right
-                        anchors.rightMargin: appRow.active ? root.openHintWidth : 16
+                        anchors.rightMargin: root.openHintWidth
                         anchors.verticalCenter: parent.verticalCenter
                         spacing: 2
 
