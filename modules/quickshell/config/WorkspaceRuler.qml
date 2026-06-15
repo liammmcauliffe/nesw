@@ -39,7 +39,7 @@ Item {
 
                 Repeater {
                     // +3 fills the midpoint to the next workspace tick
-                    model: [-2, -1, 1, 2, 3]
+                    model: [-3, -2, -1, 1, 2, 3]
 
                     delegate: Rectangle {
                         required property int modelData
