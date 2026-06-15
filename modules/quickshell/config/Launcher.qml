@@ -158,47 +158,46 @@ PanelWindow {
     Item {
         id: panelHost
 
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: parent.height * root.panelTopMarginRatio
+        x: (parent.width - width) / 2
+        y: parent.height * root.panelTopMarginRatio
         width: root.panelWidth
         height: root.panelHeight
 
-        transformOrigin: Item.Top
+        property bool springEnabled: false
+        readonly property real naturalY: parent.height * root.panelTopMarginRatio
+
         enabled: root.open
         visible: opacity > 0.01
 
         opacity: 0
-        scale: 0.82
+
+        Behavior on y {
+            enabled: panelHost.springEnabled
+            SpringAnimation {
+                spring: 5
+                damping: 0.7
+                mass: 0.55
+                epsilon: 0.5
+            }
+        }
 
         function playOpen() {
-            openScale.stop();
             openOpacity.stop();
-            closeScale.stop();
             closeOpacity.stop();
-            scale = 0.82;
+            springEnabled = false;
+            y = Constants.notchHeight;
             opacity = 0;
+            springEnabled = true;
+            y = naturalY;
             openOpacity.start();
-            openScale.start();
         }
 
         function playClose() {
-            openScale.stop();
             openOpacity.stop();
-            closeScale.stop();
             closeOpacity.stop();
-            closeScale.start();
+            springEnabled = true;
+            y = Constants.notchHeight;
             closeOpacity.start();
-        }
-
-        NumberAnimation {
-            id: openScale
-            target: panelHost
-            property: "scale"
-            to: 1
-            duration: 220
-            easing.type: Easing.OutBack
-            easing.overshoot: 1.05
         }
 
         NumberAnimation {
@@ -206,17 +205,8 @@ PanelWindow {
             target: panelHost
             property: "opacity"
             to: 1
-            duration: 220
+            duration: 180
             easing.type: Easing.OutCubic
-        }
-
-        NumberAnimation {
-            id: closeScale
-            target: panelHost
-            property: "scale"
-            to: 0.82
-            duration: 100
-            easing.type: Easing.InQuart
         }
 
         NumberAnimation {
@@ -224,7 +214,7 @@ PanelWindow {
             target: panelHost
             property: "opacity"
             to: 0
-            duration: 100
+            duration: 90
             easing.type: Easing.OutCubic
         }
 
