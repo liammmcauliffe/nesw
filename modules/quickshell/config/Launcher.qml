@@ -59,12 +59,51 @@ PanelWindow {
     property bool open: false
     property string query: ""
 
+    readonly property string historyPath: `${Quickshell.env("HOME")}/.local/state/nesw/launcher-history.json`
+    property var launchHistory: ({})
+
+    function loadHistory(text) {
+        if (!text)
+            return;
+        try {
+            launchHistory = JSON.parse(text);
+        } catch (e) {}
+    }
+
+    function saveHistory(appId) {
+        launchHistory[appId] = Date.now();
+        const json = JSON.stringify(launchHistory);
+        historyWriter.command = [
+            "sh", "-c",
+            `mkdir -p ~/.local/state/nesw && printf '%s' '${json}' > '${root.historyPath}'`
+        ];
+        historyWriter.running = true;
+    }
+
+    FileView {
+        path: root.historyPath
+        watchChanges: false
+        printErrors: false
+        onLoaded: root.loadHistory(text())
+    }
+
+    Process {
+        id: historyWriter
+        command: []
+    }
+
     readonly property var results: {
         const q = query.trim().toLowerCase();
         const all = DesktopEntries.applications.values.filter(a => a && !a.noDisplay);
 
         if (q.length === 0) {
-            return all.slice().sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+            return all.slice().sort((a, b) => {
+                const ta = root.launchHistory[a.id || a.name] || 0;
+                const tb = root.launchHistory[b.id || b.name] || 0;
+                if (tb !== ta)
+                    return tb - ta;
+                return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+            });
         }
 
         return all.map(a => {
@@ -110,6 +149,7 @@ PanelWindow {
     function launch(entry): void {
         if (!entry)
             return;
+        saveHistory(entry.id || entry.name);
         entry.execute();
         open = false;
     }
