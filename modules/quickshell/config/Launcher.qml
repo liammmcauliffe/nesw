@@ -220,52 +220,51 @@ PanelWindow {
         width: root.panelWidth
         height: root.panelHeight
 
-        // scale from center so it reads as depth, not growth from an edge
-        transformOrigin: Item.Center
-
-        property bool useSpring: false
+        // top origin — height changes while searching don't yank the visual center
+        transformOrigin: Item.Top
 
         enabled: root.open
         visible: opacity > 0.01
 
         opacity: 0
-        scale: 0.82
+        scale: 0.88
 
-        // spring only active during open — close uses its own NumberAnimation
-        Behavior on scale {
-            enabled: panelHost.useSpring
-            SpringAnimation {
-                spring: 18
-                damping: 0.52
-                mass: 0.32
-                epsilon: 0.001
-            }
+        function playOpen() {
+            openScale.stop();
+            openOpacity.stop();
+            closeScale.stop();
+            closeOpacity.stop();
+            scale = 0.88;
+            opacity = 0;
+            openScale.start();
+            openOpacity.start();
+        }
+
+        function playClose() {
+            openScale.stop();
+            openOpacity.stop();
+            closeScale.stop();
+            closeOpacity.stop();
+            closeScale.start();
+            closeOpacity.start();
+        }
+
+        NumberAnimation {
+            id: openScale
+            target: panelHost
+            property: "scale"
+            to: 1
+            duration: 160
+            easing.type: Easing.OutCubic
         }
 
         NumberAnimation {
             id: closeScale
             target: panelHost
             property: "scale"
-            to: 0.82
-            duration: 85
-            easing.type: Easing.InQuart
-        }
-
-        function playOpen() {
-            closeScale.stop();
-            closeOpacity.stop();
-            useSpring = false;
-            scale = 0.82;
-            opacity = 0;
-            useSpring = true;
-            scale = 1.0;
-            openOpacity.start();
-        }
-
-        function playClose() {
-            useSpring = false;
-            closeScale.start();
-            closeOpacity.start();
+            to: 0.88
+            duration: 100
+            easing.type: Easing.InCubic
         }
 
         NumberAnimation {
@@ -273,7 +272,7 @@ PanelWindow {
             target: panelHost
             property: "opacity"
             to: 1
-            duration: 180
+            duration: 160
             easing.type: Easing.OutCubic
         }
 
@@ -282,8 +281,8 @@ PanelWindow {
             target: panelHost
             property: "opacity"
             to: 0
-            duration: 85
-            easing.type: Easing.OutCubic
+            duration: 100
+            easing.type: Easing.InCubic
         }
 
         Rectangle {
