@@ -21,7 +21,7 @@ PanelWindow {
 
     // frame style
     readonly property int thickness: Constants.borderWidth
-    readonly property int rounding: Constants.cornerRadius
+    readonly property int rounding: 23
     readonly property color frameColor: "black"
 
     // fully click-through
