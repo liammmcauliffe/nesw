@@ -136,4 +136,4 @@ hl.bind(
 )
 
 -- sleep
-hl.bind("SUPER + SHIFT + L", hl.dsp.exec_cmd("systemctl suspend-then-suspend", { locked = true }))
+hl.bind("SUPER + SHIFT + L", hl.dsp.exec_cmd(vars.suspendCommand), { locked = true })
