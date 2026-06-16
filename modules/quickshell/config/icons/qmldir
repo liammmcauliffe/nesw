@@ -1,4 +1,5 @@
 module icons
+singleton IconConstants 1.0 IconConstants.qml
 VolumeIcon 1.0 VolumeIcon.qml
 SearchIcon 1.0 SearchIcon.qml
 ReturnKeyIcon 1.0 ReturnKeyIcon.qml

@@ -12,32 +12,40 @@ Item {
     width: size
     height: size
 
-    Shape {
+    readonly property real unitScale: root.size / IconConstants.viewBox
+
+    Item {
         anchors.fill: parent
-        preferredRendererType: Shape.CurveRenderer
-        transform: Scale {
-            xScale: root.width / 200
-            yScale: root.height / 200
-        }
+        scale: IconConstants.artScale
+        transformOrigin: Item.Center
 
-        ShapePath {
-            fillColor: "transparent"
-            strokeColor: root.color
-            strokeWidth: 10
-            joinStyle: ShapePath.MiterJoin
-            PathSvg {
-                path: "M173.86,48.86v102.27c0,6.28-5.09,11.36-11.36,11.36h-125c-6.28,0-11.36-5.09-11.36-11.36 V48.86c0-6.28,5.09-11.36,11.36-11.36h125C168.78,37.5,173.86,42.59,173.86,48.86"
+        Shape {
+            anchors.fill: parent
+            preferredRendererType: Shape.CurveRenderer
+            transform: Scale {
+                xScale: root.unitScale
+                yScale: root.unitScale
             }
-        }
 
-        ShapePath {
-            fillColor: "transparent"
-            strokeColor: root.color
-            strokeWidth: 15
-            capStyle: ShapePath.RoundCap
-            joinStyle: ShapePath.RoundJoin
-            PathSvg {
-                path: "M134.09,82.35v23.25 M66.64,105.6h67.45 M66.61,105.63l16.97-16.97 M83.58,122.58 l-16.97-16.96"
+            ShapePath {
+                fillColor: "transparent"
+                strokeColor: root.color
+                strokeWidth: 10
+                joinStyle: ShapePath.MiterJoin
+                PathSvg {
+                    path: "M173.86,48.86v102.27c0,6.28-5.09,11.36-11.36,11.36h-125c-6.28,0-11.36-5.09-11.36-11.36 V48.86c0-6.28,5.09-11.36,11.36-11.36h125C168.78,37.5,173.86,42.59,173.86,48.86"
+                }
+            }
+
+            ShapePath {
+                fillColor: "transparent"
+                strokeColor: root.color
+                strokeWidth: 15
+                capStyle: ShapePath.RoundCap
+                joinStyle: ShapePath.RoundJoin
+                PathSvg {
+                    path: "M134.09,82.35v23.25 M66.64,105.6h67.45 M66.61,105.63l16.97-16.97 M83.58,122.58 l-16.97-16.96"
+                }
             }
         }
     }
