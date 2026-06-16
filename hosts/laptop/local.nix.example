@@ -52,6 +52,15 @@
   #
   # Available Nix options today: nesw.desktop.hyprland.terminal, .browser
 
+  # ── GPU driver ───────────────────────────────────────────────────────────────
+  #
+  # Pick the vendor that matches your card (only one):
+  #   lspci -k | grep -A 3 -E 'VGA|3D|Display'
+  #
+  # nesw.drivers.intel.enable = true;   # i915 / xe — Framework 13 Intel, most laptops
+  # nesw.drivers.amdgpu.enable = true;  # AMD Ryzen iGPU / dGPU
+  # nesw.drivers.nvidia.enable = true;  # proprietary NVIDIA (set open = true on Turing+)
+
   # ── Ad-hoc Home Manager overrides ────────────────────────────────────────────
   # Keep HM-only options in a separate file if you also import local.nix from
   # configuration.nix — home.packages here will break a NixOS rebuild.

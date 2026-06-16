@@ -4,7 +4,13 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/themes
+    ../../modules/drivers
   ] ++ (if builtins.pathExists ./local.nix then [ ./local.nix ] else []);
+
+  # GPU vendor — enable exactly one (lspci -k | grep -A 3 -E 'VGA|3D|Display')
+  # nesw.drivers.intel.enable = true;
+  # nesw.drivers.amdgpu.enable = true;
+  # nesw.drivers.nvidia.enable = true;
 
   # allow unfree software
   nixpkgs.config.allowUnfree = true;
