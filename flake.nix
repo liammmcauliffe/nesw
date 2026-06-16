@@ -20,6 +20,7 @@
 
   outputs = inputs@{ nixpkgs, hyprland, home-manager, zen-browser, quickshell, ... }:
     let
+      lib = nixpkgs.lib;
       system = "x86_64-linux";
       # change this to your system username before the first rebuild
       userName = "liam";
@@ -35,16 +36,16 @@
         inherit system;
         specialArgs = { inherit inputs hyprland userName; };
         modules = [
-          host.configuration
           home-manager.nixosModules.home-manager
+          host.configuration
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs zen-browser quickshell hyprland; };
-            home-manager.users.${userName} = {
-              imports = [ host.home ];
-              home.stateVersion = "26.05";
-            };
+            home-manager.users.${userName} = lib.mkMerge [
+              (import host.home)
+              { home.stateVersion = "26.05"; }
+            ];
           }
         ];
       };

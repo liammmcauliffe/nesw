@@ -5,7 +5,9 @@
     ./hardware-configuration.nix
     ../../modules/themes
     ../../modules/drivers
-  ] ++ (if builtins.pathExists ./local.nix then [ ./local.nix ] else []);
+  ]
+  ++ (if builtins.pathExists ./shared.nix then [ ./shared.nix ] else [])
+  ++ (if builtins.pathExists ./local.nix then [ ./local.nix ] else []);
 
   # GPU vendor — enable exactly one (lspci -k | grep -A 3 -E 'VGA|3D|Display')
   # nesw.drivers.intel.enable = true;

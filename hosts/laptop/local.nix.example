@@ -1,11 +1,11 @@
 { ... }: {
-  # Copy this file to local.nix to customize your machine without editing core modules.
-  # Imported by hosts/laptop/home.nix and configuration.nix when local.nix exists.
-  # local.nix is gitignored — never commit it.
+  # Copy this file to local.nix for NixOS-only overrides (GPU driver, timezone, etc.).
+  # Imported by hosts/laptop/configuration.nix only — not Home Manager.
   #
-  # nesw.* options apply to both NixOS and Home Manager.
-  # home.* / programs.* options are Home Manager only — they will fail a NixOS
-  # rebuild if set here; keep those in a separate HM-only overlay if needed.
+  # For options that affect both system and user config (theme, default apps),
+  # use shared.nix instead. For Home-Manager-only tweaks, use home.local.nix.
+  #
+  # local.nix is gitignored — never commit it.
 
   # ── System (NixOS) overrides ─────────────────────────────────────────────────
   #
