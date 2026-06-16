@@ -1,6 +1,6 @@
 { ... }: {
   # Put machine-specific or experimental overrides here.
-  # This file is imported by hosts/main/home.nix when hosts/main/local.nix exists.
+  # This file is imported by hosts/laptop/home.nix when hosts/laptop/local.nix exists.
   #
   # Examples:
   # home.packages = [ pkgs.somePackage ];
