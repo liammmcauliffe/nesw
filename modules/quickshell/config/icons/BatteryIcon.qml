@@ -41,6 +41,11 @@ Item {
         return ""
     }
 
+    readonly property string shellPath:
+        "M150.94,59.69c8.36,0,15.16,6.8,15.16,15.16v50.31c0,8.36-6.8,15.16-15.16,15.16H25.16c-8.36,0-15.16-6.8-15.16-15.16V74.84c0-8.36,6.8-15.16,15.16-15.16H150.94"
+        + " M150.94,49.69H25.16C11.26,49.69,0,60.95,0,74.84v50.31c0,13.89,11.26,25.16,25.16,25.16h125.79c13.89,0,25.16-11.26,25.16-25.16V74.84C176.1,60.95,164.84,49.69,150.94,49.69L150.94,49.69z"
+        + " M200,100c0,10.42-8.45,18.87-18.87,18.87V81.13C191.55,81.13,200,89.58,200,100"
+
     IconArt {
         anchors.fill: parent
 
@@ -50,34 +55,20 @@ Item {
             preferredRendererType: Shape.CurveRenderer
             antialiasing: true
 
+            // Juice sits under the shell so fill never tints the frame.
             ShapePath {
-                fillColor: root.inactiveColor
+                fillColor: root.juicePath.length > 0 ? root.juiceColor : "transparent"
                 strokeWidth: 0
                 PathSvg {
-                    path: "M150.94,59.69c8.36,0,15.16,6.8,15.16,15.16v50.31c0,8.36-6.8,15.16-15.16,15.16H25.16c-8.36,0-15.16-6.8-15.16-15.16V74.84c0-8.36,6.8-15.16,15.16-15.16H150.94 M150.94,49.69H25.16C11.26,49.69,0,60.95,0,74.84v50.31c0,13.89,11.26,25.16,25.16,25.16h125.79c13.89,0,25.16-11.26,25.16-25.16V74.84C176.1,60.95,164.84,49.69,150.94,49.69L150.94,49.69z"
+                    path: root.juicePath.length > 0 ? root.juicePath : "M0,0z"
                 }
             }
 
             ShapePath {
                 fillColor: root.inactiveColor
                 strokeWidth: 0
-                PathSvg {
-                    path: "M200,100c0,10.42-8.45,18.87-18.87,18.87V81.13C191.55,81.13,200,89.58,200,100"
-                }
-            }
-        }
-
-        Shape {
-            width: IconConstants.viewBox
-            height: IconConstants.viewBox
-            preferredRendererType: Shape.CurveRenderer
-            antialiasing: true
-            opacity: root.juicePath.length > 0 ? 1 : 0
-
-            ShapePath {
-                fillColor: root.juiceColor
-                strokeWidth: 0
-                PathSvg { path: root.juicePath }
+                fillRule: ShapePath.OddEvenFill
+                PathSvg { path: root.shellPath }
             }
         }
     }

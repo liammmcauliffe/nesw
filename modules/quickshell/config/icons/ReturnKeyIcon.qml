@@ -25,7 +25,8 @@ Item {
                 fillColor: "transparent"
                 strokeColor: root.color
                 strokeWidth: 10
-                joinStyle: ShapePath.RoundJoin
+                joinStyle: ShapePath.MiterJoin
+                miterLimit: 10
                 PathSvg {
                     path: "M173.86,48.86v102.27c0,6.28-5.09,11.36-11.36,11.36h-125c-6.28,0-11.36-5.09-11.36-11.36 V48.86c0-6.28,5.09-11.36,11.36-11.36h125C168.78,37.5,173.86,42.59,173.86,48.86"
                 }
