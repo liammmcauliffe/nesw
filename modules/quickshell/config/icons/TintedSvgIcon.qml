@@ -2,7 +2,6 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Window
-import Qt5Compat.GraphicalEffects
 
 Item {
     id: root
@@ -31,11 +30,34 @@ Item {
         visible: false
     }
 
-    ColorOverlay {
+    ShaderEffectSource {
+        id: effectSource
+
+        anchors.centerIn: parent
         width: src.width
         height: src.height
+        sourceItem: src
+        live: true
+        hideSource: true
+    }
+
+    ShaderEffect {
         anchors.centerIn: parent
-        source: src
-        color: root.color
+        width: src.width
+        height: src.height
+
+        property variant source: effectSource
+        property color tint: root.color
+
+        fragmentShader: "
+            varying highp vec2 qt_TexCoord0;
+            uniform sampler2D source;
+            uniform lowp vec4 tint;
+            void main() {
+                lowp vec4 c = texture2D(source, qt_TexCoord0);
+                lowp float a = max(c.a, max(c.r, max(c.g, c.b)));
+                gl_FragColor = vec4(tint.rgb, a * tint.a);
+            }
+        "
     }
 }
