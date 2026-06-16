@@ -1,24 +1,65 @@
 /*
   Shell Utilities Module
 
-  Adds everyday CLI tools (eza, zoxide, broot) with Fish shell integration.
+  Modern CLI tools (eza, zoxide, bat, fzf, broot) via Home Manager with Fish
+  integration. Replaces manual aliases and init scripts in config.fish.
 
   Exposes: (none)
-  Depends: modules/shell/fish (Fish integration for zoxide and broot)
+  Depends: modules/shell/fish
 */
 { pkgs, ... }:
 {
-  home.packages = with pkgs; [
-    eza
-  ];
+  programs.eza = {
+    enable = true;
+    enableFishIntegration = true;
+    icons = "auto";
+    git = true;
+    extraOptions = [
+      "--group-directories-first"
+      "--header"
+    ];
+  };
 
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
+    options = [ "--cmd" "cd" ];
+  };
+
+  programs.bat = {
+    enable = true;
+    config = {
+      theme = "TwoDark";
+      style = "numbers,changes,header";
+      paging = "always";
+    };
+  };
+
+  programs.fzf = {
+    enable = true;
+    enableFishIntegration = true;
+    defaultOptions = [
+      "--height 40%"
+      "--layout=reverse"
+      "--border"
+      "--info=inline"
+      "--preview 'bat --color=always {}'"
+    ];
   };
 
   programs.broot = {
     enable = true;
     enableFishIntegration = true;
   };
+
+  home.sessionVariables = {
+    MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+    MANROFFOPT = "-c";
+  };
+
+  home.packages = with pkgs; [
+    ripgrep
+    fd
+    jq
+  ];
 }

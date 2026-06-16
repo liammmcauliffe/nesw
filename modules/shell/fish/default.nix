@@ -2,7 +2,7 @@
   Fish Shell Module
 
   Fish via Home Manager: abbreviations, rebuild helpers in functions/, and minimal
-  interactive init. Starship/zoxide/broot init comes from their HM modules.
+  interactive init. Tool hooks (eza, zoxide, fzf, broot, starship) come from HM modules.
 
   Exposes: (none — uses programs.fish from Home Manager)
   Depends: modules/shell/starship, modules/shell/tools
@@ -13,9 +13,10 @@
     enable = true;
 
     shellAbbrs = {
-      ls = "eza --icons";
-      ll = "eza -la --icons --git";
+      cat = "bat";
       lt = "eza --tree --icons";
+      gs = "git status";
+      gd = "git diff";
     };
 
     interactiveShellInit = ''
