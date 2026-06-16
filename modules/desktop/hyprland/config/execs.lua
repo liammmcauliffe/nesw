@@ -1,13 +1,10 @@
 --[[
   Hyprland Autostart & Session Hooks
-  Runs once at compositor startup: secrets, clipboard history, Quickshell, and
-  cursor theme sync. Keeps long-running services out of individual keybinds.
+  Runs once at compositor startup: secrets, clipboard history, and cursor theme sync.
+  Quickshell is started by the Home Manager systemd user service (qs -c nesw).
 ]]
 
 local vars = require("variables")
-local home = os.getenv("HOME") or error("HOME not set")
-local nesw_dir = os.getenv("NESW_DIR") or (home .. "/nesw")
-local quickshell_config = nesw_dir .. "/modules/desktop/quickshell/config"
 
 hl.on("hyprland.start", function()
 
@@ -29,6 +26,6 @@ hl.on("hyprland.start", function()
     -- Bluetooth headsets often need mpris-proxy to receive play/pause from the WM
     hl.exec_cmd("mpris-proxy")
 
-    -- Quickshell provides the top bar, notch, and launcher; started from the live repo path
-    hl.exec_cmd("qs -p " .. quickshell_config)
+    -- Start HM graphical-session.target so Quickshell and other user services launch
+    hl.exec_cmd("systemctl --user start graphical-session.target")
 end)

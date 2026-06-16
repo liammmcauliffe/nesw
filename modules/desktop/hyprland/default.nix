@@ -7,7 +7,7 @@
   Exposes:
     - nesw.desktop.hyprland.terminal
     - nesw.desktop.hyprland.browser
-  Depends: modules/themes; flake input hyprland; modules/desktop/quickshell (shell UI)
+  Depends: modules/themes; flake input hyprland; modules/desktop/quickshell (systemd)
 */
 { config, lib, pkgs, ... }:
 let
