@@ -16,7 +16,9 @@ PanelWindow {
     anchors.left: true
     anchors.right: true
 
-    implicitHeight: Constants.hitHeight
+    readonly property bool deepHit: root.expanded || root.audioMode || root.workspaceScrubbing
+
+    implicitHeight: root.deepHit ? Constants.hitHeight : Constants.notchHeight
     color: "transparent"
 
     WlrLayershell.layer: WlrLayer.Top
@@ -260,7 +262,7 @@ PanelWindow {
         visible: false
 
         readonly property real centerX: (width - shape.width) / 2
-        readonly property real centerHitHeight: root.expanded ? Constants.hitHeight : Constants.notchHeight
+        readonly property real centerHitHeight: root.deepHit ? Constants.hitHeight : Constants.notchHeight
 
         Item {
             x: 0
@@ -410,7 +412,7 @@ PanelWindow {
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         width: root.notchWidth
-        height: root.expanded ? Constants.hitHeight : Constants.notchHeight
+        height: root.deepHit ? Constants.hitHeight : Constants.notchHeight
 
         Behavior on height {
             SpringAnimation {
