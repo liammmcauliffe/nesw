@@ -1,14 +1,14 @@
 { ... }:
 {
   imports = [
-    ../../modules/fish
-    ../../modules/ghostty
-    ../../modules/hyprland
-    ../../modules/nvim
-    ../../modules/starship
-    ../../modules/zen
-    ../../modules/tools
-    ../../modules/quickshell
+    ../../modules/shell/fish
+    ../../modules/terminal/ghostty
+    ../../modules/desktop/hyprland
+    ../../modules/editors/nvim
+    ../../modules/shell/starship
+    ../../modules/browser/zen
+    ../../modules/shell/tools
+    ../../modules/desktop/quickshell
   ] ++ ( if builtins.pathExists ./local.nix then [ ./local.nix ] else []);
   # ^ for developmental purposes ^
 }

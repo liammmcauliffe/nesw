@@ -1,6 +1,6 @@
 local home = os.getenv("HOME") or error("HOME not set")
 local nesw_dir = os.getenv("NESW_DIR") or (home .. "/nesw")
-local hyprland_dir = nesw_dir .. "/modules/hyprland"
+local hyprland_dir = nesw_dir .. "/modules/desktop/hyprland"
 package.path = package.path
     .. ";"
     .. hyprland_dir
