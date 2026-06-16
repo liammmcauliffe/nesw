@@ -1,112 +1,81 @@
 # nesw
 
-NixOS + Hyprland setup
+![NixOS Unstable](https://img.shields.io/badge/NixOS-unstable-blue?logo=nixos&logoColor=white)
+![Hyprland](https://img.shields.io/badge/Hyprland-Wayland-58E1FF?logo=wayland&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
-## Project layout
+A modular NixOS + Hyprland desktop environment with a Quickshell UI layer, centralized theming, and a Lua config bridge. Designed to be forked, customized via options, and extended without patching core modules.
 
-```
-nesw/
-├── flake.nix                 # flake inputs + home-manager user
-├── hosts/main/
-│   ├── configuration.nix     # system config (hostname, audio, hyprland, user)
-│   ├── home.nix              # imports all home-manager modules
-│   ├── local.nix.example     # optional local overrides schema
-│   └── hardware-configuration.nix
-└── modules/
-    ├── hyprland/             # Hyprland Lua config (see below)
-    ├── quickshell/           # QML shell (Notch, Border, Colors)
-    ├── fish/                 # shell aliases + rebuild helpers
-    ├── ghostty/
-    ├── nvim/
-    ├── starship/
-    ├── tools/                # eza, zoxide, broot
-    └── zen/
-```
+## ✨ Showcase
 
-### Hyprland config
+![Desktop Preview](./assets/desktop.png)
 
-Hyprland is configured in Lua, split across `modules/hyprland/`:
+> Add your own screenshot or GIF at `assets/desktop.png` to show off your setup.
 
-| File | Purpose |
-|------|---------|
-| `hyprland.lua` | Entry point - loads all config modules |
-| `variables.lua` | Apps, gaps, blur, keybind modifiers |
-| `config/keybinds.lua` | Keybindings |
-| `config/rules.lua` | Window and workspace rules |
-| `config/gestures.lua` | Touchpad gestures |
-| `config/animations.lua` | Animation curves |
-| `config/general.lua` | Layout, gaps, borders |
-| `config/decoration.lua` | Blur and shadow |
-| `config/input.lua` | Keyboard and touchpad |
-| `config/env.lua` | Environment variables |
-| `config/execs.lua` | Autostart (keyring, clipboard, quickshell, etc.) |
-| `config/functions.lua` | Shared bind helpers |
-| `config/misc.lua` | Misc Hyprland options |
+## Features
 
-See [KEYBINDINGS.md](KEYBINDINGS.md) for the full keybinding reference.
+- **Flake-based multi-host layout** — `hosts/laptop/` with a self-contained `default.nix` entry point, ready to add more machines
+- **Dynamic Lua–Hyprland bridge** — `variables.lua` and color scheme files generated from Nix options at build time
+- **Centralized NixOS theming options** — `nesw.theme.fonts.*` and `nesw.theme.colors.*` drive fonts, Ghostty, Quickshell, and Hyprland borders
+- **Quickshell Notch & Border UI** — top bar, rounded screen frame, workspace notch, clock, and app launcher
+- **Home Manager module export** — `homeManagerModules.nesw` for importing into other flakes
+- **Fish rebuild helpers** — `nswitch` and `ntest` stage changes and rebuild from `~/nesw`
+- **Live color reload** — optional `~/.local/state/nesw/scheme.json` for matugen/wallust without a rebuild
 
-### Quickshell
+## Quick Start
 
-`modules/quickshell/config/shell.qml` loads:
+### Prerequisites
 
-- **TopBar** — blurred top band
-- **Border** — rounded screen frame overlay
-- **Notch** — animated workspace indicator with scroll/tap to switch
-- **Clock** — top-right date and time
-- **Launcher** — app launcher (`SUPER + space`, or `qs ipc call launcher toggle`)
+- NixOS with flakes enabled (or willingness to enable them during install)
+- A user account that will own the Home Manager profile
+- Git
 
-**Fonts** — Quickshell uses DM Sans, installed system-wide via `fonts.packages` in `hosts/main/configuration.nix`.
+### 1. Clone the repository
 
-## Colors
-
-Quickshell reads a Material 3 palette from `~/.local/state/nesw/scheme.json`. The file is optional — dark zinc defaults are baked into `Colors.qml` when it is missing.
-
-The JSON shape is `{ "colors": { "primary": "rrggbb", ... } }`. External tools may use `"colours"` instead of `"colors"`; both work. Keys may include or omit a `#` prefix and an `m3` prefix.
-
-To generate a scheme:
-
-1. Point [matugen](https://github.com/InioX/matugen) or [wallust](https://codeberg.org/explosion-mental/wallust) at your wallpaper.
-2. Configure the tool to write JSON to `~/.local/state/nesw/scheme.json` (create the directory if needed).
-3. Quickshell hot-reloads the file when it changes — no rebuild required.
-
-## Fresh install
-
-> **Important:** Before your first `nixos-rebuild`, set `userName` in `flake.nix` to your actual Linux username. If it does not match your account, you can lose sudo access on first boot.
-
-### 1. Get git
-
-On a fresh NixOS system without git:
+On a fresh system without git:
 
 ```bash
 nix-shell -p git
 ```
 
-### 2. Clone to ~/nesw
+Clone to `~/nesw` (recommended — Hyprland and Quickshell default to this path):
 
 ```bash
 git clone https://github.com/liammmcauliffe/nesw.git ~/nesw
 cd ~/nesw
 ```
 
-### 3. Copy hardware config
+### 2. Copy your hardware configuration
 
 ```bash
-sudo cp /etc/nixos/hardware-configuration.nix ./hosts/main/hardware-configuration.nix
+sudo cp /etc/nixos/hardware-configuration.nix ./hosts/laptop/hardware-configuration.nix
 ```
 
-### 4. Set your username
+This file is gitignored so disk UUIDs and hardware-specific settings stay on your machine.
 
-In `flake.nix`, change the `userName` variable near the top of the `let` block:
+### 3. Set your username
+
+In `flake.nix`, change `userName` in the `let` block to your Linux username:
 
 ```nix
 userName = "YOUR_USERNAME";
 ```
 
-This value is passed to both home-manager and `hosts/main/configuration.nix` automatically.
+This value is passed to Home Manager and `hosts/laptop/configuration.nix`. **It must match your account before the first rebuild** — a mismatch can leave you without sudo access.
 
-While you are editing config, adjust `time.timeZone` and `i18n.defaultLocale` in `hosts/main/configuration.nix` if needed. To use a different hostname, change `networking.hostName` and the flake target (`nixosConfigurations.main` → your name, then rebuild with `.#yourname`).
+### 4. Optional: create `local.nix` for overrides
 
-### 5. Apply
+Copy the example file and edit it with your preferences. This is the preferred way to customize without touching core modules:
+
+```bash
+cp hosts/laptop/local.nix.example hosts/laptop/local.nix
+```
+
+`local.nix` is imported by both `configuration.nix` and `home.nix` when it exists. Use it for `nesw.*` framework options (theme, default apps). See [Customization](#customization) below.
+
+Adjust `time.timeZone` and `i18n.defaultLocale` in `hosts/laptop/configuration.nix` if needed.
+
+### 5. Build and switch
 
 ```bash
 sudo nixos-rebuild switch --flake .#main
@@ -118,92 +87,106 @@ Reboot, log into a TTY, and start Hyprland:
 Hyprland
 ```
 
-### 6. Commit machine-specific changes
+### 6. Day-to-day rebuilds
 
-Commit your username, hardware config, and any locale/timezone edits so a re-clone does not wipe them.
-
-## Day-to-day
-
-### Rebuild helpers (Fish)
-
-Defined in `modules/fish/config.fish`. Both stage all changes in `~/nesw`, run a rebuild, and return you to your previous directory even if the rebuild fails.
+From any directory (Fish):
 
 ```bash
-nswitch   # git add -A, nixos-rebuild switch --flake ~/nesw#main
-ntest     # same, but nixos-rebuild test (temporary, rolled back on reboot)
+nswitch   # stage all changes, rebuild and switch
+ntest     # test build (reverted on reboot)
 ```
 
-### Default keybinds
+## Customization
 
-Defined in `modules/hyprland/variables.lua` and `config/keybinds.lua`. See [KEYBINDINGS.md](KEYBINDINGS.md) for the full list. Highlights:
-
-| Binding | Action |
-|---------|--------|
-| `SUPER + Return` | Terminal (ghostty) |
-| `SUPER + W` | Browser (zen-beta) |
-| `SUPER + space` | App launcher |
-| `SUPER + 1–0` | Focus workspace |
-| `SUPER + CTRL + 1–0` | Move window to workspace |
-| `SUPER + S` | Toggle special workspace |
-| `SUPER + Q` | Close window |
-| `SUPER + SHIFT + L` | Suspend |
-
-Volume keys and `SUPER + SHIFT + M` control PipeWire via `wpctl`.
+nesw is built as a **framework**: defaults live in modules, and your machine-specific choices go in `hosts/laptop/local.nix`. Options use `lib.mkDefault`, so anything you set in `local.nix` wins without editing upstream files.
 
 ### Where to edit what
 
-| Change | File |
-|--------|------|
-| Apps, gaps, blur, keybind prefixes | `modules/hyprland/variables.lua` |
-| Keybindings | `modules/hyprland/config/keybinds.lua` |
-| Window rules | `modules/hyprland/config/rules.lua` |
-| Autostart | `modules/hyprland/config/execs.lua` |
-| Notch / border UI | `modules/quickshell/config/` |
-| Color scheme output path | `modules/quickshell/config/Colors.qml` |
-| Neovim | `modules/nvim/config/` |
-| Terminal | `modules/ghostty/default.nix` |
-| Fish / rebuild helpers | `modules/fish/config.fish` |
-| Starship prompt | `modules/starship/starship.toml` |
-| System packages / services | `hosts/main/configuration.nix` |
-| Add a home-manager module | `hosts/main/home.nix` |
-| Machine-specific overrides | `hosts/main/local.nix` (copy from `local.nix.example`) |
+| You want to… | Do this |
+|--------------|---------|
+| Change the default terminal | `nesw.desktop.hyprland.terminal = "kitty";` in `local.nix` |
+| Change the default browser | `nesw.desktop.hyprland.browser = "firefox";` in `local.nix` |
+| Change the UI font (Quickshell, notch, clock) | `nesw.theme.fonts.sansSerif = "Inter";` in `local.nix` |
+| Change the terminal font | `nesw.theme.fonts.monospace = "JetBrains Mono";` in `local.nix` |
+| Tweak baseline colors (Hyprland borders, scheme) | `nesw.theme.colors.primary = "c4b5fd";` in `local.nix` |
+| Live wallpaper-driven colors (no rebuild) | Write JSON to `~/.local/state/nesw/scheme.json` (see Quickshell `Colors.qml`) |
+| Add packages or enable programs | Home Manager options in a separate HM-only file, or extend `hosts/laptop/home.nix` |
+| Change keybinds or window rules | Edit `modules/desktop/hyprland/config/*.lua` (see [Hyprland Lua Architecture](#hyprland-lua-architecture)) |
+| Customize the shell UI (notch, launcher) | Edit QML under `modules/desktop/quickshell/config/` |
+| System services, hostname, timezone | `hosts/laptop/configuration.nix` |
+| Add a new Home Manager module | `hosts/laptop/home.nix` imports list |
 
-## Troubleshooting / FAQ
+### Example `local.nix`
 
-### Hyprland does not start
+```nix
+{ ... }: {
+  nesw.theme.fonts.monospace = "JetBrains Mono";
+  nesw.desktop.hyprland.browser = "firefox";
+}
+```
 
-- Run `Hyprland` from a TTY and read the error output.
-- Confirm the flake rebuilt successfully: `sudo nixos-rebuild switch --flake ~/nesw#main`.
-- Check that `~/.config/hypr/hyprland.lua` exists (symlinked by home-manager from `modules/hyprland/`).
-- If Lua errors mention missing modules, ensure the repo lives at `~/nesw` or set `NESW_DIR` in `modules/hyprland/config/env.lua`.
+After saving, rebuild:
 
-### Quickshell is missing or crashes
+```bash
+sudo nixos-rebuild switch --flake .#main
+```
 
-- Quickshell is started from `modules/hyprland/config/execs.lua` using `NESW_DIR` (defaults to `~/nesw`).
-- Run manually to see errors: `qs -p ~/nesw/modules/quickshell/config`.
-- After a home-manager rebuild, the config is also copied to `~/.config/quickshell` — either path should work.
+For the full list of available options, see `modules/themes/default.nix`, `modules/desktop/hyprland/default.nix`, and `hosts/laptop/local.nix.example`.
 
-### Fonts not rendering (notch, clock, launcher)
+## Hyprland Lua Architecture
 
-- DM Sans must be installed system-wide. It is declared in `fonts.packages` inside `hosts/main/configuration.nix`.
-- Rebuild and log out/in: `nswitch`.
-- Verify the font is available: `fc-list | grep -i "dm sans"`.
+Hyprland is configured in **Lua**, split across focused files under `modules/desktop/hyprland/`. The tree is symlinked into `~/.config/hypr` for fast iteration, while Nix generates the pieces that should be option-driven:
 
-### Colors not updating
+| File | Role |
+|------|------|
+| `hyprland.lua` | Entry point — loads all `config/*` modules |
+| `variables.lua` | **Generated** — default apps, gaps, blur, keybind prefixes |
+| `scheme/default.lua` / `scheme/current.lua` | **Generated** — palette from `nesw.theme.colors` |
+| `config/keybinds.lua` | Keybindings |
+| `config/rules.lua` | Window, workspace, and layer rules |
+| `config/general.lua` | Layout, gaps, borders |
+| `config/decoration.lua` | Blur and shadow |
+| `config/animations.lua` | Animation curves |
+| `config/gestures.lua` | Touchpad and workspace swipes |
+| `config/input.lua` | Keyboard and touchpad |
+| `config/env.lua` | Session environment variables |
+| `config/execs.lua` | Autostart (keyring, clipboard, Quickshell) |
+| `config/functions.lua` | Shared bind helpers |
+| `config/misc.lua` | Misc compositor settings |
 
-- Confirm `~/.local/state/nesw/scheme.json` exists and is valid JSON.
-- Check file permissions — Quickshell watches the file for changes.
-- Keys should map to Material 3 names (`primary`, `onSurface`, etc.) or `m3`-prefixed variants.
+Override default terminal and browser via Nix; tune gaps, rules, and binds in Lua. For a deeper walkthrough of the module layout and Nix bridge, see [modules/desktop/hyprland/README.md](modules/desktop/hyprland/README.md).
 
-### Rebuild failed mid-way
+Keybinding reference: [KEYBINDINGS.md](KEYBINDINGS.md).
 
-- Fish helpers always `cd` back to your original directory, even on failure.
-- Fix the Nix error, then run `nswitch` or `ntest` again.
+## Project layout
 
-## Flake inputs
+```
+nesw/
+├── flake.nix                      # inputs, nixosConfigurations.main, homeManagerModules
+├── hosts/laptop/
+│   ├── default.nix                # host entry (configuration + home)
+│   ├── configuration.nix          # NixOS system config
+│   ├── home.nix                   # Home Manager imports
+│   ├── local.nix.example          # customization template
+│   └── hardware-configuration.nix # machine-specific (gitignored)
+└── modules/
+    ├── themes/                    # nesw.theme.* options
+    ├── desktop/
+    │   ├── hyprland/              # Hyprland + Lua config
+    │   └── quickshell/            # QML shell UI
+    ├── shell/                     # fish, starship, tools
+    ├── terminal/ghostty/
+    ├── editors/nvim/
+    └── browser/zen/
+```
 
-- [nixpkgs](https://github.com/nixos/nixpkgs) — `nixos-unstable`
-- [Hyprland](https://github.com/hyprwm/Hyprland)
-- [home-manager](https://github.com/nix-community/home-manager)
-- [zen-browser-flake](https://github.com/0xc000022070/zen-browser-flake)
-- [quickshell](https://git.outfoxxed.me/outfoxxed/quickshell)
+## Credits & Inspiration
+
+- [Caelesto](https://github.com/caelesto/caelesto) — modular NixOS rice structure and option-driven design
+- [end-4](https://github.com/end-4/dots-hyprland) — Hyprland + Quickshell integration patterns
+- [Hyprland](https://hyprland.org/) and the Wayland ecosystem
+- [NixOS](https://nixos.org/) and [Home Manager](https://github.com/nix-community/home-manager) communities
+
+## License
+
+MIT
