@@ -1,13 +1,5 @@
-local treesitter = require("nvim-treesitter")
-
-local ensure_installed = {
-    -- languages
-    "go", "rust", "typescript", "javascript", "tsx",
-    "html", "css", "json", "bash",
-    "http", "markdown", "markdown_inline", "dockerfile",
-}
-
-treesitter.install(ensure_installed)
+-- Tree-sitter parsers are installed declaratively via nvim-treesitter.withPlugins
+-- in modules/editors/nvim/default.nix. Do not call treesitter.install() on NixOS.
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "*",

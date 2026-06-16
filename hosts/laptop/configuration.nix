@@ -87,7 +87,6 @@
   # basic packages
   environment.systemPackages = with pkgs; [
     git
-    tree-sitter
     app2unit
     grim
     slurp

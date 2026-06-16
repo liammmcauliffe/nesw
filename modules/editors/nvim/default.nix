@@ -2,33 +2,50 @@
   Neovim Editor Module
 
   Configures Neovim as the default editor with mini.* plugins, LSP tooling,
-  and a Lua config tree symlinked into ~/.config/nvim.
+  and Tree-sitter parsers compiled declaratively via nixpkgs (no :TSInstall).
 
   Exposes: (none — uses programs.neovim from Home Manager)
   Depends: modules/themes (monospace font installed system-wide)
 */
 { pkgs, ... }:
+let
+  nvim-treesitter-plugins = pkgs.vimPlugins.nvim-treesitter.withPlugins (p: with p; [
+    bash
+    css
+    dockerfile
+    go
+    html
+    http
+    javascript
+    json
+    lua
+    markdown
+    markdown_inline
+    nix
+    rust
+    tsx
+    typescript
+  ]);
+in
 {
   programs.neovim = {
     enable = true;
     defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
 
-    # add extra packages your neovim config relies on here (LSPs, formatters, etc.)
     extraPackages = with pkgs; [
       ripgrep
       fd
       wl-clipboard
-      gcc
-      gnumake
       lua-language-server
       nil
     ];
 
-    # add neovim plugins here
     plugins = with pkgs.vimPlugins; [
       vim-moonfly-colors
       friendly-snippets
-      nvim-treesitter
+      nvim-treesitter-plugins
       nvim-lspconfig
 
       mini-files
@@ -42,5 +59,8 @@
     ];
   };
 
-  xdg.configFile."nvim".source = ./config;
+  xdg.configFile."nvim" = {
+    source = ./config;
+    recursive = true;
+  };
 }
