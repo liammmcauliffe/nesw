@@ -11,10 +11,9 @@ Item {
     width: size
     height: size
 
-    TintedSvgIcon {
+    SvgIcon {
         anchors.fill: parent
         size: root.size
-        color: root.color
         source: Qt.resolvedUrl("assets/search.svg")
     }
 }
