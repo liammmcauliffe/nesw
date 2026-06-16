@@ -15,22 +15,27 @@ Item {
     width: size
     height: size
 
+    readonly property color activeColor: root.color
+    readonly property color inactiveColor: root.shellColor
+
     readonly property bool isConnecting: root.glyph === "connecting"
     property int connectFrame: 0
 
-    readonly property string barOuter: "M5.465 25.035c.445.445 1.101.422 1.523-.023 5.532-5.883 12.844-8.977 21.024-8.977 8.226 0 15.562 3.117 21.07 9 .398.399 1.032.399 1.453-.047l3.118-3.117c.374-.398.374-.914.07-1.289-5.297-6.516-15.258-11.32-25.711-11.32S7.598 14.066 2.3 20.582c-.328.375-.305.89.07 1.29Z"
-    readonly property string barMid: "M14.84 34.434c.469.492 1.078.445 1.523-.07 2.719-3.024 7.125-5.204 11.649-5.157 4.57-.047 8.953 2.203 11.695 5.227.445.468 1.031.468 1.477-.024l3.492-3.445c.375-.375.422-.867.07-1.266-3.398-4.195-9.703-7.289-16.734-7.289s-13.336 3.117-16.735 7.29c-.351.398-.304.866.07 1.265Z"
-    readonly property string barInner: "M28.012 46.738c.492 0 .937-.258 1.804-1.101l5.485-5.274c.351-.328.422-.843.117-1.242-1.477-1.898-4.242-3.539-7.406-3.539-3.235 0-6.047 1.711-7.5 3.68-.211.328-.14.773.21 1.101l5.485 5.274c.867.843 1.313 1.101 1.805 1.101"
-
-    readonly property bool _showInner: root.glyph === "high" || root.glyph === "medium" || root.glyph === "low" || (root.isConnecting && (root.connectFrame === 0 || root.connectFrame === 4))
-    readonly property bool _showMid:   root.glyph === "high" || root.glyph === "medium" || (root.isConnecting && (root.connectFrame === 1 || root.connectFrame === 3))
-    readonly property bool _showOuter: root.glyph === "high" || (root.isConnecting && root.connectFrame === 2)
+    readonly property bool outerActive: !root.isConnecting
+        ? root.glyph === "high"
+        : root.connectFrame === 2
+    readonly property bool midActive: !root.isConnecting
+        ? (root.glyph === "high" || root.glyph === "medium")
+        : (root.connectFrame === 1 || root.connectFrame === 3)
+    readonly property bool innerActive: !root.isConnecting
+        ? (root.glyph === "high" || root.glyph === "medium" || root.glyph === "low")
+        : root.connectFrame === 0
 
     Timer {
         running: root.isConnecting
         repeat: true
         interval: 260
-        onTriggered: root.connectFrame = (root.connectFrame + 1) % 5
+        onTriggered: root.connectFrame = (root.connectFrame + 1) % 4
         onRunningChanged: {
             if (!running)
                 root.connectFrame = 0
@@ -38,29 +43,35 @@ Item {
     }
 
     Shape {
-        width: 56
-        height: 56
-        anchors.centerIn: parent
-        scale: root.size / 56
-        transformOrigin: Item.Center
+        anchors.fill: parent
         preferredRendererType: Shape.CurveRenderer
-
-        ShapePath {
-            fillColor: root._showOuter ? root.color : root.shellColor
-            strokeWidth: 0
-            PathSvg { path: root.barOuter }
+        transform: Scale {
+            xScale: root.width / 200
+            yScale: root.height / 200
         }
 
         ShapePath {
-            fillColor: root._showMid ? root.color : root.shellColor
+            fillColor: root.outerActive ? root.activeColor : root.inactiveColor
             strokeWidth: 0
-            PathSvg { path: root.barMid }
+            PathSvg {
+                path: "M27.85,90.11c1.42,1.48,3.52,1.41,4.87-0.08c17.71-19.62,41.11-29.94,67.29-29.94 c26.33,0,49.81,10.4,67.44,30.02c1.27,1.33,3.3,1.33,4.65-0.16l9.98-10.4c1.2-1.33,1.2-3.05,0.22-4.3 c-16.95-21.73-48.83-37.76-82.29-37.76S34.68,53.52,17.72,75.26c-1.05,1.25-0.98,2.97,0.22,4.3L27.85,90.11z"
+            }
         }
 
         ShapePath {
-            fillColor: root._showInner ? root.color : root.shellColor
+            fillColor: root.midActive ? root.activeColor : root.inactiveColor
             strokeWidth: 0
-            PathSvg { path: root.barInner }
+            PathSvg {
+                path: "M57.86,121.46c1.5,1.64,3.45,1.48,4.87-0.23c8.7-10.09,22.8-17.36,37.28-17.2 c14.63-0.16,28.66,7.35,37.43,17.43c1.42,1.56,3.3,1.56,4.73-0.08l11.18-11.49c1.2-1.25,1.35-2.89,0.22-4.22 c-10.88-13.99-31.06-24.31-53.56-24.31s-42.68,10.4-53.56,24.32c-1.12,1.33-0.97,2.89,0.22,4.22L57.86,121.46z"
+            }
+        }
+
+        ShapePath {
+            fillColor: root.innerActive ? root.activeColor : root.inactiveColor
+            strokeWidth: 0
+            PathSvg {
+                path: "M100.02,162.5c1.57,0,3-0.86,5.77-3.67l17.56-17.59c1.12-1.09,1.35-2.81,0.37-4.14 c-4.73-6.33-13.58-11.8-23.7-11.8c-10.35,0-19.35,5.71-24,12.27c-0.68,1.09-0.45,2.58,0.67,3.67l17.56,17.59 C97.02,161.64,98.44,162.5,100.02,162.5"
+            }
         }
     }
 }

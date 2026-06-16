@@ -3,7 +3,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Shapes
 
-// phosphor fill-weight arrow-bend-up-left-in-a-rectangle (return key)
 Item {
     id: root
 
@@ -13,21 +12,33 @@ Item {
     width: size
     height: size
 
-    readonly property string path: "M184,104v32a8,8,0,0,1-8,8H99.31l10.35,10.34a8,8,0,0,1-11.32,11.32l-24-24a8,8,0,0,1,0-11.32l24-24a8,8,0,0,1,11.32,11.32L99.31,128H168V104a8,8,0,0,1,16,0Zm48-48V200a16,16,0,0,1-16,16H40a16,16,0,0,1-16-16V56A16,16,0,0,1,40,40H216A16,16,0,0,1,232,56ZM216,200V56H40V200H216Z"
-
     Shape {
         anchors.fill: parent
         preferredRendererType: Shape.CurveRenderer
-
-        ShapePath {
-            fillColor: root.color
-            strokeWidth: 0
-            PathSvg { path: root.path }
+        transform: Scale {
+            xScale: root.width / 200
+            yScale: root.height / 200
         }
 
-        transform: Scale {
-            xScale: root.size / 256
-            yScale: root.size / 256
+        ShapePath {
+            fillColor: "transparent"
+            strokeColor: root.color
+            strokeWidth: 10
+            joinStyle: ShapePath.MiterJoin
+            PathSvg {
+                path: "M173.86,48.86v102.27c0,6.28-5.09,11.36-11.36,11.36h-125c-6.28,0-11.36-5.09-11.36-11.36 V48.86c0-6.28,5.09-11.36,11.36-11.36h125C168.78,37.5,173.86,42.59,173.86,48.86"
+            }
+        }
+
+        ShapePath {
+            fillColor: "transparent"
+            strokeColor: root.color
+            strokeWidth: 15
+            capStyle: ShapePath.RoundCap
+            joinStyle: ShapePath.RoundJoin
+            PathSvg {
+                path: "M134.09,82.35v23.25 M66.64,105.6h67.45 M66.61,105.63l16.97-16.97 M83.58,122.58 l-16.97-16.96"
+            }
         }
     }
 }

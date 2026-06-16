@@ -3,7 +3,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Shapes
 
-// TODO: replace with a proper ethernet glyph (current path is a placeholder)
 Item {
     id: root
 
@@ -14,21 +13,20 @@ Item {
     height: size
 
     Shape {
-        width: 48
-        height: 48
-        anchors.centerIn: parent
-        scale: root.size / 48
-        transformOrigin: Item.Center
+        anchors.fill: parent
         preferredRendererType: Shape.CurveRenderer
+        transform: Scale {
+            xScale: root.width / 200
+            yScale: root.height / 200
+        }
 
         ShapePath {
-            fillColor: root.color
-            strokeWidth: 0
-            fillRule: ShapePath.OddEvenFill
-            
+            fillColor: "transparent"
+            strokeColor: root.color
+            strokeWidth: 15
+            joinStyle: ShapePath.MiterJoin
             PathSvg {
-                path: "M9,4 H39 A5,5 0 0 1 44,9 V39 A5,5 0 0 1 39,44 H9 A5,5 0 0 1 4,39 V9 A5,5 0 0 1 9,4 Z"
-                    + " M14,13 H34 A2,2 0 0 1 36,15 V27 A2,2 0 0 1 34,29 H31 V33 A2,2 0 0 1 29,35 H19 A2,2 0 0 1 17,33 V29 H14 A2,2 0 0 1 12,27 V15 A2,2 0 0 1 14,13 Z"
+                path: "M131.25,125h25c3.45,0,6.25,2.8,6.25,6.25v25c0,3.45-2.8,6.25-6.25,6.25h-25c-3.45,0-6.25-2.8-6.25-6.25v-25 C125,127.8,127.8,125,131.25,125z M43.75,125h25c3.45,0,6.25,2.8,6.25,6.25v25c0,3.45-2.8,6.25-6.25,6.25h-25c-3.45,0-6.25-2.8-6.25-6.25v-25 C37.5,127.8,40.3,125,43.75,125z M87.5,37.5h25c3.45,0,6.25,2.8,6.25,6.25v25c0,3.45-2.8,6.25-6.25,6.25h-25c-3.45,0-6.25-2.8-6.25-6.25v-25 C81.25,40.3,84.05,37.5,87.5,37.5z M56.25,125v-18.75c0-3.45,2.8-6.25,6.25-6.25h75c3.45,0,6.25,2.8,6.25,6.25V125 M100,100v-25"
             }
         }
     }

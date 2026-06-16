@@ -102,8 +102,6 @@ PanelWindow {
         return !UPower.onBattery
     }
 
-    readonly property bool isLow: percentage < 0.15 && !pluggedIn
-
     readonly property string glyph: {
         if (pluggedIn)
             return "charging"
@@ -112,11 +110,6 @@ PanelWindow {
         if (percentage >= 0.30) return "medium"
         if (percentage >= 0.10) return "low"
         return "empty"
-    }
-
-    readonly property color batteryColor: {
-        if (isLow) return Colors.palette.m3error
-        return "white"
     }
 
     readonly property var wifiDevice: {
@@ -296,11 +289,10 @@ PanelWindow {
         BatteryIcon {
             visible: root.showBattery
             glyph: root.glyph
-            color: root.batteryColor
+            color: "white"
             shellColor: Colors.palette.m3onSurfaceVariant
             size: 26
             anchors.verticalCenter: parent.verticalCenter
-            Behavior on color { ColorAnimation { duration: 150 } }
             Behavior on shellColor { ColorAnimation { duration: 150 } }
         }
 

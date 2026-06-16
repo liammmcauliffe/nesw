@@ -5,3 +5,4 @@ ReturnKeyIcon 1.0 ReturnKeyIcon.qml
 BatteryIcon 1.0 BatteryIcon.qml
 WifiIcon 1.0 WifiIcon.qml
 EthernetIcon 1.0 EthernetIcon.qml
+BluetoothIcon 1.0 BluetoothIcon.qml
