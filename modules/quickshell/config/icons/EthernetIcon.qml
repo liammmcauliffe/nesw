@@ -11,9 +11,10 @@ Item {
     width: size
     height: size
 
-    SvgIcon {
+    TintedSvgIcon {
         anchors.fill: parent
         size: root.size
+        color: root.color
         source: Qt.resolvedUrl("assets/ethernet.svg")
     }
 }
