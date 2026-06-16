@@ -10,6 +10,9 @@ local vars = require("variables")
 hl.window_rule({ match = { fullscreen = false }, opacity = vars.windowOpacity .. " override" })
 hl.window_rule({ match = { float = true, xwayland = false }, center = true })
 
+-- Ghostty: CSD off in ghostty config; let Hyprland blur the frosted terminal background
+hl.window_rule({ match = { class = "com.mitchellh.ghostty" }, blur = true })
+
 -- Small utility dialogs are easier to dismiss when centered and floating
 hl.window_rule({ match = { class = "yad|zenity|wev|feh|imv|blueman-manager|system-config-printer" }, float = true })
 hl.window_rule({ match = { class = "org.gnome.FileRoller|file-roller" }, float = true })
