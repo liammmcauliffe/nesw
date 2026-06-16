@@ -15,8 +15,12 @@
   # allow unfree software
   nixpkgs.config.allowUnfree = true;
 
-  # bootloader
-  boot.loader.systemd-boot.enable = true;
+  # bootloader — keep generations visible for rollback
+  boot.loader.systemd-boot = {
+    enable = true;
+    consoleMode = "max";
+    configurationLimit = 10;
+  };
   boot.loader.efi.canTouchEfiVariables = true;
 
   # host basics
@@ -45,7 +49,7 @@
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-older-than 7d";
+    options = "--delete-older-than 14d --keep-outputs --keep-derivations";
   };
 
   # audio

@@ -61,5 +61,10 @@
     ripgrep
     fd
     jq
+    (writeShellScriptBin "kill-ui" ''
+      echo "Killing Quickshell and Hyprland..."
+      systemctl --user stop quickshell.service 2>/dev/null || true
+      killall -9 Hyprland 2>/dev/null || true
+    '')
   ];
 }

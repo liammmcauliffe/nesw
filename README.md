@@ -19,7 +19,7 @@ A modular NixOS + Hyprland desktop environment with a Quickshell UI layer, centr
 - **Centralized NixOS theming options** — `nesw.theme.fonts.*` and `nesw.theme.colors.*` drive fonts, Ghostty, Quickshell, and Hyprland borders
 - **Quickshell Notch & Border UI** — top bar, rounded screen frame, workspace notch, clock, and app launcher
 - **Home Manager module export** — `homeManagerModules.nesw` for importing into other flakes
-- **Fish rebuild helpers** — `nswitch` and `ntest` stage changes and rebuild from `~/nesw`
+- **Fish rebuild helpers** — `nswitch`, `ntest`, `nupdate`, and `nrollback` stage changes and rebuild from `~/nesw`
 - **Live color reload** — optional `~/.local/state/nesw/scheme.json` for matugen/wallust without a rebuild
 
 ## Quick Start
@@ -38,7 +38,7 @@ On a fresh system without git:
 nix-shell -p git
 ```
 
-Clone to `~/nesw` (recommended — Hyprland and Quickshell default to this path):
+Clone to `~/nesw` (recommended — Fish rebuild helpers default to this path):
 
 ```bash
 git clone https://github.com/liammmcauliffe/nesw.git ~/nesw
@@ -92,8 +92,46 @@ Hyprland
 From any directory (Fish):
 
 ```bash
-nswitch   # stage all changes, rebuild and switch
-ntest     # test build (reverted on reboot)
+nswitch    # stage all changes, rebuild and switch
+ntest      # test build (reverted on reboot)
+nupdate    # update flake inputs, test build
+nrollback  # switch to previous system generation
+```
+
+## Disaster recovery
+
+If a rebuild breaks your system, Hyprland won't start, or you get stuck, don't panic.
+
+### Case 1: System boots, but Hyprland is broken
+
+1. Reboot.
+2. At the `systemd-boot` menu, select an older NixOS generation.
+3. Boot into it — you're in a working state.
+4. Fix the issue in your config, or run `nrollback` to make that generation the default.
+
+### Case 2: UI freezes while logged in
+
+1. Switch to a TTY: `Ctrl+Alt+F2` (or F3, F4…).
+2. Log in with your username and password.
+3. Run `sync`, then `kill-ui` to stop Quickshell and Hyprland.
+4. Run `Hyprland`, or `systemctl --user start graphical-session.target`.
+
+### Case 3: `nswitch` fails with staged broken changes
+
+Because `nswitch` runs `git add -A` first, broken changes may be staged but not committed.
+
+1. From a TTY: `cd ~/nesw && git reset HEAD .`
+2. Run `nrollback` to return to the last working system generation.
+3. Fix your files and try again.
+
+### Generations and Home Manager
+
+`nrollback` rolls back the **system** configuration only. If a Home Manager change broke your user session, fix the Nix code and rebuild — or boot an older system generation that still has a working HM profile.
+
+Check system generations:
+
+```bash
+nix-env --list-generations --profile /nix/var/nix/profiles/system
 ```
 
 ## Customization
@@ -150,7 +188,7 @@ Hyprland is configured in **Lua**, split across focused files under `modules/des
 | `config/gestures.lua` | Touchpad and workspace swipes |
 | `config/input.lua` | Keyboard and touchpad |
 | `config/env.lua` | Session environment variables |
-| `config/execs.lua` | Autostart (keyring, clipboard, Quickshell) |
+| `config/execs.lua` | Autostart (keyring, clipboard, graphical-session target) |
 | `config/functions.lua` | Shared bind helpers |
 | `config/misc.lua` | Misc compositor settings |
 
