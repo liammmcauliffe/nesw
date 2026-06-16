@@ -20,7 +20,7 @@ PanelWindow {
     }
 
     color: "transparent"
-    // stay mapped always — toggling visibility remaps the layer and hyprland
+    // stay mapped always - toggling visibility remaps the layer and hyprland
     // animates that with "slide bottom" (see animations.lua layersIn)
     visible: true
 
@@ -49,7 +49,7 @@ PanelWindow {
         : 0
     readonly property int panelHeight: searchHeight + (showResultsBlock ? 1 + resultsHeight : 0)
 
-    // neutral chrome — black card, mostly opaque
+    // neutral chrome - black card, mostly opaque
     readonly property color panelBg: "#f0000000"
     readonly property color textPrimary: "#f2f2f2"
     readonly property color textSecondary: "#888888"
@@ -190,7 +190,7 @@ PanelWindow {
         }
     }
 
-    // wayland only delivers clicks inside the input mask — without this the
+    // wayland only delivers clicks inside the input mask - without this the
     // fullscreen overlay layer eats every click even when the launcher is closed
     Item {
         id: hitMask
@@ -205,7 +205,7 @@ PanelWindow {
         item: hitMask
     }
 
-    // invisible full-screen hit target — click outside the card to dismiss
+    // invisible full-screen hit target - click outside the card to dismiss
     MouseArea {
         anchors.fill: parent
         enabled: root.open
@@ -220,7 +220,7 @@ PanelWindow {
         width: root.panelWidth
         height: root.panelHeight
 
-        // top origin — height changes while searching don't yank the visual center
+        // top origin - height changes while searching don't yank the visual center
         transformOrigin: Item.Top
 
         enabled: root.open

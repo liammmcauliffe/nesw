@@ -14,13 +14,13 @@ A modular NixOS + Hyprland desktop environment with a Quickshell UI layer, centr
 
 ## Features
 
-- **Flake-based multi-host layout** — `hosts/laptop/` with a self-contained `default.nix` entry point, ready to add more machines
-- **Dynamic Lua–Hyprland bridge** — `variables.lua` and color scheme files generated from Nix options at build time
-- **Centralized theming options** — `nesw.theme.fonts.*` and `nesw.theme.colors.*` drive fonts, Ghostty, Quickshell, and Hyprland borders
-- **Quickshell Notch & Border UI** — top bar, rounded screen frame, workspace notch, clock, and app launcher (systemd user service)
-- **Home Manager module export** — `homeManagerModules.nesw` for importing into other flakes
-- **Fish rebuild helpers** — `nswitch`, `ntest`, `nupdate`, and `nrollback` stage changes and rebuild from `~/nesw`
-- **Live color reload** — optional `~/.local/state/nesw/scheme.json` for matugen/wallust without a rebuild
+- **Flake-based multi-host layout** - `hosts/laptop/` with a self-contained `default.nix` entry point, ready to add more machines
+- **Dynamic Lua–Hyprland bridge** - `variables.lua` and color scheme files generated from Nix options at build time
+- **Centralized theming options** - `nesw.theme.fonts.*` and `nesw.theme.colors.*` drive fonts, Ghostty, Quickshell, and Hyprland borders
+- **Quickshell Notch & Border UI** - top bar, rounded screen frame, workspace notch, clock, and app launcher (systemd user service)
+- **Home Manager module export** - `homeManagerModules.nesw` for importing into other flakes
+- **Fish rebuild helpers** - `nswitch`, `ntest`, `nupdate`, and `nrollback` stage changes and rebuild from `~/nesw`
+- **Live color reload** - optional `~/.local/state/nesw/scheme.json` for matugen/wallust without a rebuild
 
 ## Quick Start
 
@@ -56,7 +56,7 @@ In `flake.nix`, set `userName` to your Linux username (`whoami`):
 userName = "YOUR_USERNAME";
 ```
 
-**Must match before the first rebuild** — a mismatch can leave you without sudo or Home Manager.
+**Must match before the first rebuild** - a mismatch can leave you without sudo or Home Manager.
 
 ### 4. Create `local.nix` (required)
 
@@ -67,7 +67,7 @@ cp hosts/laptop/local.nix.example hosts/laptop/local.nix
 nix-shell -p pciutils --run "lspci -k | grep -A 3 -E 'VGA|3D|Display'"
 ```
 
-`lspci` is not on a minimal NixOS install — `pciutils` is pulled in via `nix-shell` for this one-off check.
+`lspci` is not on a minimal NixOS install - `pciutils` is pulled in via `nix-shell` for this one-off check.
 
 Edit `local.nix`:
 
@@ -91,13 +91,13 @@ Optional override files (also gitignored):
 cp hosts/laptop/shared.nix.example hosts/laptop/shared.nix   # optional
 ```
 
-Do **not** put `nesw.drivers.*` in `shared.nix` or `home.local.nix` — those options exist only on the NixOS side.
+Do **not** put `nesw.drivers.*` in `shared.nix` or `home.local.nix` - those options exist only on the NixOS side.
 
 Adjust `time.timeZone` and `i18n.defaultLocale` in `hosts/laptop/configuration.nix` if needed.
 
 ### 5. Stage gitignored files (required for flakes)
 
-Nix flakes cannot see gitignored files. **Stage them before rebuilding** — you do not need to commit:
+Nix flakes cannot see gitignored files. **Stage them before rebuilding** - you do not need to commit:
 
 ```bash
 git add -f hosts/laptop/hardware-configuration.nix
@@ -110,7 +110,7 @@ After your first successful rebuild, `ntest` / `nswitch` force-stage these paths
 
 ### 6. Build safely (first time)
 
-Use `test` for the first apply — reboot reverts if something breaks:
+Use `test` for the first apply - reboot reverts if something breaks:
 
 ```bash
 sudo NIX_CONFIG='experimental-features = nix-command flakes' \
@@ -148,7 +148,7 @@ If a rebuild breaks your system, Hyprland won't start, or you get stuck, don't p
 
 1. Reboot.
 2. At the `systemd-boot` menu, select an older NixOS generation.
-3. Boot into it — you're in a working state.
+3. Boot into it - you're in a working state.
 4. Fix the issue in your config, or run `nrollback` to make that generation the default.
 
 ### Case 2: UI freezes while logged in
@@ -168,7 +168,7 @@ Because `nswitch` stages changes before rebuilding, broken edits may be staged b
 
 ### Generations and Home Manager
 
-`nrollback` rolls back the **system** configuration only. If a Home Manager change broke your user session, fix the Nix code and rebuild — or boot an older system generation that still has a working HM profile.
+`nrollback` rolls back the **system** configuration only. If a Home Manager change broke your user session, fix the Nix code and rebuild - or boot an older system generation that still has a working HM profile.
 
 ```bash
 nix-env --list-generations --profile /nix/var/nix/profiles/system
@@ -221,9 +221,9 @@ Hyprland is configured in **Lua** under `modules/desktop/hyprland/`. Home Manage
 
 | File | Role |
 |------|------|
-| `hyprland.lua` | Entry point — loads all `config/*` modules |
-| `variables.lua` | **Generated** — default apps, gaps, blur, keybind prefixes |
-| `scheme/default.lua` / `scheme/current.lua` | **Generated** — palette from `nesw.theme.colors` |
+| `hyprland.lua` | Entry point - loads all `config/*` modules |
+| `variables.lua` | **Generated** - default apps, gaps, blur, keybind prefixes |
+| `scheme/default.lua` / `scheme/current.lua` | **Generated** - palette from `nesw.theme.colors` |
 | `config/keybinds.lua` | Keybindings |
 | `config/rules.lua` | Window, workspace, and layer rules |
 | `config/execs.lua` | Autostart (keyring, clipboard, `graphical-session.target`) |
@@ -243,7 +243,7 @@ nesw/
 │   ├── configuration.nix          # NixOS system config
 │   ├── home.nix                   # Home Manager entry
 │   ├── local.nix.example          # override template
-│   ├── local.nix                  # required — NixOS overrides (gitignored)
+│   ├── local.nix                  # required - NixOS overrides (gitignored)
 │   ├── shared.nix                 # shared overrides (gitignored)
 │   ├── home.local.nix             # HM-only overrides (gitignored)
 │   └── hardware-configuration.nix # machine-specific (gitignored)
@@ -259,8 +259,8 @@ nesw/
 
 ## Credits & Inspiration
 
-- [Caelesto](https://github.com/caelesto/caelesto) — modular NixOS rice structure and option-driven design
-- [end-4](https://github.com/end-4/dots-hyprland) — Hyprland + Quickshell integration patterns
+- [Caelesto](https://github.com/caelesto/caelesto) - modular NixOS rice structure and option-driven design
+- [end-4](https://github.com/end-4/dots-hyprland) - Hyprland + Quickshell integration patterns
 - [Hyprland](https://hyprland.org/) and the Wayland ecosystem
 - [NixOS](https://nixos.org/) and [Home Manager](https://github.com/nix-community/home-manager) communities
 

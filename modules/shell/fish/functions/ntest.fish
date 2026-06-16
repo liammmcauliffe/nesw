@@ -4,7 +4,7 @@ function ntest --description "Stage all, rebuild and test config (reverts on reb
     set -l t0 (date +%s)
     echo "→ testing (revert on reboot)..."
     if sudo nixos-rebuild test --flake .#main $argv
-        echo "✓ done in "(math (date +%s) - $t0)"s — reboot to revert"
+        echo "✓ done in "(math (date +%s) - $t0)"s - reboot to revert"
         popd
     else
         echo "✗ test build failed"

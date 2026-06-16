@@ -1,5 +1,5 @@
 /*
-  GPU driver stack — Mesa/Vulkan/VA-API base + vendor-specific blocks.
+  GPU driver stack - Mesa/Vulkan/VA-API base + vendor-specific blocks.
 
   Enable exactly one of nesw.drivers.{amdgpu,intel,nvidia}.enable.
   Exposes: nesw.drivers.amdgpu|intel|nvidia.enable

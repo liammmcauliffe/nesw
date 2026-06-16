@@ -1,10 +1,10 @@
 function _nesw_stage --description "Stage changes unless a merge is in progress"
     if test -f .git/MERGE_HEAD
-        echo "✗ merge in progress — resolve conflicts before rebuilding"
+        echo "✗ merge in progress - resolve conflicts before rebuilding"
         return 1
     end
     git add -A
-    # Flakes ignore gitignored files — force-stage machine-specific configs
+    # Flakes ignore gitignored files - force-stage machine-specific configs
     for f in \
         hosts/laptop/hardware-configuration.nix \
         hosts/laptop/local.nix \

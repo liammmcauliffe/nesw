@@ -39,7 +39,7 @@ PanelWindow {
     property real _lastVolume: -1
 
     // Hyprland keeps the normal workspace as focusedWorkspace while a special
-    // workspace is open — check the monitor's specialWorkspace field instead
+    // workspace is open - check the monitor's specialWorkspace field instead
     readonly property bool inSpecialWs: {
         const mon = Hyprland.monitorFor(root.screen);
         if (!mon)
@@ -125,7 +125,7 @@ PanelWindow {
     property bool slideReady: false
     property bool workspaceScrubbing: false
 
-    // shown in the notch — active workspace unless the user is scrubbing
+    // shown in the notch - active workspace unless the user is scrubbing
     readonly property int indicatorWs: workspaceScrubbing ? displayNumber : activeWs
 
     Component.onCompleted: {
@@ -406,7 +406,7 @@ PanelWindow {
         }
     }
 
-    // input — workspace interactions live only in the centered notch column
+    // input - workspace interactions live only in the centered notch column
     Item {
         id: hit
         anchors.top: parent.top

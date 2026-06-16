@@ -36,7 +36,7 @@ PanelWindow {
         item: hitMask
     }
 
-    // battery — DisplayDevice/onBattery lie on some machines; fall through several checks
+    // battery - DisplayDevice/onBattery lie on some machines; fall through several checks
     readonly property var batteryDisplay: UPower.displayDevice
 
     readonly property var primaryBattery: {
@@ -165,7 +165,7 @@ PanelWindow {
         return "low"
     }
 
-    // brief scan only while associating — NM still reports connected signal without it
+    // brief scan only while associating - NM still reports connected signal without it
     Binding {
         target: wifiDevice
         property: "scannerEnabled"

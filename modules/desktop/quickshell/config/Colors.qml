@@ -7,7 +7,7 @@ import Quickshell.Io
 
 // Material 3 color singleton for the whole shell.
 // Defaults ship as a neutral dark zinc palette. External generators (matugen,
-// wallust, etc.) can override live by writing scheme.json — see schemePath and load().
+// wallust, etc.) can override live by writing scheme.json - see schemePath and load().
 // Keys in the JSON map to m3* properties (e.g. "primary" → m3primary); unknown keys are ignored.
 Singleton {
     id: root
@@ -44,13 +44,13 @@ Singleton {
     FileView {
         path: root.schemePath
         watchChanges: true
-        printErrors: false // scheme.json is optional — Palette defaults apply when missing
+        printErrors: false // scheme.json is optional - Palette defaults apply when missing
         onFileChanged: reload()
         onLoaded: root.load(text())
     }
 
     component Palette: QtObject {
-        // Baseline M3 roles — aligned with nesw.theme.colors and Hyprland scheme/*.lua
+        // Baseline M3 roles - aligned with nesw.theme.colors and Hyprland scheme/*.lua
         // scheme.json still overrides these when a generator is wired up.
         property color m3primary: "#e4e4e7"
         property color m3onPrimary: "#18181b"

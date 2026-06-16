@@ -17,12 +17,12 @@ in
   ];
 
   xdg.configFile."ghostty/config".text = ''
-    # font — primary face + Nerd Font fallback for Starship / eza icons
+    # font - primary face + Nerd Font fallback for Starship / eza icons
     font-family = "${fonts.monospace}"
     font-family = "${fonts.monospaceNerd}"
     font-size = 14
 
-    # window — no GTK CSD; Hyprland handles borders, gaps, and rounding
+    # window - no GTK CSD; Hyprland handles borders, gaps, and rounding
     window-decoration = false
     gtk-tabs = false
     window-vsync = true

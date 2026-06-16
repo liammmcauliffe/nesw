@@ -1,5 +1,5 @@
 /*
-  nesw — top-level Home Manager aggregator
+  nesw - top-level Home Manager aggregator
 
   Single entry point for the full nesw module tree. Enable with:
 

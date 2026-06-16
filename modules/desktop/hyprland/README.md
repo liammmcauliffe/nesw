@@ -4,10 +4,10 @@ Hyprland compositor configuration for nesw. Lua sources live in this directory a
 
 ## Nix bridge
 
-These files are **generated at build time** from Nix options — do not edit them in the repo:
+These files are **generated at build time** from Nix options - do not edit them in the repo:
 
-- `variables.lua` — from `nesw.desktop.hyprland.*` (terminal, browser, gaps, keybind prefixes)
-- `scheme/default.lua` and `scheme/current.lua` — from `nesw.theme.colors.*`
+- `variables.lua` - from `nesw.desktop.hyprland.*` (terminal, browser, gaps, keybind prefixes)
+- `scheme/default.lua` and `scheme/current.lua` - from `nesw.theme.colors.*`
 
 Override apps and colors in `hosts/laptop/local.nix`:
 

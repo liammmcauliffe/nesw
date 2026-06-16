@@ -4,7 +4,7 @@
   Installs Starship and enables Fish integration via Home Manager.
   Config: modules/shell/starship/starship.toml → ~/.config/starship.toml
 
-  Exposes: (none — uses programs.starship from Home Manager)
+  Exposes: (none - uses programs.starship from Home Manager)
   Depends: modules/shell/fish
 */
 { ... }:

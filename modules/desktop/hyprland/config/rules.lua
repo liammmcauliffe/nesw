@@ -18,13 +18,13 @@ hl.window_rule({ match = { class = "yad|zenity|wev|feh|imv|blueman-manager|syste
 hl.window_rule({ match = { class = "org.gnome.FileRoller|file-roller" }, float = true })
 hl.window_rule({ match = { class = "com.github.GradienceTeam.Gradience" }, float = true })
 
--- Sized floats for settings and network tools — percentages keep them usable on any resolution
+-- Sized floats for settings and network tools - percentages keep them usable on any resolution
 hl.window_rule({ match = { class = "foot", title = "nmtui" }, float = true, size = "(monitor_w*0.7) (monitor_h*0.6)", center = true })
 hl.window_rule({ match = { class = "org.gnome.Settings" }, float = true, size = "(monitor_w*0.8) (monitor_h*0.7)", center = true })
 hl.window_rule({ match = { class = "org.pulseaudio.pavucontrol|yad-icon-browser" }, float = true, size = "(monitor_w*0.7) (monitor_h*0.6)", center = true })
 hl.window_rule({ match = { class = "nwg-look" }, float = true, size = "(monitor_w*0.6) (monitor_h*0.5)", center = true })
 
--- GTK/file-picker title heuristics — avoids hardcoding every app's window class
+-- GTK/file-picker title heuristics - avoids hardcoding every app's window class
 hl.window_rule({ match = { title = "(Select|Open)( a)? (File|Folder)(s)?" }, float = true })
 hl.window_rule({ match = { title = "File (Operation|Upload)( Progress)?" }, float = true })
 hl.window_rule({ match = { title = ".* Properties" }, float = true })

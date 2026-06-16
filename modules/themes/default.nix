@@ -7,7 +7,7 @@
   Exposes:
     - nesw.theme.fonts.sansSerif, monospace, monospaceNerd
     - nesw.theme.colors.primary, onSurfaceVariant, surface, surfaceContainer
-  Depends: (none — imported by NixOS configuration.nix and Home Manager)
+  Depends: (none - imported by NixOS configuration.nix and Home Manager)
 */
 { lib, ... }:
 let

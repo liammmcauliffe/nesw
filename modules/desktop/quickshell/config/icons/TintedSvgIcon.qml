@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Window
 import Quickshell.Io
 
-// White-on-transparent SVG in, any color out — tints by rewriting the SVG, no GPU shader.
+// White-on-transparent SVG in, any color out - tints by rewriting the SVG, no GPU shader.
 Item {
     id: root
 

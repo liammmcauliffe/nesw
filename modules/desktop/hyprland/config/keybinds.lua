@@ -80,7 +80,7 @@ hl.bind(vars.kbUngroup, hl.dsp.window.move({ out_of_group = true }))
 hl.bind("SUPER + SHIFT + Comma", hl.dsp.group.lock_active())
 
 
--- Directional focus/move/resize — Super+Alt resize is relative for fine adjustments
+-- Directional focus/move/resize - Super+Alt resize is relative for fine adjustments
 hl.bind("SUPER + left", hl.dsp.focus({ direction = "left" }))
 hl.bind("SUPER + right", hl.dsp.focus({ direction = "right" }))
 hl.bind("SUPER + up", hl.dsp.focus({ direction = "up" }))
