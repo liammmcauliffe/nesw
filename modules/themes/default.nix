@@ -2,7 +2,7 @@
   Theme Module
 
   Centralizes nesw font families and baseline colors so users can override them
-  in hosts/*/local.nix without editing individual app modules.
+  in hosts/<host>/local.nix without editing individual app modules.
 
   Exposes:
     - nesw.theme.fonts.sansSerif, monospace, monospaceNerd
