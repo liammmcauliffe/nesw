@@ -17,21 +17,16 @@ Item {
 
     readonly property color activeColor: root.color
     readonly property color inactiveColor: root.shellColor
-    readonly property real unitScale: root.size / IconConstants.viewBox
-    readonly property real dotSize: root.size * (11.11 / IconConstants.viewBox)
+    readonly property real dotSize: 11.11
 
-    Item {
+    IconArt {
         anchors.fill: parent
-        scale: IconConstants.artScale
-        transformOrigin: Item.Center
 
         Shape {
-            anchors.fill: parent
-            preferredRendererType: Shape.CurveRenderer
-            transform: Scale {
-                xScale: root.unitScale
-                yScale: root.unitScale
-            }
+            width: IconConstants.viewBox
+            height: IconConstants.viewBox
+            preferredRendererType: Shape.GeometryRenderer
+            antialiasing: true
 
             ShapePath {
                 fillColor: root.glyph === "off" ? root.inactiveColor : root.activeColor
@@ -44,8 +39,8 @@ Item {
 
         Rectangle {
             visible: root.glyph !== "off"
-            x: root.size * (47.22 / IconConstants.viewBox) - root.dotSize / 2
-            y: root.size * 0.5 - root.dotSize / 2
+            x: 47.22 - root.dotSize / 2
+            y: IconConstants.viewBox * 0.5 - root.dotSize / 2
             width: root.dotSize
             height: root.dotSize
             radius: root.dotSize / 2
@@ -54,8 +49,8 @@ Item {
 
         Rectangle {
             visible: root.glyph !== "off"
-            x: root.size * (152.78 / IconConstants.viewBox) - root.dotSize / 2
-            y: root.size * 0.5 - root.dotSize / 2
+            x: 152.78 - root.dotSize / 2
+            y: IconConstants.viewBox * 0.5 - root.dotSize / 2
             width: root.dotSize
             height: root.dotSize
             radius: root.dotSize / 2

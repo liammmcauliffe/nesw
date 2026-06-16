@@ -31,8 +31,6 @@ Item {
         ? (root.glyph === "high" || root.glyph === "medium" || root.glyph === "low")
         : root.connectFrame === 0
 
-    readonly property real unitScale: root.size / IconConstants.viewBox
-
     Timer {
         running: root.isConnecting
         repeat: true
@@ -44,18 +42,14 @@ Item {
         }
     }
 
-    Item {
+    IconArt {
         anchors.fill: parent
-        scale: IconConstants.artScale
-        transformOrigin: Item.Center
 
         Shape {
-            anchors.fill: parent
-            preferredRendererType: Shape.CurveRenderer
-            transform: Scale {
-                xScale: root.unitScale
-                yScale: root.unitScale
-            }
+            width: IconConstants.viewBox
+            height: IconConstants.viewBox
+            preferredRendererType: Shape.GeometryRenderer
+            antialiasing: true
 
             ShapePath {
                 fillColor: root.outerActive ? root.activeColor : root.inactiveColor

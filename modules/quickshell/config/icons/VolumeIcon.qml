@@ -27,20 +27,14 @@ Item {
         return root.glyph
     }
 
-    readonly property real unitScale: root.size / IconConstants.viewBox
-
-    Item {
+    IconArt {
         anchors.fill: parent
-        scale: IconConstants.artScale
-        transformOrigin: Item.Center
 
         Shape {
-            anchors.fill: parent
-            preferredRendererType: Shape.CurveRenderer
-            transform: Scale {
-                xScale: root.unitScale
-                yScale: root.unitScale
-            }
+            width: IconConstants.viewBox
+            height: IconConstants.viewBox
+            preferredRendererType: Shape.GeometryRenderer
+            antialiasing: true
 
             ShapePath {
                 fillColor: root.activeColor

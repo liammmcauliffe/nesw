@@ -41,20 +41,14 @@ Item {
         return ""
     }
 
-    readonly property real unitScale: root.size / IconConstants.viewBox
-
-    Item {
+    IconArt {
         anchors.fill: parent
-        scale: IconConstants.artScale
-        transformOrigin: Item.Center
 
         Shape {
-            anchors.fill: parent
-            preferredRendererType: Shape.CurveRenderer
-            transform: Scale {
-                xScale: root.unitScale
-                yScale: root.unitScale
-            }
+            width: IconConstants.viewBox
+            height: IconConstants.viewBox
+            preferredRendererType: Shape.GeometryRenderer
+            antialiasing: true
 
             ShapePath {
                 fillColor: root.inactiveColor
@@ -74,13 +68,11 @@ Item {
         }
 
         Shape {
-            anchors.fill: parent
-            preferredRendererType: Shape.CurveRenderer
+            width: IconConstants.viewBox
+            height: IconConstants.viewBox
+            preferredRendererType: Shape.GeometryRenderer
+            antialiasing: true
             opacity: root.juicePath.length > 0 ? 1 : 0
-            transform: Scale {
-                xScale: root.unitScale
-                yScale: root.unitScale
-            }
 
             ShapePath {
                 fillColor: root.juiceColor

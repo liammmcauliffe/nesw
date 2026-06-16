@@ -12,26 +12,20 @@ Item {
     width: size
     height: size
 
-    readonly property real unitScale: root.size / IconConstants.viewBox
-
-    Item {
+    IconArt {
         anchors.fill: parent
-        scale: IconConstants.artScale
-        transformOrigin: Item.Center
 
         Shape {
-            anchors.fill: parent
-            preferredRendererType: Shape.CurveRenderer
-            transform: Scale {
-                xScale: root.unitScale
-                yScale: root.unitScale
-            }
+            width: IconConstants.viewBox
+            height: IconConstants.viewBox
+            preferredRendererType: Shape.GeometryRenderer
+            antialiasing: true
 
             ShapePath {
                 fillColor: "transparent"
                 strokeColor: root.color
                 strokeWidth: 10
-                joinStyle: ShapePath.MiterJoin
+                joinStyle: ShapePath.RoundJoin
                 PathSvg {
                     path: "M173.86,48.86v102.27c0,6.28-5.09,11.36-11.36,11.36h-125c-6.28,0-11.36-5.09-11.36-11.36 V48.86c0-6.28,5.09-11.36,11.36-11.36h125C168.78,37.5,173.86,42.59,173.86,48.86"
                 }
