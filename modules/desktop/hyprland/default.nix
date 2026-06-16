@@ -1,3 +1,14 @@
+/*
+  Hyprland Desktop Module
+
+  Configures Hyprland, GTK/cursor theming, gammastep, and polkit. Symlinks the
+  Lua config tree while generating variables.lua and scheme files from Nix options.
+
+  Exposes:
+    - nesw.desktop.hyprland.terminal
+    - nesw.desktop.hyprland.browser
+  Depends: modules/themes; flake input hyprland; modules/desktop/quickshell (shell UI)
+*/
 { config, lib, pkgs, ... }:
 let
   inherit (lib) mkOption types mkDefault;

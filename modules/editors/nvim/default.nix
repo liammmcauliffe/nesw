@@ -1,3 +1,12 @@
+/*
+  Neovim Editor Module
+
+  Configures Neovim as the default editor with mini.* plugins, LSP tooling,
+  and a Lua config tree symlinked into ~/.config/nvim.
+
+  Exposes: (none — uses programs.neovim from Home Manager)
+  Depends: modules/themes (monospace font installed system-wide)
+*/
 { pkgs, ... }:
 {
   programs.neovim = {

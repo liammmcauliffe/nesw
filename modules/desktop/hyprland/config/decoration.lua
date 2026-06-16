@@ -1,3 +1,9 @@
+--[[
+  Window Decoration
+  Applies rounding, blur, and shadow settings from variables.lua. Blur is tuned to
+  complement the Quickshell top bar and launcher without washing out window content.
+]]
+
 local vars = require("variables")
 
 hl.config({

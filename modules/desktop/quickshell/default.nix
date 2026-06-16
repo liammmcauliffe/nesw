@@ -1,3 +1,12 @@
+/*
+  Quickshell Desktop UI Module
+
+  Installs Quickshell and deploys the shell UI (top bar, notch, clock, launcher).
+  Generates Fonts.qml from nesw.theme so the shell matches the system UI font.
+
+  Exposes: (none)
+  Depends: modules/themes; flake input quickshell; modules/desktop/hyprland (autostart)
+*/
 { config, lib, pkgs, quickshell, ... }:
 let
   font = config.nesw.theme.fonts.sansSerif;

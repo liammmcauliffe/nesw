@@ -1,3 +1,14 @@
+/*
+  Theme Module
+
+  Centralizes nesw font families and baseline colors so users can override them
+  in hosts/*/local.nix without editing individual app modules.
+
+  Exposes:
+    - nesw.theme.fonts.sansSerif, monospace, monospaceNerd
+    - nesw.theme.colors.primary, onSurfaceVariant, surface, surfaceContainer
+  Depends: (none — imported by NixOS configuration.nix and Home Manager)
+*/
 { lib, ... }:
 let
   inherit (lib) mkOption types mkDefault;

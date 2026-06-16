@@ -5,20 +5,21 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// the palette ships with dark defaults and is hot-reloaded from a generated
-// scheme.json (e.g. produced by matugen/wallust) when present
+// Material 3 color singleton for the whole shell.
+// Defaults ship as a neutral dark zinc palette. External generators (matugen,
+// wallust, etc.) can override live by writing scheme.json — see schemePath and load().
+// Keys in the JSON map to m3* properties (e.g. "primary" → m3primary); unknown keys are ignored.
 Singleton {
     id: root
 
     readonly property Palette palette: current
     readonly property Palette current: Palette {}
 
-    // path a color generator can write to. lives in a writable state dir so it
-    // is independent of the read-only home-manager/nix config copy
+    // Writable path so wallpaper-driven tools can update colors without a rebuild
     readonly property string schemePath: `${Quickshell.env("HOME")}/.local/state/nesw/scheme.json`
 
-    // parse a scheme file of the form { "colors": { "primary": "rrggbb", ... } }
-    // (also accepts "colours" from external generators; unprefixed keys, optional '#')
+    // Accepts { "colors": { "primary": "rrggbb" } }, British "colours", or flat keys.
+    // Optional leading '#' is stripped; only properties defined on Palette are applied.
     function load(data: string): void {
         if (!data)
             return;
@@ -43,14 +44,14 @@ Singleton {
     FileView {
         path: root.schemePath
         watchChanges: true
-        printErrors: false // scheme.json is optional; defaults are used if absent
+        printErrors: false // scheme.json is optional — Palette defaults apply when missing
         onFileChanged: reload()
         onLoaded: root.load(text())
     }
 
     component Palette: QtObject {
-        // neutral dark baseline — muted zinc/slate, no wallpaper tint.
-        // scheme.json still overrides these when matugen/wallust is wired up.
+        // Baseline M3 roles — aligned with nesw.theme.colors and Hyprland scheme/*.lua
+        // scheme.json still overrides these when a generator is wired up.
         property color m3primary: "#e4e4e7"
         property color m3onPrimary: "#18181b"
         property color m3primaryContainer: "#3f3f46"

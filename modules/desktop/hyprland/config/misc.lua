@@ -1,3 +1,9 @@
+--[[
+  Miscellaneous Compositor Settings
+  VRR, splash screen, DPMS wake behavior, and debug overlays. Splash/logo are
+  disabled because Quickshell provides the visible desktop chrome instead.
+]]
+
 -- local scheme = require("scheme.current")
 
 hl.config({

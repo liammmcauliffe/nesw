@@ -1,3 +1,12 @@
+/*
+  Ghostty Terminal Module
+
+  Installs Ghostty and writes its config, including the monospace font from
+  nesw.theme so terminal typography stays in sync with the rest of the rice.
+
+  Exposes: (none)
+  Depends: modules/themes; nesw.desktop.hyprland.terminal (default app name)
+*/
 { config, pkgs, ... }:
 let
   font = config.nesw.theme.fonts.monospace;
