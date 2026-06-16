@@ -11,7 +11,7 @@
   # allow unfree software
   nixpkgs.config.allowUnfree = true;
 
-  # bootloader — keep generations visible for rollback
+  # bootloader - keep generations visible for rollback
   boot.loader.systemd-boot = {
     enable = true;
     consoleMode = "max";
@@ -92,12 +92,11 @@
     slurp
   ];
 
-  # fonts (families driven by nesw.theme — override in hosts/laptop/shared.nix)
+  # fonts (families driven by nesw.theme - override in hosts/laptop/shared.nix)
   fonts.packages = let
     fonts = config.nesw.theme.fonts;
   in with pkgs; [
-    # UI (shell/notch/clock); pkgs.dm-sans is not this font, it ships
-    # "DeepMind Sans" — the real DM Sans comes from google-fonts
+    # UI (shell/notch/clock)
     (google-fonts.override { fonts = [ fonts.sansSerif ]; })
     monaspace # terminal/editor (Monaspace Neon)
     nerd-fonts.jetbrains-mono

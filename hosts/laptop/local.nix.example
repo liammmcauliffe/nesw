@@ -1,38 +1,29 @@
 { ... }: {
-  # REQUIRED — copy this file to local.nix before your first rebuild.
+
+  # Copy to local.nix before first rebuild:
   #   cp hosts/laptop/local.nix.example hosts/laptop/local.nix
   #
-  # NixOS-only overrides (imported by configuration.nix).
-  # For theme/app overrides shared with Home Manager, use shared.nix.
-  # For HM-only options, use home.local.nix.
+  # NixOS-only machine-specific overrides.
+  # GPU driver: REQUIRED (enable exactly one)
+  # Other system settings: optional
   #
-  # gitignored — stage with: git add -f hosts/laptop/local.nix
+  # For shared theme/app overrides → shared.nix
+  # For Home Manager only → home.local.nix
+  #
+  # gitignored - stage with: git add -f hosts/laptop/local.nix
 
-  # ── System (NixOS) overrides ─────────────────────────────────────────────────
-  #
-  # Machine-specific settings that should not apply to every host using this flake:
-  # networking.hostName = "laptop";
-  # time.timeZone = "Europe/Dublin";
+  # REQUIRED: Enable exactly one GPU driver
+  # Identify yours: nix-shell -p pciutils --run "lspci -k | grep -A 3 -E 'VGA|3D'"
+  # nesw.drivers.intel.enable = true;   # Intel (i915/xe)
+  # nesw.drivers.amdgpu.enable = true;  # AMD
+  # nesw.drivers.nvidia.enable = true; # NVIDIA
+
+  # OPTIONAL: System overrides
   # boot.kernelModules = [ "kvm-intel" ];
-  # environment.systemPackages = with pkgs; [ libva-utils mesa-demos ];
+  # environment.systemPackages = with pkgs; [ libva-utils ];
 
-  # ── GPU driver (required on a new machine — enable exactly one) ─────────────
-  #
-  #   nix-shell -p pciutils --run "lspci -k | grep -A 3 -E 'VGA|3D|Display'"
-  #
-  # nesw.drivers.intel.enable = true;   # i915 / xe — most Intel laptops
-  # nesw.drivers.amdgpu.enable = true;  # AMD Ryzen iGPU / dGPU
-  # nesw.drivers.nvidia.enable = true;  # proprietary NVIDIA (open = true on Turing+)
-
-  # ── Theme, fonts, Hyprland apps → put these in shared.nix, not here ──────────
-  #
-  # nesw.theme.fonts.sansSerif = "Inter";
-  # nesw.desktop.hyprland.browser = "firefox";
-  #
-  # See local.nix.example sections in the repo history, or modules/themes/default.nix.
-
-  # ── Home Manager overrides → use home.local.nix, not local.nix ───────────────
-  #
-  # home.packages = [ pkgs.ripgrep ];
-  # programs.git.enable = true;
+  # DO NOT put here:
+  # - networking.hostName (must match flake target "main")
+  # - Theme/fonts → shared.nix
+  # - Home Manager options → home.local.nix
 }
