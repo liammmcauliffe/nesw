@@ -1,10 +1,11 @@
 /*
   Starship Prompt Module
 
-  Installs and enables the Starship cross-shell prompt with Fish integration.
+  Installs Starship and enables Fish integration via Home Manager.
+  Config: modules/shell/starship/starship.toml → ~/.config/starship.toml
 
   Exposes: (none — uses programs.starship from Home Manager)
-  Depends: modules/shell/fish (enableFishIntegration)
+  Depends: modules/shell/fish
 */
 { ... }:
 {
