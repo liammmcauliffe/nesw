@@ -1,5 +1,7 @@
-{ pkgs, ... }:
-
+{ config, pkgs, ... }:
+let
+  font = config.nesw.theme.fonts.monospace;
+in
 {
   home.packages = with pkgs; [
     ghostty
@@ -7,7 +9,7 @@
 
   xdg.configFile."ghostty/config".text = ''
     theme = "Vague"
-    font-family = "Monaspace Neon"
+    font-family = "${font}"
     font-size = 14
     window-padding-x = 10
     window-padding-y = 10

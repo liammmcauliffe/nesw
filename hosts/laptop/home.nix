@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ../../modules/themes
     ../../modules/shell/fish
     ../../modules/terminal/ghostty
     ../../modules/desktop/hyprland

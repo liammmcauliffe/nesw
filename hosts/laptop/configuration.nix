@@ -1,7 +1,10 @@
 { config, pkgs, hyprland, userName, ... }:
 
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ./hardware-configuration.nix
+    ../../modules/themes
+  ] ++ (if builtins.pathExists ./local.nix then [ ./local.nix ] else []);
 
   # allow unfree software
   nixpkgs.config.allowUnfree = true;
@@ -72,12 +75,14 @@
     slurp
   ];
 
-  # fonts
-  fonts.packages = with pkgs; [
+  # fonts (families driven by nesw.theme — override in hosts/*/local.nix)
+  fonts.packages = let
+    fonts = config.nesw.theme.fonts;
+  in with pkgs; [
     # UI (shell/notch/clock); pkgs.dm-sans is not this font, it ships
-    # "DeepMind Sans" -- the real DM Sans comes from google-fonts
-    (google-fonts.override { fonts = [ "DM Sans" ]; })
-    monaspace    # terminal/editor (Monaspace Neon)
+    # "DeepMind Sans" — the real DM Sans comes from google-fonts
+    (google-fonts.override { fonts = [ fonts.sansSerif ]; })
+    monaspace # terminal/editor (Monaspace Neon)
     nerd-fonts.jetbrains-mono
   ];
 

@@ -1,8 +1,26 @@
 { ... }: {
-  # Put machine-specific or experimental overrides here.
-  # This file is imported by hosts/laptop/home.nix when hosts/laptop/local.nix exists.
+  # Copy this file to local.nix to customize your machine without editing core modules.
+  # Imported by hosts/laptop/home.nix and configuration.nix when local.nix exists.
   #
-  # Examples:
-  # home.packages = [ pkgs.somePackage ];
+  # nesw.* options apply to both NixOS and Home Manager.
+  # home.* / programs.* options are Home Manager only — they will fail a NixOS
+  # rebuild if set here; keep those in a separate HM-only overlay if needed.
+
+  # ── Theme ──────────────────────────────────────────────────────────────────
+  # nesw.theme.fonts.sansSerif = "Inter";
+  # nesw.theme.fonts.monospace = "JetBrains Mono";
+  # nesw.theme.fonts.monospaceNerd = "JetBrainsMono Nerd Font";
+  #
+  # nesw.theme.colors.primary = "c4b5fd";
+  # nesw.theme.colors.onSurfaceVariant = "a1a1aa";
+  # nesw.theme.colors.surface = "0c0a09";
+  # nesw.theme.colors.surfaceContainer = "1c1917";
+
+  # ── Hyprland ───────────────────────────────────────────────────────────────
+  # nesw.desktop.hyprland.terminal = "alacritty";
+  # nesw.desktop.hyprland.browser = "firefox";
+
+  # ── Ad-hoc home-manager overrides ──────────────────────────────────────────
+  # home.packages = [ pkgs.ripgrep ];
   # programs.git.enable = true;
 }
