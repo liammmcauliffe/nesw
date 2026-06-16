@@ -1,8 +1,8 @@
 /*
   Hyprland Desktop Module
 
-  Configures Hyprland, GTK/cursor theming, gammastep, and polkit. Symlinks the
-  Lua config tree while generating variables.lua and scheme files from Nix options.
+  Configures Hyprland, GTK/cursor theming, gammastep, and polkit. Deploys the full
+  Lua config tree to ~/.config/hypr/ (generated variables/scheme + symlinked sources).
 
   Exposes:
     - nesw.desktop.hyprland.terminal
@@ -122,13 +122,24 @@ let
 
   hyprSrc = lib.cleanSourceWith {
     src = ./.;
-    filter = _path: type:
+    filter = path: type:
       let
-        name = baseNameOf _path;
+        name = baseNameOf path;
       in
-        type != "regular"
-        || !(name == "variables.lua" || name == "default.lua" || name == "current.lua");
+        !(name == "default.nix" || name == "README.md");
   };
+
+  hyprConfig = pkgs.runCommand "nesw-hyprland-config" { } ''
+    mkdir -p $out/scheme
+    cp -ra ${hyprSrc}/. $out/
+    cat > $out/variables.lua <<'EOF'
+${variablesLua}
+EOF
+    cat > $out/scheme/default.lua <<'EOF'
+${schemeLua}
+EOF
+    cp $out/scheme/default.lua $out/scheme/current.lua
+  '';
 in
 {
   options.nesw.desktop.hyprland = {
@@ -169,14 +180,10 @@ in
       portalPackage = null;
     };
 
-    xdg.configFile = {
-      "hypr/variables.lua".text = variablesLua;
-      "hypr/scheme/default.lua".text = schemeLua;
-      "hypr/scheme/current.lua".text = schemeLua;
-      hypr = {
-        source = hyprSrc;
-        recursive = true;
-      };
+    xdg.configFile.hypr = {
+      source = hyprConfig;
+      recursive = true;
+      force = true;
     };
 
     # autostart deps (see config/execs.lua)

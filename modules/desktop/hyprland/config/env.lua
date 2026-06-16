@@ -1,14 +1,10 @@
 --[[
   Session Environment Variables
   Sets Wayland/XDG env vars so Qt, GTK, Electron, and SDL apps behave correctly
-  under Hyprland. NESW_DIR lets Lua configs find the repo when it is not at ~/nesw.
+  under Hyprland.
 ]]
 
 local vars = require("variables")
-
-local home = os.getenv("HOME") or ""
-local nesw_dir = os.getenv("NESW_DIR") or (home .. "/nesw")
-hl.env("NESW_DIR", nesw_dir)
 
 -- Qt theming and cursor vars keep toolkit apps consistent with the GTK cursor theme
 hl.env("QT_QPA_PLATFORMTHEME", "qtengine")
