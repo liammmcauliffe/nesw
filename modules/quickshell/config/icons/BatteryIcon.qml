@@ -64,11 +64,20 @@ Item {
                 path: "M200,100c0,10.42-8.45,18.87-18.87,18.87V81.13C191.55,81.13,200,89.58,200,100"
             }
         }
+    }
+
+    Shape {
+        anchors.fill: parent
+        preferredRendererType: Shape.CurveRenderer
+        opacity: root.juicePath.length > 0 ? 1 : 0
+        transform: Scale {
+            xScale: root.width / 200
+            yScale: root.height / 200
+        }
 
         ShapePath {
             fillColor: root.juiceColor
             strokeWidth: 0
-            opacity: root.juicePath.length > 0 ? 1 : 0
             PathSvg { path: root.juicePath }
         }
     }
