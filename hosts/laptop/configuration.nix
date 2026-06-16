@@ -5,14 +5,8 @@
     ./hardware-configuration.nix
     ../../modules/themes
     ../../modules/drivers
-  ]
-  ++ (if builtins.pathExists ./shared.nix then [ ./shared.nix ] else [])
-  ++ (if builtins.pathExists ./local.nix then [ ./local.nix ] else []);
-
-  # GPU vendor — enable exactly one (lspci -k | grep -A 3 -E 'VGA|3D|Display')
-  # nesw.drivers.intel.enable = true;
-  # nesw.drivers.amdgpu.enable = true;
-  # nesw.drivers.nvidia.enable = true;
+    ./local.nix
+  ] ++ (if builtins.pathExists ./shared.nix then [ ./shared.nix ] else []);
 
   # allow unfree software
   nixpkgs.config.allowUnfree = true;
@@ -98,7 +92,7 @@
     slurp
   ];
 
-  # fonts (families driven by nesw.theme — override in hosts/*/local.nix)
+  # fonts (families driven by nesw.theme — override in hosts/laptop/shared.nix)
   fonts.packages = let
     fonts = config.nesw.theme.fonts;
   in with pkgs; [

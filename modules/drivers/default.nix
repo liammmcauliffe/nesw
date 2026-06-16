@@ -24,8 +24,8 @@ in
     {
       assertions = [
         {
-          assertion = count (x: x) driversEnabled <= 1;
-          message = "nesw.drivers: enable at most one of amdgpu, intel, or nvidia.";
+          assertion = count (x: x) driversEnabled == 1;
+          message = "Enable exactly one of nesw.drivers.amdgpu, .intel, or .nvidia in hosts/laptop/local.nix.";
         }
       ];
     }
