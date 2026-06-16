@@ -6,21 +6,56 @@
   # home.* / programs.* options are Home Manager only — they will fail a NixOS
   # rebuild if set here; keep those in a separate HM-only overlay if needed.
 
-  # ── Theme ──────────────────────────────────────────────────────────────────
-  # nesw.theme.fonts.sansSerif = "Inter";
-  # nesw.theme.fonts.monospace = "JetBrains Mono";
-  # nesw.theme.fonts.monospaceNerd = "JetBrainsMono Nerd Font";
+  # ── Theme: fonts ───────────────────────────────────────────────────────────
   #
+  # UI font — affects Quickshell (notch, clock, launcher) and system-wide
+  # google-fonts install. Change this if DM Sans does not match your aesthetic.
+  # nesw.theme.fonts.sansSerif = "Inter";
+  #
+  # Terminal / editor font — Ghostty reads this via modules/terminal/ghostty.
+  # Pick a family that matches a font you install in configuration.nix or add
+  # the package yourself if you switch away from Monaspace.
+  # nesw.theme.fonts.monospace = "JetBrains Mono";
+  #
+  # Nerd Font variant for icons in terminal and editor tooling.
+  # nesw.theme.fonts.monospaceNerd = "JetBrainsMono Nerd Font";
+
+  # ── Theme: colors ──────────────────────────────────────────────────────────
+  #
+  # Baseline palette (hex without #). These feed Hyprland border colors via
+  # generated scheme/*.lua. For live wallpaper-driven colors without a rebuild,
+  # use ~/.local/state/nesw/scheme.json instead (see Colors.qml).
+  #
+  # Warmer accent for active window borders and scheme.primary:
   # nesw.theme.colors.primary = "c4b5fd";
+  #
+  # Muted label tone for inactive borders:
   # nesw.theme.colors.onSurfaceVariant = "a1a1aa";
+  #
+  # Base background — keep in sync with your wallpaper if not using scheme.json:
   # nesw.theme.colors.surface = "0c0a09";
   # nesw.theme.colors.surfaceContainer = "1c1917";
 
-  # ── Hyprland ───────────────────────────────────────────────────────────────
+  # ── Hyprland: default apps ─────────────────────────────────────────────────
+  #
+  # Super+Return and Super+W launch these via app2unit. Override when you prefer
+  # a different terminal or browser without editing generated variables.lua.
   # nesw.desktop.hyprland.terminal = "alacritty";
   # nesw.desktop.hyprland.browser = "firefox";
 
-  # ── Ad-hoc home-manager overrides ──────────────────────────────────────────
+  # ── Hyprland: gaps & layout ──────────────────────────────────────────────────
+  #
+  # Window and workspace gaps are generated into variables.lua at build time.
+  # The defaults (workspaceGaps = 18, windowGapsOut = 18) are tuned for the
+  # Quickshell border and notch on 1080p. To change them today, edit
+  # modules/desktop/hyprland/default.nix (variablesLua) or config/general.lua.
+  #
+  # Available Nix options today: nesw.desktop.hyprland.terminal, .browser
+
+  # ── Ad-hoc Home Manager overrides ────────────────────────────────────────────
+  # Keep HM-only options in a separate file if you also import local.nix from
+  # configuration.nix — home.packages here will break a NixOS rebuild.
+  #
   # home.packages = [ pkgs.ripgrep ];
   # programs.git.enable = true;
 }
