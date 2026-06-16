@@ -64,8 +64,10 @@ Every machine needs `hosts/laptop/local.nix`. The build fails without it. Copy t
 
 ```bash
 cp hosts/laptop/local.nix.example hosts/laptop/local.nix
-lspci -k | grep -A 3 -E 'VGA|3D|Display'
+nix-shell -p pciutils --run "lspci -k | grep -A 3 -E 'VGA|3D|Display'"
 ```
+
+`lspci` is not on a minimal NixOS install — `pciutils` is pulled in via `nix-shell` for this one-off check.
 
 Edit `local.nix`:
 

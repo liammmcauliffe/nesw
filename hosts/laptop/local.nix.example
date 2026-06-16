@@ -18,7 +18,7 @@
 
   # ── GPU driver (required on a new machine — enable exactly one) ─────────────
   #
-  #   lspci -k | grep -A 3 -E 'VGA|3D|Display'
+  #   nix-shell -p pciutils --run "lspci -k | grep -A 3 -E 'VGA|3D|Display'"
   #
   # nesw.drivers.intel.enable = true;   # i915 / xe — most Intel laptops
   # nesw.drivers.amdgpu.enable = true;  # AMD Ryzen iGPU / dGPU
