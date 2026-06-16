@@ -102,7 +102,37 @@
     (google-fonts.override { fonts = [ fonts.sansSerif ]; })
     monaspace # terminal/editor (Monaspace Neon)
     nerd-fonts.jetbrains-mono
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-cjk-serif
+    noto-fonts-emoji
+    noto-fonts-monospace
   ];
+
+  fonts.fontconfig = {
+    enable = true;
+    defaultFonts = let
+      fonts = config.nesw.theme.fonts;
+    in {
+      sansSerif = [
+        fonts.sansSerif
+        "Noto Sans"
+        "Noto Sans CJK SC"
+      ];
+      serif = [
+        "Noto Serif"
+        "Noto Serif CJK SC"
+      ];
+      monospace = [
+        fonts.monospace
+        fonts.monospaceNerd
+        "Noto Sans Mono CJK SC"
+      ];
+      emoji = [
+        "Noto Color Emoji"
+      ];
+    };
+  };
 
   users.users.${userName} = {
     isNormalUser = true;
