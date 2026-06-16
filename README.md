@@ -51,7 +51,15 @@ cd ~/nesw
 sudo cp /etc/nixos/hardware-configuration.nix ./hosts/laptop/hardware-configuration.nix
 ```
 
-This file is gitignored so disk UUIDs and hardware-specific settings stay on your machine.
+This file is gitignored so disk UUIDs stay local and never get pushed to GitHub.
+
+**Important:** Nix flakes cannot see gitignored files. After copying it, force-stage it (no commit required):
+
+```bash
+git add -f hosts/laptop/hardware-configuration.nix
+```
+
+`ntest` / `nswitch` do this automatically once Fish helpers are installed. On your **first** rebuild, run the command above manually.
 
 ### 3. Set your username
 
@@ -71,7 +79,7 @@ Copy the example file and edit it with your preferences. This is the preferred w
 cp hosts/laptop/local.nix.example hosts/laptop/local.nix
 ```
 
-`local.nix` is imported by both `configuration.nix` and `home.nix` when it exists. Use it for `nesw.*` framework options (theme, default apps). See [Customization](#customization) below.
+`local.nix` is imported by both `configuration.nix` and `home.nix` when it exists. Use it for `nesw.*` framework options (theme, default apps, GPU driver). Same flake rule as hardware config — if you create it, run `git add -f hosts/laptop/local.nix` before your first rebuild (helpers do this later).
 
 Adjust `time.timeZone` and `i18n.defaultLocale` in `hosts/laptop/configuration.nix` if needed.
 
