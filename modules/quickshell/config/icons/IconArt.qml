@@ -2,7 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 
-// Renders child shapes at the SVG viewBox size, then scales down once with MSAA.
+// Renders children at the SVG viewBox size, then scales to the icon slot once.
 Item {
     id: root
 
@@ -17,9 +17,5 @@ Item {
         height: IconConstants.viewBox
         scale: root.displayScale
         transformOrigin: Item.Center
-
-        layer.enabled: true
-        layer.smooth: true
-        layer.samples: 4
     }
 }

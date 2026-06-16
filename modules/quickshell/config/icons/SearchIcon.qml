@@ -18,7 +18,7 @@ Item {
         Shape {
             width: IconConstants.viewBox
             height: IconConstants.viewBox
-            preferredRendererType: Shape.GeometryRenderer
+            preferredRendererType: Shape.CurveRenderer
             antialiasing: true
 
             ShapePath {
