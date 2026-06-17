@@ -6,10 +6,6 @@ Item {
     id: root
 
     property string glyph: "full"
-    property color color: "white"
-    property color shellColor: "#a1a1aa"
-    property color saverColor: "#FFD600"
-    property color chargingColor: "#22C55E"
     property bool powerSaving: false
     property int size: 20
 

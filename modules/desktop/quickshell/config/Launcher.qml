@@ -308,9 +308,10 @@ PanelWindow {
                 width: parent.width
                 height: root.searchHeight
 
-                SearchIcon {
+                TintedSvgIcon {
                     size: 26
                     color: root.textSecondary
+                    source: Qt.resolvedUrl("assets/search.svg")
                     anchors.left: parent.left
                     anchors.leftMargin: 28
                     anchors.verticalCenter: parent.verticalCenter
@@ -563,9 +564,10 @@ PanelWindow {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        ReturnKeyIcon {
+                        TintedSvgIcon {
                             size: 26
                             color: root.textSecondary
+                            source: Qt.resolvedUrl("assets/return-key.svg")
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }

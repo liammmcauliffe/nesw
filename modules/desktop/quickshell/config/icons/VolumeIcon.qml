@@ -7,8 +7,6 @@ Item {
 
     // "none" | "off" | "low" | "med" | "medium" | "high" | "max"
     property string glyph: "high"
-    property color color: "white"
-    property color shellColor: "#a1a1aa"
     property int size: 20
 
     width: size

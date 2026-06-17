@@ -4,8 +4,6 @@
   disabled because Quickshell provides the visible desktop chrome instead.
 ]]
 
--- local scheme = require("scheme.current")
-
 hl.config({
     misc = {
         vrr                          = 2,
@@ -21,7 +19,6 @@ hl.config({
         session_lock_xray            = true,
         mouse_move_enables_dpms      = true,
         key_press_enables_dpms       = true,
-        -- background_color          = "rgb(" .. scheme.surfaceContainer .. ")",
     },
     debug = {
         error_position = 1

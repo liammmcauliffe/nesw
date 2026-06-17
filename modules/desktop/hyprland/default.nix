@@ -50,12 +50,6 @@ let
         blurPasses = 2,
         blurXray = false,
 
-        -- shadow
-        shadowEnabled = false,
-        shadowRange = 10,
-        shadowRenderPower = 2,
-        -- shadowColor = "rgba(" .. scheme.surface .. "d4)",
-
         -- gaps
         -- the 4px screen border sits inside gaps_out, so the visible gap between
         -- windows and the border/notch is (windowGapsOut - 4) on all sides

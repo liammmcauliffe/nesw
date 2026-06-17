@@ -272,16 +272,15 @@ PanelWindow {
             WifiIcon {
                 visible: root.showWifiIcon
                 glyph: root.wifiGlyph
-                color: "white"
-                shellColor: Colors.palette.m3onSurfaceVariant
                 size: 26
                 anchors.centerIn: parent
             }
 
-            EthernetIcon {
+            TintedSvgIcon {
                 visible: root.showEthernetIcon
                 color: "white"
                 size: 26
+                source: Qt.resolvedUrl("assets/ethernet.svg")
                 anchors.centerIn: parent
             }
         }
@@ -289,11 +288,8 @@ PanelWindow {
         BatteryIcon {
             visible: root.showBattery
             glyph: root.glyph
-            color: "white"
-            shellColor: Colors.palette.m3onSurfaceVariant
             size: 26
             anchors.verticalCenter: parent.verticalCenter
-            Behavior on shellColor { ColorAnimation { duration: 150 } }
         }
 
         Text {

@@ -7,8 +7,6 @@ Item {
 
     // "high" | "medium" | "low" | "none" | "connecting"
     property string glyph: "high"
-    property color color: "white"
-    property color shellColor: "#a1a1aa"
     property int size: 26
 
     width: size
