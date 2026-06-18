@@ -20,7 +20,7 @@ A modular NixOS + Hyprland desktop environment with a Quickshell UI layer, centr
 - **Quickshell Notch & Border UI** - top bar, rounded screen frame, workspace notch, clock, and app launcher (systemd user service)
 - **Home Manager module export** - `homeManagerModules.nesw` for importing into other flakes
 - **Fish rebuild helpers** - `nswitch`, `ntest`, `nupdate`, and `nrollback` stage changes and rebuild from `~/nesw`
-- **Live color reload** - optional `~/.local/state/nesw/scheme.json` for matugen/wallust without a rebuild
+- **Live wallpaper-driven colors (no rebuild)** — run `nesw-recolor <wallpaper>`; see [modules/desktop/quickshell/README.md](modules/desktop/quickshell/README.md) for the `scheme.json` contract
 
 ## Quick Start
 
@@ -187,7 +187,7 @@ Defaults live in `modules/`; machine-specific choices go in `local.nix`, `shared
 | Change the default browser | `nesw.desktop.hyprland.browser` in `shared.nix` |
 | Change UI or terminal fonts | `nesw.theme.fonts.*` in `shared.nix` |
 | Tweak baseline colors (Hyprland borders) | `nesw.theme.colors.*` in `shared.nix` |
-| Live wallpaper-driven colors (no rebuild) | `~/.local/state/nesw/scheme.json` (see Quickshell `Colors.qml`) |
+| Live wallpaper-driven colors (no rebuild) | `nesw-recolor <wallpaper>` → `~/.local/state/nesw/scheme.json` (see [modules/desktop/quickshell/README.md](modules/desktop/quickshell/README.md)) |
 | Add user packages / HM programs | `home.local.nix` or `hosts/laptop/home.nix` |
 | Change keybinds or window rules | `modules/desktop/hyprland/config/*.lua` |
 | Customize the shell UI (notch, launcher) | `modules/desktop/quickshell/config/` |

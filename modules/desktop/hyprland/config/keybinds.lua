@@ -125,6 +125,7 @@ hl.bind(vars.kbTerminal, hl.dsp.exec_cmd("app2unit -- " .. vars.terminal))
 hl.bind(vars.kbBrowser, hl.dsp.exec_cmd("app2unit -- " .. vars.browser))
 -- Launcher toggles the Quickshell IPC target defined in modules/desktop/quickshell
 hl.bind(vars.kbLauncher, hl.dsp.exec_cmd("qs ipc call launcher toggle"))
+hl.bind(vars.kbSession, hl.dsp.exec_cmd("qs ipc call logout toggle"), { locked = true })
 hl.bind(vars.kbScreenshot, hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | wl-copy"))
 
 -- PipeWire volume keys: unmute before raise so hardware mute does not block steps

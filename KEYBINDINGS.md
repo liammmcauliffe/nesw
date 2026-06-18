@@ -100,7 +100,7 @@ All modifier prefixes live in `~/.config/hypr/variables.lua`, generated from `mo
 
 | Binding | Action |
 |---------|--------|
-| `CTRL + ALT + Delete` | Session menu — option `kbSession` is defined in `variables.lua` but not currently bound (see `modules/desktop/hyprland/default.nix`); no logout dialog ships yet. |
+| `CTRL + ALT + Delete` | Session menu (toggle Quickshell logout dialog) |
 | `SUPER + SHIFT + L` | Suspend |
 
 ## Variable reference

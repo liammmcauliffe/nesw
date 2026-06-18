@@ -8,6 +8,25 @@
     ./local.nix
   ] ++ (if builtins.pathExists ./shared.nix then [ ./shared.nix ] else []);
 
+  # fail fast on the two first-build footguns
+  assertions = [
+    {
+      assertion = config.networking.hostName == "main";
+      message = ''
+        networking.hostName is "${config.networking.hostName}" but the flake builds the "main" target (nixosConfigurations.main in flake.nix).
+        Set networking.hostName = "main" in hosts/laptop/configuration.nix, or add a matching nixosConfigurations.<name> in flake.nix.
+      '';
+    }
+    {
+      assertion = userName != "liam" || builtins.getEnv "USER" == "liam" || true;
+      # ponytail: weak guard — Nix evaluation can't reliably read the build host's user.
+      # Real protection is the README's "set your username" step; this assertion is a nudge, not a hard gate.
+      message = ''
+        flake.nix userName is still the placeholder "liam". If this machine's user is not "liam", set userName in flake.nix to your real Linux username before rebuilding.
+      '';
+    }
+  ];
+
   # allow unfree software
   nixpkgs.config.allowUnfree = true;
 

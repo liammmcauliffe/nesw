@@ -80,14 +80,7 @@ PanelWindow {
 
     function persistHistory() {
         const json = JSON.stringify(launchHistory);
-        const dir = `${Quickshell.env("HOME")}/.local/state/nesw`;
-        const path = root.historyPath;
-        Quickshell.execDetached({
-            command: [
-                "sh", "-c",
-                `mkdir -p '${dir}' && printf '%s' '${json.replace(/'/g, "'\\''")}' > '${path}'`
-            ],
-        });
+        historyFile.setText(json);
     }
 
     function saveHistory(entry) {
@@ -102,6 +95,7 @@ PanelWindow {
     }
 
     FileView {
+        id: historyFile
         path: root.historyPath
         watchChanges: false
         printErrors: false

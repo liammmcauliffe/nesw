@@ -3,13 +3,17 @@ function _nesw_stage --description "Stage changes unless a merge is in progress"
         echo "✗ merge in progress - resolve conflicts before rebuilding"
         return 1
     end
+    if test -z "$NESW_HOST_DIR"
+        echo "✗ NESW_HOST_DIR not set (call _nesw_repo first)"
+        return 1
+    end
     git add -A
     # Flakes ignore gitignored files - force-stage machine-specific configs
     for f in \
-        hosts/laptop/hardware-configuration.nix \
-        hosts/laptop/local.nix \
-        hosts/laptop/shared.nix \
-        hosts/laptop/home.local.nix
+        $NESW_HOST_DIR/hardware-configuration.nix \
+        $NESW_HOST_DIR/local.nix \
+        $NESW_HOST_DIR/shared.nix \
+        $NESW_HOST_DIR/home.local.nix
         if test -f $f
             git add -f $f
         end

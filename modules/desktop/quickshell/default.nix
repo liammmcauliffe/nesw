@@ -41,6 +41,8 @@ let
   };
 in
 {
+  imports = [ ./generator.nix ];
+
   options.programs.quickshell.nesw.enable =
     lib.mkEnableOption "NESW Quickshell shell (systemd user service)";
 

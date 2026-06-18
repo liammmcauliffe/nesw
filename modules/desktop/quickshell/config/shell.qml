@@ -9,4 +9,5 @@ ShellRoot {
     Notch {}
     Clock {}
     Launcher {}
+    Logout {}
 }

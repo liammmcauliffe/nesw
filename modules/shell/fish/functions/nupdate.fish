@@ -14,7 +14,7 @@ function nupdate --description "Update all flake inputs, test build, stage lockf
     git add flake.lock
     set -l t0 (date +%s)
     echo "→ testing updated inputs (revert on reboot)..."
-    if sudo nixos-rebuild test --flake .#main
+    if sudo nixos-rebuild test --flake .#$NESW_HOST
         echo "✓ inputs updated and tested in "(math (date +%s) - $t0)"s - run nswitch to keep, or reboot to revert"
         popd
     else

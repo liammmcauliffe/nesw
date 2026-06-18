@@ -3,7 +3,7 @@ function ntest --description "Stage all, rebuild and test config (reverts on reb
     _nesw_stage || begin; popd; return 1; end
     set -l t0 (date +%s)
     echo "→ testing (revert on reboot)..."
-    if sudo nixos-rebuild test --flake .#main $argv
+    if sudo nixos-rebuild test --flake .#$NESW_HOST $argv
         echo "✓ done in "(math (date +%s) - $t0)"s - reboot to revert"
         popd
     else
