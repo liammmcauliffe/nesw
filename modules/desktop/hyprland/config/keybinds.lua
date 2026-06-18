@@ -99,8 +99,13 @@ hl.bind(vars.kbMoveWindow, hl.dsp.window.drag(), { mouse = true })
 hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })
 hl.bind(vars.kbResizeWindow, hl.dsp.window.resize(), { mouse = true })
 hl.bind("CTRL + SUPER + Backslash", hl.dsp.window.center())
-hl.bind("CTRL + SUPER + ALT + Backslash", hl.dsp.window.resize(fn.resize_by_screen(55, 70)))
-hl.bind("CTRL + SUPER + ALT + Backslash", hl.dsp.window.center())
+hl.bind("CTRL + SUPER + ALT + Backslash", function()
+    local size = fn.resize_by_screen(55, 70)
+    if size then
+        hl.dispatch(hl.dsp.window.resize(size))
+    end
+    hl.dispatch(hl.dsp.window.center())
+end)
 hl.bind(vars.kbWindowPip, function()
     local a = hl.get_active_window()
     if a then
