@@ -1,6 +1,6 @@
 # Keybindings
 
-All modifier prefixes live in `modules/hyprland/variables.lua`. Bindings are registered in `modules/hyprland/config/keybinds.lua`. Change a prefix in `variables.lua` to remap a whole group at once.
+All modifier prefixes live in `~/.config/hypr/variables.lua`, generated from `modules/desktop/hyprland/default.nix` at build time. Bindings are registered in `modules/desktop/hyprland/config/keybinds.lua`. Change a prefix in the `variablesLua` attr of `default.nix` to remap a whole group at once.
 
 ## Workspaces
 
@@ -59,9 +59,6 @@ All modifier prefixes live in `modules/hyprland/variables.lua`. Bindings are reg
 
 | Binding | Action |
 |---------|--------|
-| `SUPER + Equal` | Grow window width (repeat) |
-| `SUPER + SHIFT + Minus` | Shrink window height (repeat) |
-| `SUPER + SHIFT + Equal` | Grow window height (repeat) |
 | `SUPER + ALT + left/right/up/down` | Resize window (repeat) |
 
 ## Window actions
@@ -103,7 +100,7 @@ All modifier prefixes live in `modules/hyprland/variables.lua`. Bindings are reg
 
 | Binding | Action |
 |---------|--------|
-| `CTRL + ALT + Delete` | Session menu (defined in `variables.lua`, bind if used) |
+| `CTRL + ALT + Delete` | Session menu — option `kbSession` is defined in `variables.lua` but not currently bound (see `modules/desktop/hyprland/default.nix`); no logout dialog ships yet. |
 | `SUPER + SHIFT + L` | Suspend |
 
 ## Variable reference

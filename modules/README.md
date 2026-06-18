@@ -6,7 +6,7 @@ nesw is organized by concern so each piece stays small, testable, and overridabl
 
 **`themes/`** defines `nesw.theme.*` - font families and baseline colors. NixOS reads these in `hosts/laptop/configuration.nix` for `fonts.packages`; Home Manager modules read the same options for Ghostty, Quickshell, and Hyprland.
 
-**`desktop/`** is the Wayland shell layer. `hyprland/` symlinks a Lua config tree and **generates** `variables.lua` and `scheme/*.lua` from Nix options (`nesw.desktop.hyprland.*`, `nesw.theme.colors.*`). `quickshell/` provides the notch, border, clock, and launcher QML UI.
+**`desktop/`** is the Wayland shell layer. `hyprland/` copies a Lua config tree into the build output and **generates** `variables.lua` and `scheme/*.lua` from Nix options (`nesw.desktop.hyprland.*`, `nesw.theme.colors.*`). `quickshell/` provides the notch, border, clock, and launcher QML UI.
 
 **`shell/`**, **`terminal/`**, **`editors/`**, and **`browser/`** wrap Fish, Starship, CLI tools, Ghostty, Neovim, and Zen Browser. They depend on `themes/` where fonts matter.
 
@@ -19,7 +19,7 @@ Hyprland is configured in Lua for fast iteration, but user-facing defaults (term
 - `~/.config/hypr/variables.lua` - apps, gaps, keybind prefixes
 - `~/.config/hypr/scheme/default.lua` and `scheme/current.lua` - palette from `nesw.theme.colors`
 
-The rest of `config/*.lua` is symlinked from the repo. Edit those files for keybinds, rules, and gestures.
+The rest of `config/*.lua` is copied from the repo at build time. Edit those files for keybinds, rules, and gestures, then rebuild (`ntest`/`nswitch`) to pick up the changes.
 
 ## How to add a new module
 
