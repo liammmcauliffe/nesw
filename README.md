@@ -46,11 +46,6 @@ After your first successful rebuild, `ntest` / `nswitch` stages gitignored files
 
 ### 5. Build
 
-exit nix-shell
-```bash
-exit
-```
-
 ```bash
 sudo NIX_CONFIG='experimental-features = nix-command flakes' nixos-rebuild switch --flake .#main
 ```
