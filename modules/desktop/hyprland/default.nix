@@ -1,4 +1,4 @@
-# variables.lua + scheme/*.lua are generated from these values
+# variables.lua + scheme/*.lua are generated from these values; edit here, not in repo lua
 { lib, pkgs, ... }:
 let
   schemeLua = ''
@@ -109,7 +109,7 @@ let
 
   hyprConfig = pkgs.runCommand "nesw-hyprland-config" { } ''
     mkdir -p $out/scheme
-    cp -ra ${hyprSrc}/. $out/
+    cp -r ${hyprSrc}/. $out/
     cat > $out/variables.lua <<'EOF'
 ${variablesLua}
 EOF

@@ -5,7 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     hyprland.url = "github:hyprwm/Hyprland";
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     zen-browser = {
@@ -45,7 +45,7 @@
             home-manager.users.${userName} = {
               imports = [
                 host.home
-                { home.stateVersion = "26.11"; }
+                { home.stateVersion = "26.05"; }
               ];
             };
           }

@@ -1,7 +1,7 @@
 { pkgs, zen-browser, ... }:
 {
   home.packages = [
-    zen-browser.packages.${pkgs.system}.default
+    zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   home.sessionVariables = {

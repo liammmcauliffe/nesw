@@ -2,7 +2,7 @@
 { config, lib, pkgs, quickshell, ... }:
 let
   cfg = config.programs.quickshell.nesw;
-  qsPkg = quickshell.packages.${pkgs.system}.default;
+  qsPkg = quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   fontsQml = ''
     pragma Singleton
