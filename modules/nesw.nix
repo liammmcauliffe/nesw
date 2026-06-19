@@ -3,15 +3,13 @@ let
   cfg = config.nesw;
 in
 {
-  options.nesw.enable = lib.mkEnableOption "nesw";
+  imports = lib.optionals cfg.enable [
+    ./desktop
+    ./shell
+    ./terminal
+    ./editors
+    ./browser
+  ];
 
-  config = lib.mkIf cfg.enable {
-    imports = [
-      ./desktop
-      ./shell
-      ./terminal
-      ./editors
-      ./browser
-    ];
-  };
+  options.nesw.enable = lib.mkEnableOption "nesw";
 }
