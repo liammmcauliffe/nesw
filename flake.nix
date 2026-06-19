@@ -45,7 +45,7 @@
             home-manager.users.${userName} = {
               imports = [
                 host.home
-                { home.stateVersion = "26.05"; }
+                { home.stateVersion = "26.11"; }
               ];
             };
           }

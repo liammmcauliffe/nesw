@@ -103,7 +103,6 @@
     noto-fonts-cjk-sans
     noto-fonts-cjk-serif
     noto-fonts-emoji
-    noto-fonts-monospace
   ];
 
   fonts.fontconfig = {
@@ -125,5 +124,5 @@
   # sudo
   security.sudo.enable = true;
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }
