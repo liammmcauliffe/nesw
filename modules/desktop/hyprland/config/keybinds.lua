@@ -1,13 +1,9 @@
---[[
-  Keybindings
-  Binds workspace navigation, window management, apps, and media keys. Modifier
-  prefixes live in variables.lua (generated from Nix) so remapping a group is one edit.
-]]
+-- keybindings. modifier prefixes live in variables.lua (generated from Nix) - change one to remap a group.
 
 local vars = require("variables")
 local fn = require("config.functions")
 
--- Jump by ±10 workspaces for the grouped layout (rows of 10)
+-- jump by ±10 workspaces
 local function ws_jump(step)
     return function()
         local active_ws = hl.get_active_workspace()
@@ -30,7 +26,7 @@ local function ws_jump(step)
     end
 end
 
--- Number keys 1–0 target workspace slots and groups (see config/functions.lua)
+-- number keys 1–0 target workspace slots and groups
 for i = 1, 10 do
     local key = i % 10
     hl.bind(vars.kbGoToWs .. " + " .. key, fn.ws_action(false, "w", i))
@@ -39,7 +35,7 @@ for i = 1, 10 do
     hl.bind(vars.kbMoveWinToWsGroup .. " + " .. key, fn.ws_action(true, "g", i))
 end
 
--- Adjacent workspace navigation (keyboard and scroll wheel)
+-- adjacent workspace navigation
 hl.bind(vars.kbNextWsMouse, hl.dsp.focus({ workspace = "-1" }))
 hl.bind(vars.kbPrevWsMouse, hl.dsp.focus({ workspace = "+1" }))
 hl.bind(vars.kbPrevWs, hl.dsp.focus({ workspace = "-1" }), { repeating = true })
@@ -47,16 +43,16 @@ hl.bind(vars.kbNextWs, hl.dsp.focus({ workspace = "+1" }), { repeating = true })
 hl.bind("SUPER + Page_Up", hl.dsp.focus({ workspace = "-1" }), { repeating = true })
 hl.bind("SUPER + Page_Down", hl.dsp.focus({ workspace = "+1" }), { repeating = true })
 
--- Workspace group navigation (±10) for the 10-wide grid
+-- workspace group navigation
 hl.bind(vars.kbNextWsGroupMouse, hl.dsp.focus({ workspace = "-10" }))
 hl.bind(vars.kbPrevWsGroupMouse, hl.dsp.focus({ workspace = "+10" }))
 hl.bind("SUPER + grave", ws_jump(-10))
 hl.bind("SUPER + Minus", ws_jump(10))
 
--- Scratchpad-style special workspace (see config/gestures.lua for swipe target)
+-- scratchpad-style special workspace
 hl.bind(vars.kbToggleSpecialWs, hl.dsp.workspace.toggle_special("special"))
 
--- Move focused window across workspaces without changing focus
+-- move focused window across workspaces without changing focus
 hl.bind("SUPER + ALT + Page_Up", hl.dsp.window.move({ workspace = "-1" }), { repeating = true })
 hl.bind("SUPER + ALT + Page_Down", hl.dsp.window.move({ workspace = "+1" }), { repeating = true })
 hl.bind(vars.kbMoveWinNextWsMouse, hl.dsp.window.move({ workspace = "-1" }))
@@ -64,13 +60,13 @@ hl.bind(vars.kbMoveWinPrevWsMouse, hl.dsp.window.move({ workspace = "+1" }))
 hl.bind("CTRL + SUPER + SHIFT + right", hl.dsp.window.move({ workspace = "+1" }), { repeating = true })
 hl.bind("CTRL + SUPER + SHIFT + left", hl.dsp.window.move({ workspace = "-1" }), { repeating = true })
 
--- Send window to/from the special workspace
+-- send window to/from the special workspace
 hl.bind("CTRL + SUPER + SHIFT + up", hl.dsp.window.move({ workspace = "special:special" }))
 hl.bind("CTRL + SUPER + SHIFT + down", hl.dsp.window.move({ workspace = "e+0" }))
 hl.bind("SUPER + ALT + S", hl.dsp.window.move({ workspace = "special:special" }))
 
 
--- Tab cycles within a window group; lock prevents accidental ungroup during resize
+-- tab cycles within a window group
 hl.bind(vars.kbWindowGroupCycleNext, hl.dsp.window.cycle_next({ next = true }), { repeating = true })
 hl.bind(vars.kbWindowGroupCyclePrev, hl.dsp.window.cycle_next({ next = false }), { repeating = true })
 hl.bind("CTRL + ALT + Tab", hl.dsp.group.next(), { repeating = true })
@@ -80,7 +76,7 @@ hl.bind(vars.kbUngroup, hl.dsp.window.move({ out_of_group = true }))
 hl.bind("SUPER + SHIFT + Comma", hl.dsp.group.lock_active())
 
 
--- Directional focus/move/resize - Super+Alt resize is relative for fine adjustments
+-- directional focus/move/resize
 hl.bind("SUPER + left", hl.dsp.focus({ direction = "left" }))
 hl.bind("SUPER + right", hl.dsp.focus({ direction = "right" }))
 hl.bind("SUPER + up", hl.dsp.focus({ direction = "up" }))
@@ -120,15 +116,14 @@ hl.bind(vars.kbWindowBorderedFullscreen, hl.dsp.window.fullscreen({ mode = "maxi
 hl.bind(vars.kbToggleWindowFloating, hl.dsp.window.float())
 hl.bind(vars.kbCloseWindow, hl.dsp.window.close())
 
--- Default apps: app2unit scopes launches to the focused monitor's systemd unit
+-- default apps
 hl.bind(vars.kbTerminal, hl.dsp.exec_cmd("app2unit -- " .. vars.terminal))
 hl.bind(vars.kbBrowser, hl.dsp.exec_cmd("app2unit -- " .. vars.browser))
--- Launcher toggles the Quickshell IPC target defined in modules/desktop/quickshell
 hl.bind(vars.kbLauncher, hl.dsp.exec_cmd("qs ipc call launcher toggle"))
 hl.bind(vars.kbSession, hl.dsp.exec_cmd("qs ipc call logout toggle"), { locked = true })
 hl.bind(vars.kbScreenshot, hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | wl-copy"))
 
--- PipeWire volume keys: unmute before raise so hardware mute does not block steps
+-- pipewire volume keys
 hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true })
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true })
 hl.bind("SUPER + SHIFT + M", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true })
@@ -147,5 +142,5 @@ hl.bind(
     { locked = true, repeating = true }
 )
 
--- Suspend bind mirrors the three-finger down gesture in config/gestures.lua
+-- suspend bind
 hl.bind("SUPER + SHIFT + L", hl.dsp.exec_cmd(vars.suspendCommand), { locked = true })

@@ -4,11 +4,9 @@ import QtQuick
 import QtQuick.Window
 import Quickshell.Io
 
-// White-on-transparent SVG in, any color out - tints by rewriting the SVG, no GPU shader.
 Item {
     id: root
 
-    // ponytail: 1.15 scales glyph art within the hit box; was IconConstants.artScale singleton
     readonly property real artScale: 1.15
     property int size: 24
     property url source

@@ -1,4 +1,4 @@
-# Manual wallpaper → scheme.json generator (spike). See README.md for the contract.
+# nesw-recolor - matugen wallpaper → ~/.local/state/nesw/scheme.json
 { config, lib, pkgs, ... }:
 let
   cfg = config.programs.quickshell.nesw;

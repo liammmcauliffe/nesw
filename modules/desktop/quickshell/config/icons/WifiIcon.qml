@@ -5,7 +5,6 @@ import QtQuick
 Item {
     id: root
 
-    // "high" | "medium" | "low" | "none" | "connecting"
     property string glyph: "high"
     property int size: 26
 

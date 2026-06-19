@@ -1,17 +1,7 @@
-/*
-  GPU driver stack - Mesa/Vulkan/VA-API base + vendor-specific blocks.
-
-  Enable exactly one of nesw.drivers.{amdgpu,intel,nvidia}.enable.
-  Exposes: nesw.drivers.amdgpu|intel|nvidia.enable
-*/
+# GPU drivers - base Mesa/modesetting boots anything; enable a vendor block for VA-API / proprietary / video decode
 { config, lib, pkgs, ... }:
-with lib;
 let
-  driversEnabled = with config.nesw.drivers; [
-    amdgpu.enable
-    intel.enable
-    nvidia.enable
-  ];
+  inherit (lib) mkIf mkEnableOption mkMerge;
 in
 {
   options.nesw.drivers = {
@@ -21,16 +11,7 @@ in
   };
 
   config = mkMerge [
-    {
-      assertions = [
-        {
-          assertion = count (x: x) driversEnabled == 1;
-          message = "Enable exactly one of nesw.drivers.amdgpu, .intel, or .nvidia in hosts/laptop/local.nix.";
-        }
-      ];
-    }
-
-    # base: Mesa GL/Vulkan/VA-API, common to every vendor
+    # base: Mesa GL/Vulkan/VA-API - boots every vendor via modesetting
     {
       hardware.graphics = {
         enable = true;

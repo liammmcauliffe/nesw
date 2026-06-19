@@ -1,9 +1,3 @@
---[[
-  Animation Curves & Timing
-  Defines bezier curves and per-surface animation speeds for window, layer, and
-  workspace transitions. Tuned for a snappy feel with slight overshoot on moves.
-  Adjust speeds or beziers here to change how the desktop responds to input.
-]]
 
 hl.config({
     animations = {
@@ -11,18 +5,18 @@ hl.config({
     },
 })
 
--- Shared easing curves reused across multiple animation leaves
+-- easing curves
 hl.curve("easeOutQuint",   { type = "bezier", points = { { 0.23, 1 },    { 0.32, 1 }    } })
 hl.curve("easeInOutCubic", { type = "bezier", points = { { 0.65, 0.05 }, { 0.36, 1 }    } })
 hl.curve("linear",         { type = "bezier", points = { { 0, 0 },       { 1, 1 }       } })
 hl.curve("almostLinear",   { type = "bezier", points = { { 0.5, 0.5 },   { 0.75, 1 }    } })
 hl.curve("quick",          { type = "bezier", points = { { 0.1, 0 },     { 0.0, 1 }     } })
 
--- Overshoot curves give windows and workspaces a subtle snap without feeling bouncy
+-- overshoot curves
 hl.curve("overshoot",      { type = "bezier", points = { { 0.34, 1.25 }, { 0.5, 1 }     } })
 hl.curve("overshootSoft",  { type = "bezier", points = { { 0.3, 1.12 },  { 0.5, 1 }     } })
 
--- Per-leaf timing: faster fades keep focus changes crisp; slide + overshoot on windows
+-- per-leaf timing
 hl.animation({ leaf = "global",        enabled = true, speed = 5,    bezier = "default" })
 hl.animation({ leaf = "border",        enabled = true, speed = 4,    bezier = "almostLinear" })
 hl.animation({ leaf = "windows",       enabled = true, speed = 4,    bezier = "overshoot",     style = "slide" })
@@ -41,3 +35,5 @@ hl.animation({ leaf = "workspaces",    enabled = true, speed = 5,    bezier = "o
 hl.animation({ leaf = "workspacesIn",  enabled = true, speed = 5,    bezier = "overshoot",     style = "slide" })
 hl.animation({ leaf = "workspacesOut", enabled = true, speed = 5,    bezier = "overshoot",     style = "slide" })
 hl.animation({ leaf = "zoomFactor",    enabled = true, speed = 6,    bezier = "quick" })
+
+-- snappy with slight overshoot on moves

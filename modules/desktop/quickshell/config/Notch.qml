@@ -22,8 +22,6 @@ PanelWindow {
     color: "transparent"
 
     WlrLayershell.layer: WlrLayer.Top
-    // reserving (notchHeight - borderWidth + 4) keeps the notch-to-window gap
-    // aligned with the side/bottom window gaps after thinning the screen frame
     exclusiveZone: Constants.notchHeight - Constants.borderWidth + 4
     WlrLayershell.namespace: "nesw-notch"
 
@@ -32,14 +30,10 @@ PanelWindow {
     readonly property real volume: audioSink && audioSink.audio ? audioSink.audio.volume : 0
     readonly property bool muted: audioSink && audioSink.audio ? audioSink.audio.muted : false
 
-    // audioMode swaps the notch content from the workspace ruler to the volume hud
     property bool audioMode: false
     property bool isVolumeChanging: false
-    // armed on first volume sync so pipewire's initial value doesn't pop the hud
     property real _lastVolume: -1
 
-    // Hyprland keeps the normal workspace as focusedWorkspace while a special
-    // workspace is open - check the monitor's specialWorkspace field instead
     readonly property bool inSpecialWs: {
         const mon = Hyprland.monitorFor(root.screen);
         if (!mon)
@@ -66,7 +60,6 @@ PanelWindow {
         reveal()
     }
 
-    // volume/muted are invalid unless the node is bound; tracking binds it
     PwObjectTracker {
         objects: [root.audioSink]
     }
@@ -90,7 +83,6 @@ PanelWindow {
     property real notchWidth: Math.min(Constants.maxWidth, Math.max(Constants.minWidth, expanded ? Constants.maxWidth : Constants.minWidth))
     property real slideOffset: 0
 
-    // workspace whose tick sits at the center notch (derived while scrubbing)
     readonly property int displayNumber: Math.max(1, Math.round(1 - slideOffset / Constants.stepPx))
 
     readonly property int activeWs: {
@@ -125,7 +117,6 @@ PanelWindow {
     property bool slideReady: false
     property bool workspaceScrubbing: false
 
-    // shown in the notch - active workspace unless the user is scrubbing
     readonly property int indicatorWs: workspaceScrubbing ? displayNumber : activeWs
 
     Component.onCompleted: {
@@ -206,7 +197,6 @@ PanelWindow {
         reveal()
     }
 
-    // settle a scrub: glide the ruler to the nearest tick and focus that workspace
     function commitWorkspaceDrag() {
         const ws = displayNumber
         slideOffset = slideTargetForWs(ws)
@@ -254,8 +244,6 @@ PanelWindow {
         }
     }
 
-    // input mask: center gets the full expanded hit depth; screen sides only
-  // the visible notch strip so clicks pass through to maximized windows below
     Item {
         id: hitMask
         anchors.fill: parent
@@ -290,10 +278,6 @@ PanelWindow {
         item: hitMask
     }
 
-    // shape
-    // continuous loop matching the canvas arcTo path: travels along the top
-    // top strip, dips down with an S-curve tangent to the strip's bottom edge,
-    // runs across the bottom, and curves back up to meet the strip again
     Shape {
         id: shape
         anchors.top: parent.top
@@ -367,7 +351,6 @@ PanelWindow {
         }
     }
 
-    // content
     Item {
         id: content
         anchors.horizontalCenter: parent.horizontalCenter
@@ -406,7 +389,7 @@ PanelWindow {
         }
     }
 
-    // input - workspace interactions live only in the centered notch column
+    // input
     Item {
         id: hit
         anchors.top: parent.top

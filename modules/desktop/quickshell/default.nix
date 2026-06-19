@@ -1,17 +1,8 @@
-/*
-  Quickshell Desktop UI Module
-
-  Installs Quickshell, deploys QML to ~/.config/quickshell/nesw/, and runs it
-  as a systemd user service (survives crashes, no NESW_DIR / exec-once dependency).
-
-  Exposes: programs.quickshell.nesw.enable
-  Depends: modules/themes; flake input quickshell
-*/
+# Fonts.qml generated below; systemd user service (qs -c nesw)
 { config, lib, pkgs, quickshell, ... }:
 let
   cfg = config.programs.quickshell.nesw;
   qsPkg = quickshell.packages.${pkgs.system}.default;
-  font = config.nesw.theme.fonts.sansSerif;
 
   fontsQml = ''
     pragma Singleton
@@ -22,8 +13,7 @@ let
     Singleton {
         id: root
 
-        // generated from nesw.theme.fonts.sansSerif
-        readonly property string family: "${font}"
+        readonly property string family: "DM Sans"
 
         readonly property int sizeNotch: 18
 

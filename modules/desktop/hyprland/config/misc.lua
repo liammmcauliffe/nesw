@@ -1,8 +1,4 @@
---[[
-  Miscellaneous Compositor Settings
-  VRR, splash screen, DPMS wake behavior, and debug overlays. Splash/logo are
-  disabled because Quickshell provides the visible desktop chrome instead.
-]]
+-- misc compositor settings (VRR, splash, DPMS). splash/logo off - quickshell is the chrome.
 
 hl.config({
     misc = {

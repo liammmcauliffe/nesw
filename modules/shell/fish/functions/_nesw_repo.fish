@@ -1,8 +1,4 @@
-# Multi-host derivation strategy:
-# - Flake target: networking.hostName via hostnamectl (fallback /etc/hostname) → .#$NESW_HOST
-# - Host config dir: $NESW_HOST_DIR if set, else hosts/$NESW_HOST, else sole hosts/* entry
-# - Repo path: $NESW_DIR if set, else ~/nesw (shell env var for fish helpers only)
-function _nesw_repo --description "Enter the nesw repo (NESW_DIR or ~/nesw) and fail fast; sets NESW_HOST and NESW_HOST_DIR"
+function _nesw_repo --description "Enter the nesw repo and fail fast; sets NESW_HOST and NESW_HOST_DIR"
     set -l repo "$NESW_DIR"
     if test -z "$repo"
         set repo ~/nesw

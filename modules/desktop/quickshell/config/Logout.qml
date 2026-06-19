@@ -4,24 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 
-// Session/logout dialog — opened/closed over IPC: qs ipc call logout toggle
-//
-// Design:
-// - Surface: fullscreen PanelWindow overlay on screens[0], WlrLayer.Overlay,
-//   namespace "logout_dialog" (matches rules.lua fade layer rule), transparent bg.
-// - Visibility: property bool open; IpcHandler target "logout" with toggle/show/hide.
-// - Focus: WlrKeyboardFocus.Exclusive when open; Escape dismisses; click-outside dismisses
-//   (hitMask + mask pattern from Launcher.qml).
-// - Actions: four one-tap buttons — Logout, Suspend, Reboot, Shutdown. Each calls
-//   Quickshell.execDetached with a literal command array (no shell interpolation).
-//   Logout uses hyprctl dispatch exit (ends the compositor; lighter than loginctl for a spike).
-// - Styling: black card like Launcher (panelBg), Colors.palette + Fonts.family.
-//
-// Open questions:
-// - Should destructive actions (shutdown/reboot) require a second confirmation tap?
-// - Is Suspend redundant with SUPER+SHIFT+L? Keep for now; remove if redundant.
-// - hyprctl dispatch exit vs loginctl terminate-user — which survives a Hyprland crash better?
-// - Auto-dismiss after action vs stay open until session ends? Spike auto-closes on action.
+// logout dialog
 PanelWindow {
     id: root
 

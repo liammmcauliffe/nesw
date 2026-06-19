@@ -73,10 +73,6 @@ Item {
         anchors.rightMargin: 12
         anchors.verticalCenter: parent.verticalCenter
 
-        // animate the level, not the pixel width: while the notch expands
-        // track.width keeps changing, so binding the fill to level * width
-        // lets it stretch in lockstep instead of chasing a width animation
-        // toward a target that is still moving
         property real level: Math.max(0, Math.min(1, root.volume))
         Behavior on level {
             NumberAnimation { duration: 90; easing.type: Easing.OutCubic }

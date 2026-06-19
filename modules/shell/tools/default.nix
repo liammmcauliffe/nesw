@@ -1,12 +1,3 @@
-/*
-  Shell Utilities Module
-
-  Modern CLI tools (eza, zoxide, bat, fzf, broot) via Home Manager with Fish
-  integration. Replaces manual aliases and init scripts in config.fish.
-
-  Exposes: (none)
-  Depends: modules/shell/fish
-*/
 { pkgs, ... }:
 {
   programs.eza = {

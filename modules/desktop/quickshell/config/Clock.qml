@@ -5,6 +5,7 @@ import Quickshell.Services.UPower
 import Quickshell.Networking
 import "icons"
 
+// TODO: separate clock, battery, and network stuff into separate components
 PanelWindow {
     id: root
 
@@ -36,7 +37,6 @@ PanelWindow {
         item: hitMask
     }
 
-    // battery - DisplayDevice/onBattery lie on some machines; fall through several checks
     readonly property var batteryDisplay: UPower.displayDevice
 
     readonly property var primaryBattery: {
@@ -165,7 +165,6 @@ PanelWindow {
         return "low"
     }
 
-    // brief scan only while associating - NM still reports connected signal without it
     Binding {
         target: wifiDevice
         property: "scannerEnabled"
@@ -176,7 +175,6 @@ PanelWindow {
     readonly property bool showWifiIcon: !onEthernet && wifiDevice !== null
     readonly property bool showEthernetIcon: onEthernet
 
-    // same tick-step animation as the notch workspace number
     property var now: new Date()
     property real minuteSlide: 0
     property bool clockReady: false

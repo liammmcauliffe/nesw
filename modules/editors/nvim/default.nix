@@ -1,12 +1,4 @@
-/*
-  Neovim Editor Module
-
-  Configures Neovim as the default editor with mini.* plugins, LSP tooling,
-  and Tree-sitter parsers compiled declaratively via nixpkgs (no :TSInstall).
-
-  Exposes: (none - uses programs.neovim from Home Manager)
-  Depends: modules/themes (monospace font installed system-wide)
-*/
+# treesitter parsers installed via nix — don't :TSInstall
 { pkgs, ... }:
 let
   nvim-treesitter-plugins = pkgs.vimPlugins.nvim-treesitter.withPlugins (p: with p; [

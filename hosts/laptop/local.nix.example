@@ -1,29 +1,15 @@
 { ... }: {
+  # Copy to local.nix
+  # optional
 
-  # Copy to local.nix before first rebuild:
-  #   cp hosts/laptop/local.nix.example hosts/laptop/local.nix
-  #
-  # NixOS-only machine-specific overrides.
-  # GPU driver: REQUIRED (enable exactly one)
-  # Other system settings: optional
-  #
-  # For shared theme/app overrides → shared.nix
-  # For Home Manager only → home.local.nix
-  #
-  # gitignored - stage with: git add -f hosts/laptop/local.nix
+  # Identify your GPU: nix-shell -p pciutils --run "lspci -k | grep -A 3 -E 'VGA|3D'"
+  # nesw.drivers.intel.enable = true;    # Intel (i915/xe)
+  # nesw.drivers.amdgpu.enable = true;   # AMD
+  # nesw.drivers.nvidia.enable = true;   # NVIDIA proprietary
 
-  # REQUIRED: Enable exactly one GPU driver
-  # Identify yours: nix-shell -p pciutils --run "lspci -k | grep -A 3 -E 'VGA|3D'"
-  # nesw.drivers.intel.enable = true;   # Intel (i915/xe)
-  # nesw.drivers.amdgpu.enable = true;  # AMD
-  # nesw.drivers.nvidia.enable = true; # NVIDIA
-
-  # OPTIONAL: System overrides
+  # other NixOS-only system overrides:
   # boot.kernelModules = [ "kvm-intel" ];
   # environment.systemPackages = with pkgs; [ libva-utils ];
 
-  # DO NOT put here:
-  # - networking.hostName (must match flake target "main")
-  # - Theme/fonts → shared.nix
-  # - Home Manager options → home.local.nix
+  # git add -f hosts/laptop/local.nix before rebuilding.
 }

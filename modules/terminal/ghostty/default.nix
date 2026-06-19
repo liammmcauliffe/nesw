@@ -1,28 +1,14 @@
-/*
-  Ghostty Terminal Module
-
-  Installs Ghostty and writes ~/.config/ghostty/config (no extension).
-  Fonts come from nesw.theme; CSD is off so Hyprland owns window chrome.
-
-  Exposes: (none)
-  Depends: modules/themes; nesw.desktop.hyprland.terminal (default app name)
-*/
-{ config, pkgs, ... }:
-let
-  fonts = config.nesw.theme.fonts;
-in
+{ pkgs, ... }:
 {
   home.packages = with pkgs; [
     ghostty
   ];
 
   xdg.configFile."ghostty/config".text = ''
-    # font - primary face + Nerd Font fallback for Starship / eza icons
-    font-family = "${fonts.monospace}"
-    font-family = "${fonts.monospaceNerd}"
+    font-family = "Monaspace Neon NF"
     font-size = 14
 
-    # window - no GTK CSD; Hyprland handles borders, gaps, and rounding
+    # window - Hyprland handles
     window-decoration = false
     gtk-tabs = false
     window-vsync = true

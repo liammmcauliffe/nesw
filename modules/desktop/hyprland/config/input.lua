@@ -1,9 +1,3 @@
---[[
-  Keyboard, Touchpad & Cursor Input
-  US layout defaults, touchpad scroll/typing settings, and bind repeat timing.
-  Values mirror variables.lua so local.nix can eventually drive them from Nix.
-]]
-
 local vars = require("variables")
 
 hl.config({

@@ -1,15 +1,5 @@
 { ... }: {
-  # Copy to shared.nix - overrides imported by both configuration.nix and home.nix.
-  # Use for nesw.theme.* and nesw.desktop.hyprland.* (fonts, colors, default apps).
-  #
-  # Do NOT put nesw.drivers.* here - that is NixOS-only (use local.nix).
-  # Do NOT put home.* here - use home.local.nix.
-  #
+  # Copy to shared.nix 
+  # optional overrides
   # git add -f hosts/laptop/shared.nix before rebuilding.
-
-  # nesw.theme.fonts.sansSerif = "Inter";
-  # nesw.theme.fonts.monospace = "JetBrains Mono";
-  # nesw.theme.colors.primary = "c4b5fd";
-  # nesw.desktop.hyprland.terminal = "alacritty";
-  # nesw.desktop.hyprland.browser = "firefox";
 }

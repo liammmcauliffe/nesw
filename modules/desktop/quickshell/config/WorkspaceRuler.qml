@@ -38,13 +38,11 @@ Item {
                 height: root.height
 
                 Repeater {
-                    // +3 fills the midpoint to the next workspace tick
                     model: [-3, -2, -1, 1, 2, 3]
 
                     delegate: Rectangle {
                         required property int modelData
 
-                        // hide the sub-ticks before the first workspace
                         visible: !(tick.wsNumber === 1 && modelData < 0)
 
                         width: 1

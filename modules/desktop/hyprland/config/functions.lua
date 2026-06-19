@@ -1,10 +1,4 @@
---[[
-  Hyprland Helper Functions
-  Shared callbacks for keybinds: workspace group math, PiP sizing, and floating
-  utility dialogs. Imported by config/keybinds.lua as `fn`.
-]]
-
--- Workspace groups use id arithmetic: slot (w) vs column (g) navigation
+-- workspace groups
 local function ws_action(move, mode, index)
     return function()
         local active_ws = hl.get_active_workspace()
@@ -22,7 +16,7 @@ local function ws_action(move, mode, index)
     end
 end
 
--- Absolute resize in pixels from monitor dimensions (used for centered utility windows)
+-- absolute resize
 local function resize_by_screen(width_pct, height_pct)
     local screen = hl.get_active_monitor()
     if screen and type(screen.width) == "number" and type(screen.height) == "number" then
@@ -34,7 +28,7 @@ local function resize_by_screen(width_pct, height_pct)
     end
 end
 
--- Relative resize from the active window's current size (keyboard-driven tweaks)
+-- relative resize
 local function resize_active_window(width_pct, height_pct)
     local win = hl.get_active_window()
     if not (win and win.size) then
@@ -51,7 +45,7 @@ local function resize_active_window(width_pct, height_pct)
     }
 end
 
--- Float, run follow-up dispatches, then size to a screen percentage (dialogs, media players)
+-- float, run follow-up dispatches, then size to a screen percentage
 local function resizer(title_pattern, width_pct, height_pct, actions, plain_match)
     local window = hl.get_active_window()
     if (window and window.title) and string.find(window.title, title_pattern, 1, plain_match) then
@@ -65,7 +59,7 @@ local function resizer(title_pattern, width_pct, height_pct, actions, plain_matc
     end
 end
 
--- PiP placement: shrink to ~1/4 height and park in the bottom-right with a small margin
+-- pip placement
 local function move_actions()
     local screen = hl.get_active_monitor()
     local win = hl.get_active_window()

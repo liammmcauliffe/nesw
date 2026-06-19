@@ -6,7 +6,6 @@ import QtQuick.Window
 Item {
     id: root
 
-    // ponytail: 1.15 scales glyph art within the hit box; was IconConstants.artScale singleton
     readonly property real artScale: 1.15
     property int size: 24
     property url source
