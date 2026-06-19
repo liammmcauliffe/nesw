@@ -42,8 +42,8 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs zen-browser quickshell hyprland; };
-            home-manager.users.${userName} = lib.mkMerge [
-              (import host.home)
+            home-manager.users.${userName} = [
+              host.home
               { home.stateVersion = "26.05"; }
             ];
           }

@@ -24,6 +24,10 @@ This file is gitignored
 
 In `flake.nix`, set `userName` to your Linux username (`whoami`):
 
+```bash
+nano flake.nix
+```
+
 ```nix
 userName = "YOUR_USERNAME";
 ```
@@ -42,9 +46,13 @@ After your first successful rebuild, `ntest` / `nswitch` stages gitignored files
 
 ### 5. Build
 
+exit nix-shell
 ```bash
-sudo NIX_CONFIG='experimental-features = nix-command flakes' \
-  nixos-rebuild switch --flake .#main
+exit
+```
+
+```bash
+sudo NIX_CONFIG='experimental-features = nix-command flakes' nixos-rebuild switch --flake .#main
 ```
 
 Reboot, log into a TTY, and start Hyprland:
