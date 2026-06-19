@@ -47,7 +47,7 @@ After your first successful rebuild, `ntest` / `nswitch` stages gitignored files
 ### 5. Build
 
 ```bash
-sudo NIX_CONFIG='experimental-features = nix-command flakes' nixos-rebuild switch --flake .#main
+sudo nixos-rebuild switch --flake .#main
 ```
 
 Reboot, log into a TTY, and start Hyprland:
