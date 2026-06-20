@@ -23,7 +23,9 @@ Item {
     readonly property color barMuted: Colors.palette.m3onSurfaceVariant
 
     readonly property url currentIcon: {
-        if (root.muted || root.volume <= 0.001)
+        if (root.muted)
+            return Qt.resolvedUrl("icons/assets/volume-muted.svg")
+        if (root.volume <= 0.001)
             return Qt.resolvedUrl("icons/assets/volume-none.svg")
         if (root.volume < 0.33)
             return Qt.resolvedUrl("icons/assets/volume-low.svg")
