@@ -33,7 +33,7 @@ PanelWindow {
     readonly property int rowRadius: 8
 
     readonly property var actions: [
-        { label: "Logout", command: ["hyprctl", "dispatch", "exit"] },
+        { label: "Logout", command: ["hyprctl", "dispatch", "hl.dsp.exit()"] },
         { label: "Suspend", command: ["systemctl", "suspend"] },
         { label: "Reboot", command: ["systemctl", "reboot"] },
         { label: "Shutdown", command: ["systemctl", "poweroff"] },
