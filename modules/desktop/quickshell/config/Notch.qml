@@ -236,13 +236,6 @@ PanelWindow {
         }
     }
 
-    Behavior on notchWidth {
-        NumberAnimation {
-            duration: 280
-            easing.type: Easing.OutCubic
-        }
-    }
-
     Behavior on slideOffset {
         enabled: !wsDrag.active
         NumberAnimation {
@@ -256,28 +249,11 @@ PanelWindow {
         anchors.fill: parent
         visible: false
 
-        readonly property real centerX: (width - shape.width) / 2
-        readonly property real centerHitHeight: root.smoothHeight
-
         Item {
-            x: 0
-            y: 0
-            width: parent.centerX
-            height: Constants.notchHeight
-        }
-
-        Item {
-            x: parent.centerX
+            x: (parent.width - shape.width) / 2
             y: 0
             width: shape.width
-            height: parent.centerHitHeight
-        }
-
-        Item {
-            x: parent.centerX + shape.width
-            y: 0
-            width: parent.width - x
-            height: Constants.notchHeight
+            height: root.smoothHeight
         }
     }
 
