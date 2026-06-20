@@ -277,8 +277,7 @@ PanelWindow {
 
             radius: root.panelRadius
             color: root.panelBg
-            border.width: 1
-            border.color: "#22ffffff"
+            border.width: 0
             clip: true
 
             readonly property bool hasResults: root.results.length > 0

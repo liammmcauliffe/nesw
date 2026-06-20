@@ -16,6 +16,23 @@ Item {
 
     readonly property alias dragContainsMouse: audioDrag.containsMouse
 
+    readonly property int barWidth: 120
+    readonly property int barHeight: 6
+    readonly property int barRadius: barHeight / 2
+    readonly property color barFg: Colors.palette.m3primary
+    readonly property color barBg: Colors.palette.m3onSurfaceVariant
+    readonly property color barMuted: Colors.palette.m3onSurfaceVariant
+
+    readonly property url currentIcon: {
+        if (root.muted || root.volume <= 0.001)
+            return Qt.resolvedUrl("icons/assets/volume-none.svg")
+        if (root.volume < 0.33)
+            return Qt.resolvedUrl("icons/assets/volume-low.svg")
+        if (root.volume < 0.66)
+            return Qt.resolvedUrl("icons/assets/volume-med.svg")
+        return Qt.resolvedUrl("icons/assets/volume-high.svg")
+    }
+
     visible: opacity > 0
     opacity: root.expanded && root.audioMode ? 1 : 0
     Behavior on opacity {
@@ -23,90 +40,73 @@ Item {
     }
 
     Item {
-        id: volMinHit
-        width: volIconMin.size + 8
-        height: parent.height
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
+        id: layout
+        anchors.centerIn: parent
+        width: icon.implicitWidth + 10 + root.barWidth
+        height: Math.max(icon.implicitHeight, root.barHeight)
 
-        VolumeIcon {
-            id: volIconMin
-            glyph: "none"
-            size: 20
-            anchors.centerIn: parent
-        }
-
-        TapHandler {
-            enabled: root.audioMode
-            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-            onTapped: root.requestBumpVolume(-Constants.volumeStep)
-        }
-    }
-
-    Item {
-        id: volMaxHit
-        width: volIconMax.size + 8
-        height: parent.height
-        anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
-
-        VolumeIcon {
-            id: volIconMax
-            glyph: "high"
-            size: 20
-            anchors.centerIn: parent
-        }
-
-        TapHandler {
-            enabled: root.audioMode
-            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-            onTapped: root.requestBumpVolume(Constants.volumeStep)
-        }
-    }
-
-    Item {
-        id: track
-        height: 20
-        anchors.left: volMinHit.right
-        anchors.leftMargin: 12
-        anchors.right: volMaxHit.left
-        anchors.rightMargin: 12
-        anchors.verticalCenter: parent.verticalCenter
-
-        property real level: Math.max(0, Math.min(1, root.volume))
-        Behavior on level {
-            NumberAnimation { duration: 90; easing.type: Easing.OutCubic }
+        TintedSvgIcon {
+            id: icon
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            source: root.currentIcon
+            size: 22
+            color: root.muted ? root.barMuted : root.barFg
         }
 
         Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
+            id: barBgRect
+            anchors.left: icon.right
+            anchors.leftMargin: 10
             anchors.verticalCenter: parent.verticalCenter
-            height: 6
-            radius: height / 2
-            color: Colors.palette.m3onSurfaceVariant
-            opacity: 0.3
+            width: root.barWidth
+            height: root.barHeight
+            radius: root.barRadius
+            color: root.muted ? root.barMuted : root.barBg
+            opacity: root.muted ? 0.4 : 0.3
         }
 
         Rectangle {
-            anchors.left: parent.left
-            anchors.verticalCenter: parent.verticalCenter
-            height: 6
-            radius: height / 2
-            width: track.level * track.width
-            color: Colors.palette.m3primary
-            opacity: root.muted ? 0.4 : 1
+            id: barFillRect
+            anchors.left: barBgRect.left
+            anchors.top: barBgRect.top
+            width: root.barWidth * Math.max(0, Math.min(1, root.volume))
+            height: root.barHeight
+            radius: root.barRadius
+            color: root.muted ? root.barMuted : root.barFg
+            clip: true
         }
 
-        MouseArea {
-            id: audioDrag
-            anchors.fill: parent
-            hoverEnabled: true
-            preventStealing: true
-            onPressed: mouse => root.requestSetVolume(mouse.x / track.width)
-            onPositionChanged: mouse => {
-                if (audioDrag.pressed)
-                    root.requestSetVolume(mouse.x / track.width)
+        Item {
+            anchors.fill: barBgRect
+            anchors.topMargin: -12
+            anchors.bottomMargin: -12
+            anchors.leftMargin: -6
+            anchors.rightMargin: -6
+
+            MouseArea {
+                id: audioDrag
+                anchors.fill: parent
+                hoverEnabled: true
+                preventStealing: true
+                onPressed: mouse => root.requestSetVolume(mouse.x / barBgRect.width)
+                onPositionChanged: mouse => {
+                    if (audioDrag.pressed)
+                        root.requestSetVolume(mouse.x / barBgRect.width)
+                }
+            }
+        }
+
+        WheelHandler {
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            onWheel: event => {
+                let delta = event.angleDelta.y
+                if (delta === 0)
+                    delta = event.pixelDelta.y
+                if (delta > 0)
+                    root.requestBumpVolume(Constants.volumeStep)
+                else if (delta < 0)
+                    root.requestBumpVolume(-Constants.volumeStep)
             }
         }
     }
