@@ -16,7 +16,6 @@ Item {
 
     readonly property alias dragContainsMouse: audioDrag.containsMouse
 
-    readonly property int barWidth: 120
     readonly property int barHeight: 6
     readonly property int barRadius: barHeight / 2
     readonly property color barFg: Colors.palette.m3primary
@@ -42,7 +41,7 @@ Item {
     Item {
         id: layout
         anchors.centerIn: parent
-        width: icon.implicitWidth + 10 + root.barWidth
+        width: parent.width
         height: Math.max(icon.implicitHeight, root.barHeight)
 
         TintedSvgIcon {
@@ -58,8 +57,8 @@ Item {
             id: barBgRect
             anchors.left: icon.right
             anchors.leftMargin: 10
+            anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            width: root.barWidth
             height: root.barHeight
             radius: root.barRadius
             color: root.muted ? root.barMuted : root.barBg
@@ -70,7 +69,7 @@ Item {
             id: barFillRect
             anchors.left: barBgRect.left
             anchors.top: barBgRect.top
-            width: root.barWidth * Math.max(0, Math.min(1, root.volume))
+            width: barBgRect.width * Math.max(0, Math.min(1, root.volume))
             height: root.barHeight
             radius: root.barRadius
             color: root.muted ? root.barMuted : root.barFg
