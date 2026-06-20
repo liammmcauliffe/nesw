@@ -53,7 +53,7 @@ sudo nixos-rebuild switch --flake .#main
 Reboot, log into a TTY, and start Hyprland:
 
 ```bash
-Hyprland
+start-hyprland
 ```
 
 ### 6. Rebuilds
