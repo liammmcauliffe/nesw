@@ -295,7 +295,7 @@ PanelWindow {
                 TintedSvgIcon {
                     size: 26
                     color: root.textSecondary
-                    source: Qt.resolvedUrl("assets/search.svg")
+                    source: Qt.resolvedUrl("icons/assets/search.svg")
                     anchors.left: parent.left
                     anchors.leftMargin: 28
                     anchors.verticalCenter: parent.verticalCenter
@@ -551,7 +551,7 @@ PanelWindow {
                         TintedSvgIcon {
                             size: 26
                             color: root.textSecondary
-                            source: Qt.resolvedUrl("assets/return-key.svg")
+                            source: Qt.resolvedUrl("icons/assets/return-key.svg")
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }

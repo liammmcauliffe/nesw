@@ -119,8 +119,8 @@ hl.bind(vars.kbCloseWindow, hl.dsp.window.close())
 -- default apps
 hl.bind(vars.kbTerminal, hl.dsp.exec_cmd("app2unit -- " .. vars.terminal))
 hl.bind(vars.kbBrowser, hl.dsp.exec_cmd("app2unit -- " .. vars.browser))
-hl.bind(vars.kbLauncher, hl.dsp.exec_cmd("qs ipc call launcher toggle"))
-hl.bind(vars.kbSession, hl.dsp.exec_cmd("qs ipc call logout toggle"), { locked = true })
+hl.bind(vars.kbLauncher, hl.dsp.exec_cmd("qs -c nesw ipc call launcher toggle"))
+hl.bind(vars.kbSession, hl.dsp.exec_cmd("qs -c nesw ipc call logout toggle"), { locked = true })
 hl.bind(vars.kbScreenshot, hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | wl-copy"))
 
 -- pipewire volume keys

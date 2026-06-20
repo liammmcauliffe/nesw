@@ -278,7 +278,7 @@ PanelWindow {
                 visible: root.showEthernetIcon
                 color: "white"
                 size: 26
-                source: Qt.resolvedUrl("assets/ethernet.svg")
+                source: Qt.resolvedUrl("icons/assets/ethernet.svg")
                 anchors.centerIn: parent
             }
         }
