@@ -50,10 +50,10 @@ After your first successful rebuild, `ntest` / `nswitch` stages gitignored files
 sudo nixos-rebuild switch --flake .#main
 ```
 
-Reboot, log into a TTY, and start Hyprland:
+Reboot and log in through SDDM, Hyprland is the default session
 
 ```bash
-start-hyprland
+reboot
 ```
 
 ### 6. Rebuilds
