@@ -32,6 +32,7 @@ in
       wl-clipboard
       lua-language-server
       nil
+      tree-sitter
     ];
 
     plugins = with pkgs.vimPlugins; [

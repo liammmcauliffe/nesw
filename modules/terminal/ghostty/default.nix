@@ -10,7 +10,6 @@
 
     # window - Hyprland handles
     window-decoration = false
-    gtk-tabs = false
     window-vsync = true
     window-padding-x = 10
     window-padding-y = 10
