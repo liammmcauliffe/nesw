@@ -63,8 +63,8 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             height: root.barHeight
             radius: root.barRadius
-            color: root.muted ? root.barMuted : root.barBg
-            opacity: root.muted ? 0.4 : 0.3
+            color: root.barBg
+            opacity: 0.3
         }
 
         Rectangle {
