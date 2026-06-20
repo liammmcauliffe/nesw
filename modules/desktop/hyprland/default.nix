@@ -156,6 +156,7 @@ in
       cliphist # clipboard history
       trash-cli # trash-empty
       glib # gsettings
+      dbus # dbus-update-activation-environment
     ];
 
     # polkit auth agent (hyprland has no DE to autostart one)
@@ -164,7 +165,8 @@ in
         Description = "polkit-gnome-authentication-agent-1";
         WantedBy = [ "graphical-session.target" ];
         Wants = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" ];
+        After = [ "graphical-session-pre.target" ];
+        Before = [ "graphical-session.target" ];
       };
       Service = {
         Type = "simple";

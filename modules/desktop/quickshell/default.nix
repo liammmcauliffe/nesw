@@ -52,7 +52,8 @@ in
     systemd.user.services.quickshell = {
       Unit = {
         Description = "NESW Quickshell Shell";
-        After = [ "graphical-session.target" ];
+        After = [ "graphical-session-pre.target" ];
+        Before = [ "graphical-session.target" ];
         PartOf = [ "graphical-session.target" ];
       };
 
