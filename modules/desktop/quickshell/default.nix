@@ -52,7 +52,7 @@ in
     systemd.user.services.quickshell = {
       Unit = {
         Description = "NESW Quickshell Shell";
-        After = [ "graphical-session-pre.target" ];
+        After = [ "graphical-session-pre.target" "dbus.service" ];
         Before = [ "graphical-session.target" ];
         PartOf = [ "graphical-session.target" ];
       };
@@ -64,6 +64,7 @@ in
         Environment = [
           "QT_QPA_PLATFORM=wayland"
           "QT_WAYLAND_DISABLE_WINDOWDECORATION=1"
+          "WAYLAND_DISPLAY=wayland-1"
         ];
       };
 
