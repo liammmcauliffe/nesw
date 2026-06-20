@@ -18,21 +18,7 @@ PanelWindow {
 
     readonly property bool deepHit: root.expanded || root.audioMode || root.workspaceScrubbing
 
-    property real targetHeight: Constants.notchHeight
-
-    implicitHeight: targetHeight
-
-    onDeepHitChanged: {
-        if (deepHit) {
-            expandAnim.stop()
-            collapseAnim.stop()
-            expandAnim.start()
-        } else {
-            expandAnim.stop()
-            collapseAnim.stop()
-            collapseAnim.start()
-        }
-    }
+    implicitHeight: root.deepHit ? Constants.hitHeight : Constants.notchHeight
 
     color: "transparent"
 
@@ -242,24 +228,6 @@ PanelWindow {
         }
     }
 
-    NumberAnimation {
-        id: expandAnim
-        target: root
-        property: "targetHeight"
-        to: Constants.hitHeight
-        duration: 180
-        easing.type: Easing.OutCubic
-    }
-
-    NumberAnimation {
-        id: collapseAnim
-        target: root
-        property: "targetHeight"
-        to: Constants.notchHeight
-        duration: 180
-        easing.type: Easing.OutCubic
-    }
-
     Behavior on notchWidth {
         SpringAnimation {
             spring: 3
@@ -283,7 +251,7 @@ PanelWindow {
         visible: false
 
         readonly property real centerX: (width - shape.width) / 2
-        readonly property real centerHitHeight: root.targetHeight
+        readonly property real centerHitHeight: root.deepHit ? Constants.hitHeight : Constants.notchHeight
 
         Item {
             x: 0
@@ -428,7 +396,7 @@ PanelWindow {
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         width: root.notchWidth
-        height: root.targetHeight
+        height: root.deepHit ? Constants.hitHeight : Constants.notchHeight
 
         property real wheelAccum: 0
         readonly property real wheelStep: 120
