@@ -18,18 +18,7 @@ PanelWindow {
 
     readonly property bool deepHit: root.expanded || root.audioMode || root.workspaceScrubbing
 
-    property real targetHeight: root.deepHit ? Constants.hitHeight : Constants.notchHeight
-
-    implicitHeight: targetHeight
-
-    Behavior on targetHeight {
-        SpringAnimation {
-            spring: 3
-            damping: 0.35
-            mass: 0.5
-            epsilon: 0.01
-        }
-    }
+    implicitHeight: Constants.hitHeight
 
     color: "transparent"
 
@@ -262,7 +251,7 @@ PanelWindow {
         visible: false
 
         readonly property real centerX: (width - shape.width) / 2
-        readonly property real centerHitHeight: root.targetHeight
+        readonly property real centerHitHeight: root.deepHit ? Constants.hitHeight : Constants.notchHeight
 
         Item {
             x: 0
@@ -407,7 +396,7 @@ PanelWindow {
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         width: root.notchWidth
-        height: root.targetHeight
+        height: root.deepHit ? Constants.hitHeight : Constants.notchHeight
 
         property real wheelAccum: 0
         readonly property real wheelStep: 120
