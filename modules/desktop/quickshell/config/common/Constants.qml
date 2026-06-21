@@ -3,7 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-Singleton {
+Quickshell.Singleton {
     id: root
 
     // notch geometry

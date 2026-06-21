@@ -3,7 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-Singleton {
+Quickshell.Singleton {
     id: root
 
     readonly property string family: "DM Sans"
