@@ -1,8 +1,15 @@
-{ config, lib, ... }:
 {
-  imports = [
-    ./desktop ./shell ./terminal ./editors ./browser
-  ];
+    config,
+    lib,
+    ...
+}: {
+    imports = [
+        ./desktop
+        ./shell
+        ./terminal
+        ./editors
+        ./browser
+    ];
 
-  options.nesw.enable = lib.mkEnableOption "nesw";
+    options.nesw.enable = lib.mkEnableOption "nesw";
 }

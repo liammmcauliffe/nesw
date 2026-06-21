@@ -1,4 +1,4 @@
 {
-  configuration = ./configuration.nix;
-  home = ./home.nix;
+    configuration = ./configuration.nix;
+    home = ./home.nix;
 }

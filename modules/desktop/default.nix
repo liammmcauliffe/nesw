@@ -1,7 +1,6 @@
-{ ... }:
-{
-  imports = [
-    ./hyprland
-    ./quickshell
-  ];
+{...}: {
+    imports = [
+        ./hyprland
+        ./quickshell
+    ];
 }

@@ -1,8 +1,7 @@
-{ ... }:
-{
-  imports = [
-    ./fish
-    ./starship
-    ./tools
-  ];
+{...}: {
+    imports = [
+        ./fish
+        ./starship
+        ./tools
+    ];
 }

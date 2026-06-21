@@ -1,6 +1,5 @@
-{ ... }:
-{
-  imports = [
-    ./ghostty
-  ];
+{...}: {
+    imports = [
+        ./ghostty
+    ];
 }
