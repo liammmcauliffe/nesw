@@ -14,7 +14,7 @@
 
     programs.zoxide = {
         enable = true;
-        enableFishIntegration = false;
+        enableFishIntegration = true;
         options = ["--cmd" "cd"];
     };
 
