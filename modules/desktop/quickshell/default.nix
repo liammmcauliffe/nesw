@@ -52,9 +52,8 @@ in
     systemd.user.services.quickshell = {
       Unit = {
         Description = "NESW Quickshell Shell";
-        After = [ "graphical-session-pre.target" "dbus.service" ];
-        Before = [ "graphical-session.target" ];
-        PartOf = [ "graphical-session.target" ];
+        After = [ "dbus.service" ];
+        Requires = [ "dbus.service" ];
       };
 
       Service = {
@@ -65,11 +64,12 @@ in
           "QT_QPA_PLATFORM=wayland"
           "QT_WAYLAND_DISABLE_WINDOWDECORATION=1"
           "WAYLAND_DISPLAY=wayland-1"
+          "XDG_RUNTIME_DIR=/run/user/%i"
         ];
       };
 
       Install = {
-        WantedBy = [ "graphical-session.target" ];
+        WantedBy = [ "default.target" ];
       };
     };
   };
