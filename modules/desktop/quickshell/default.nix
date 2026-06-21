@@ -1,4 +1,4 @@
-# Fonts.qml generated below; systemd user service (qs -c nesw)
+# qs -c nesw
 { config, lib, pkgs, quickshell, ... }:
 let
   cfg = config.programs.quickshell.nesw;
@@ -64,7 +64,6 @@ in
           "QT_QPA_PLATFORM=wayland"
           "QT_WAYLAND_DISABLE_WINDOWDECORATION=1"
           "WAYLAND_DISPLAY=wayland-1"
-          "XDG_RUNTIME_DIR=/run/user/%i"
         ];
       };
 
