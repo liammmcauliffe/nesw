@@ -2,9 +2,8 @@ pragma Singleton
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import Quickshell
 
-Quickshell.Singleton {
+QtObject {
     id: root
 
     readonly property Palette palette: current
