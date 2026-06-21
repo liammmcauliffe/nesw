@@ -23,13 +23,13 @@ add_newline = false
 # username module
 [username]
 show_always = true
-style_user = "fg:#a1a1aa"
-style_root = "fg:#f87171"
+style_user = "fg:#ffd60a"
+style_root = "fg:#ff453a"
 format = '[$user]($style)'
 
 # directory module
 [directory]
-style = "fg:#e4e4e7"
+style = "fg:#0869cb"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
@@ -37,79 +37,79 @@ truncation_symbol = "…/"
 # git branch module
 [git_branch]
 symbol = ""
-style = "fg:#e4e4e7"
-format = '[[ $symbol $branch ](fg:#e4e4e7)]($style)'
+style = "fg:#0a84ff"
+format = '[[ $symbol $branch ](fg:#0a84ff)]($style)'
 
 # git status module
 [git_status]
-style = "fg:#71717a"
-format = '[[($all_status$ahead_behind )](fg:#71717a)]($style)'
+style = "fg:#98989d"
+format = '[[($all_status$ahead_behind )](fg:#98989d)]($style)'
 
 # nodejs module
 [nodejs]
 symbol = "󰎙"
-style = "fg:#a1a1aa"
-format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
+style = "fg:#32d74b"
+format = '[[ $symbol( $version) ](fg:#32d74b)]($style)'
 
 # c module
 [c]
 symbol = ""
-style = "fg:#a1a1aa"
-format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
+style = "fg:#ffffff"
+format = '[[ $symbol( $version) ](fg:#ffffff)]($style)'
 
 # rust module
 [rust]
 symbol = ""
-style = "fg:#a1a1aa"
-format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
+style = "fg:#cc372e"
+format = '[[ $symbol( $version) ](fg:#cc372e)]($style)'
 
 # go module
 [golang]
 symbol = "󰟓"
-style = "fg:#a1a1aa"
-format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
+style = "fg:#479ec2"
+format = '[[ $symbol( $version) ](fg:#479ec2)]($style)'
 
 # php module
 [php]
 symbol = ""
-style = "fg:#a1a1aa"
-format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
+style = "fg:#9647bf"
+format = '[[ $symbol( $version) ](fg:#9647bf)]($style)'
 
 # java module
 [java]
 symbol = ""
-style = "fg:#a1a1aa"
-format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
+style = "fg:#cdac08"
+format = '[[ $symbol( $version) ](fg:#cdac08)]($style)'
 
 # kotlin module
 [kotlin]
 symbol = ""
-style = "fg:#a1a1aa"
-format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
+style = "fg:#bf5af2"
+format = '[[ $symbol( $version) ](fg:#bf5af2)]($style)'
 
 # haskell module
 [haskell]
 symbol = ""
-style = "fg:#a1a1aa"
-format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
+style = "fg:#9647bf"
+format = '[[ $symbol( $version) ](fg:#9647bf)]($style)'
 
 # python module
 [python]
 symbol = ""
-style = "fg:#a1a1aa"
-format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
+style = "fg:#ffd60a"
+format = '[[ $symbol( $version) ](fg:#ffd60a)]($style)'
 
 # lua module
 [lua]
 symbol = "󰢱"
-style = "fg:#a1a1aa"
-format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
+style = "fg:#ffd60a"
+format = '[[ $symbol( $version) ](fg:#ffd60a)]($style)'
 
 # docker context module
 [docker_context]
 symbol = "󰡨"
-style = "fg:#71717a"
-format = '[[ $symbol( $context) ](fg:#71717a)]($style)'
+style = "fg:#0869cb"
+format = '[[ $symbol( $context) ](fg:#0869cb)]($style)'
 
 # line break module
 [line_break]
@@ -117,4 +117,4 @@ disabled = true
 
 # character module
 [character]
-format = "[](fg:#e4e4e7) "
+format = "[](fg:#0a84ff) "
