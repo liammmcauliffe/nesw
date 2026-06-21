@@ -16,7 +16,7 @@
         window-save-state = always
 
         # appearance
-        theme = "Vague"
+        theme = "Apple System Colors"
         background-opacity = 0.8
         background-blur = 90
         adjust-cell-height = 0%
