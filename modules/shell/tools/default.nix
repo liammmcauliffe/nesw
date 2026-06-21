@@ -31,10 +31,29 @@
         enable = true;
         enableFishIntegration = true;
         defaultOptions = [
-            "--height 40%"
-            "--layout=reverse"
-            "--info=inline"
-            "--preview 'bat --color=always {}'"
+            "--style=full"
+            "--border"
+            "--padding=1,2"
+            "--border-label"
+            " nesw "
+            "--input-label"
+            " Search "
+            "--header-label"
+            " Info "
+            "--preview"
+            "bat --color=always {}"
+            "--bind"
+            "result:transform-list-label:if test -z \"\$FZF_QUERY\"; echo \" \$FZF_MATCH_COUNT items \"; else; echo \" \$FZF_MATCH_COUNT matches for [\$FZF_QUERY] \"; end"
+            "--bind"
+            "focus:transform-preview-label:if test -n \"{}\"; printf \" Previewing [%s] \" {}; end"
+            "--bind"
+            "focus:+transform-header:if test -n \"{}\"; file --brief \"{}\"; else; echo \"No file selected\"; end"
+            "--color=bg:#09090b,fg:#fafafa,hl:#e4e4e7,pointer:#e4e4e7,marker:#71717a"
+            "--color=border:#52525b,label:#a1a1aa"
+            "--color=preview-bg:#18181b,preview-border:#3f3f46,preview-label:#e4e4e7"
+            "--color=list-border:#52525b,list-label:#a1a1aa"
+            "--color=input-border:#71717a,input-label:#f4f4f5"
+            "--color=header-border:#3f3f46,header-label:#d4d4d8"
         ];
     };
 
