@@ -16,17 +16,7 @@ PanelWindow {
     anchors.left: true
     anchors.right: true
 
-    readonly property bool deepHit: root.expanded || root.audioMode || root.workspaceScrubbing
-
-    property real smoothHeight: deepHit ? Constants.hitHeight : Constants.notchHeight
-    Behavior on smoothHeight {
-        NumberAnimation {
-            duration: 150
-            easing.type: Easing.OutCubic
-        }
-    }
-
-    implicitHeight: root.smoothHeight
+    implicitHeight: Constants.notchHeight
 
     color: "transparent"
 
@@ -253,7 +243,7 @@ PanelWindow {
             x: (parent.width - shape.width) / 2
             y: 0
             width: shape.width
-            height: root.smoothHeight
+            height: Constants.notchHeight
         }
     }
 
@@ -378,7 +368,7 @@ PanelWindow {
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         width: root.notchWidth
-        height: root.smoothHeight
+        height: Constants.notchHeight
 
         property real wheelAccum: 0
         readonly property real wheelStep: 120
