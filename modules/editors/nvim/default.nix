@@ -1,4 +1,3 @@
-# treesitter parsers installed via nix — don't :TSInstall
 {pkgs, ...}: let
     nvim-treesitter-plugins = pkgs.vimPlugins.nvim-treesitter.withPlugins (p:
         with p; [
@@ -35,7 +34,6 @@ in {
         ];
 
         plugins = with pkgs.vimPlugins; [
-            vim-moonfly-colors
             friendly-snippets
             nvim-treesitter-plugins
             nvim-lspconfig

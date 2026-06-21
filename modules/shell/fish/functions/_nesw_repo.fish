@@ -1,4 +1,4 @@
-function _nesw_repo --description "Enter the nesw repo and fail fast; sets NESW_HOST and NESW_HOST_DIR"
+function _nesw_repo --description "Enter the nesw repo, sets NESW_HOST and NESW_HOST_DIR"
     set -l repo "$NESW_DIR"
     if test -z "$repo"
         set repo ~/nesw
@@ -8,7 +8,6 @@ function _nesw_repo --description "Enter the nesw repo and fail fast; sets NESW_
         return 1
     end
     pushd "$repo"
-    # flake target matches networking.hostName (see hosts/<host>/configuration.nix)
     set -gx NESW_HOST (command -q hostnamectl; and hostnamectl hostname; or hostname 2>/dev/null; or string trim (cat /etc/hostname 2>/dev/null))
     if test -z "$NESW_HOST"
         echo "✗ could not determine hostname for flake target"

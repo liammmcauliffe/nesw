@@ -1,4 +1,4 @@
-# GPU drivers - base Mesa/modesetting boots anything; enable a vendor block for VA-API / proprietary / video decode
+# GPU drivers
 {
     config,
     lib,
@@ -14,7 +14,6 @@ in {
     };
 
     config = mkMerge [
-        # base: Mesa GL/Vulkan/VA-API - boots every vendor via modesetting
         {
             hardware.graphics = {
                 enable = true;

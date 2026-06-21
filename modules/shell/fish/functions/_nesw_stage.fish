@@ -8,7 +8,6 @@ function _nesw_stage --description "Stage changes unless a merge is in progress"
         return 1
     end
     git add -A
-    # Flakes ignore gitignored files - force-stage machine-specific configs
     for f in \
         $NESW_HOST_DIR/hardware-configuration.nix \
         $NESW_HOST_DIR/local.nix \

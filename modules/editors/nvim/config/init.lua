@@ -4,7 +4,7 @@ require("options")
 require("keymaps")
 require("treesitter")
 
-vim.cmd.colorscheme("moonfly")
+vim.cmd.colorscheme("nesw-zinc")
 
 local MiniFiles = require("mini.files")
 MiniFiles.setup({

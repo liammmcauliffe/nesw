@@ -16,10 +16,8 @@ vim.keymap.set("n", "<leader>vh", function() MiniPick.builtin.help() end, { desc
 vim.keymap.set("n", "<leader>xx", function() MiniExtra.pickers.diagnostic() end, { desc = "Mini picker diagnostics" })
 vim.keymap.set("n", "<leader>pk", function() MiniExtra.pickers.keymaps() end, { desc = "Search keymaps" })
 
--- paste over selection without losing yanked text
 vim.keymap.set("x", "p", [["_dP]], { desc = "Paste over selection without losing yanked text" })
 
--- delete without saving to a register
 vim.keymap.set({"n", "v"}, "<leader>d", [["_d]], { desc = "Delete to blackhole register" })
 
 vim.keymap.set("i", "<C-c>", "<Esc>")
@@ -41,7 +39,6 @@ vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result with cursor c
 
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Replace word under cursor globally" })
 
--- undotree
 vim.keymap.set("n", "<leader>u", function()
     vim.cmd.packadd("nvim.undotree")
     require("undotree").open()

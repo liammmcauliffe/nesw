@@ -1,6 +1,3 @@
--- Tree-sitter parsers are installed declaratively via nvim-treesitter.withPlugins
--- in modules/editors/nvim/default.nix. Do not call treesitter.install() on NixOS.
-
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "*",
     callback = function(args)
