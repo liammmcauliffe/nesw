@@ -53,7 +53,7 @@ PanelWindow {
     }
 
     onInSpecialWsChanged: {
-        if (!inSpecialWs || audioLockTimer.running)
+        if (!inSpecialWs || audioTimer.running)
             return
         audioMode = false
         reveal()
@@ -137,15 +137,13 @@ PanelWindow {
         repeat: false
         onTriggered: {
             root.isVolumeChanging = false
-            if (!hoverHandler.hovered && !audioHud.dragContainsMouse && !audioTimer.running)
-                root.audioMode = false
         }
     }
 
     onActiveWsChanged: {
         if (!slideReady)
             return
-        if (audioLockTimer.running)
+        if (audioTimer.running)
             return
 
         audioMode = false
@@ -199,7 +197,7 @@ PanelWindow {
 
     function goToWorkspace(n) {
         const target = Math.max(1, Math.round(n))
-        Hyprland.dispatch("hl.dsp.focus({ workspace = " + target + " })")
+        Hyprland.dispatch("workspace " + target)
         reveal()
     }
 
@@ -228,8 +226,7 @@ PanelWindow {
                 return;
             }
             root.expanded = false;
-            if (!audioLockTimer.running)
-                root.audioMode = false;
+            root.audioMode = false;
         }
     }
 
