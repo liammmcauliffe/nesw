@@ -63,9 +63,9 @@
     };
 
     home.packages = with pkgs; [
+        file
         ripgrep
         fd
         jq
-        file
     ];
 }
