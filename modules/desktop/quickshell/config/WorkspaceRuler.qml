@@ -57,8 +57,7 @@ Item {
 
                 Rectangle {
                     width: 2
-                    height: tick.isActive ? root.height - Constants.frameInset * 2
-                          : tick.isOccupied ? 14 : 9
+                    height: 14
                     radius: 1
                     color: root.inSpecialWs ? Colors.palette.m3tertiary
                          : tick.isActive ? Colors.palette.m3primary
@@ -67,10 +66,6 @@ Item {
                     opacity: tick.isActive || tick.isOccupied ? 1 : 0.5
                     anchors.horizontalCenter: tick.horizontalCenter
                     anchors.verticalCenter: tick.verticalCenter
-
-                    Behavior on height {
-                        NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
-                    }
 
                     Behavior on color {
                         ColorAnimation { duration: 180 }
