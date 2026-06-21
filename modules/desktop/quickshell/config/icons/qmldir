@@ -1,6 +1,0 @@
-module icons
-SvgIcon 1.0 SvgIcon.qml
-TintedSvgIcon 1.0 TintedSvgIcon.qml
-VolumeIcon 1.0 VolumeIcon.qml
-WifiIcon 1.0 WifiIcon.qml
-BatteryIcon 1.0 BatteryIcon.qml

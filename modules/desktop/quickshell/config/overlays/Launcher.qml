@@ -4,8 +4,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
-import common
-import "../icons"
+import qs.common
+import qs.icons
 
 PanelWindow {
     id: root

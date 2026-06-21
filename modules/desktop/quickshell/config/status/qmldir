@@ -1,5 +1,0 @@
-module status
-StatusBar 1.0 StatusBar.qml
-ClockDisplay 1.0 ClockDisplay.qml
-BatteryStatus 1.0 BatteryStatus.qml
-NetworkStatus 1.0 NetworkStatus.qml

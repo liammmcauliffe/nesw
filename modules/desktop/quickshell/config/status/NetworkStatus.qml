@@ -1,6 +1,6 @@
 import QtQuick
 import Quickshell.Networking
-import "../icons"
+import qs.icons
 
 Item {
     id: root

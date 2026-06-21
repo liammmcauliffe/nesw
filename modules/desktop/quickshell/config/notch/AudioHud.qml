@@ -1,8 +1,8 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import common
-import "../icons"
+import qs.common
+import qs.icons
 
 Item {
     id: root
