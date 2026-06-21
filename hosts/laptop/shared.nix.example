@@ -1,5 +1,5 @@
 { ... }: {
   # Copy to shared.nix 
-  # optional overrides
+  # Optional overrides
   # git add -f hosts/laptop/shared.nix before rebuilding.
 }

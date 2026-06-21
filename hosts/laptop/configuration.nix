@@ -43,6 +43,7 @@
 
     networking.hostName = "main"; # must match the flake target
     networking.networkmanager.enable = true;
+
     time.timeZone = "America/New_York";
     i18n.defaultLocale = "en_US.UTF-8";
 
@@ -76,7 +77,6 @@
         pulse.enable = true;
     };
 
-    # wayland + hyprland
     programs.hyprland = {
         enable = true;
         package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
@@ -109,7 +109,6 @@
 
     services.upower.enable = true;
 
-    # basic packages
     environment.systemPackages = with pkgs; [
         git
         app2unit
@@ -142,7 +141,6 @@
         shell = pkgs.fish;
     };
 
-    # sudo
     security.sudo.enable = true;
 
     system.stateVersion = "26.05";

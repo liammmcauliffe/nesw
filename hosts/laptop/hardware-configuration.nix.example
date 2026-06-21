@@ -1,5 +1,5 @@
-# Minimal hardware config for CI evaluation only.
-# Copy to hardware-configuration.nix locally: nixos-generate-config on your machine.
+# Minimal hardware config for CI evaluation only!
+# Copy to hardware-configuration.nix locally
 { config, lib, modulesPath, ... }:
 
 {

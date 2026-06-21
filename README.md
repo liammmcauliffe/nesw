@@ -36,7 +36,7 @@ userName = "YOUR_USERNAME";
 
 ### 4. Stage the hardware config (required for flakes)
 
-Nix flakes can't see gitignored files. Stage it - you do not need to commit:
+Stage it, do not need to commit:
 
 ```bash
 git add -f hosts/laptop/hardware-configuration.nix

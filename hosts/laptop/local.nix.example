@@ -1,6 +1,6 @@
 { ... }: {
   # Copy to local.nix
-  # optional
+  # Optional
 
   # Identify your GPU: nix-shell -p pciutils --run "lspci -k | grep -A 3 -E 'VGA|3D'"
   # nesw.drivers.intel.enable = true;    # Intel (i915/xe)

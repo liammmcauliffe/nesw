@@ -4,7 +4,7 @@ hl.config({
     general = {
         layout          = "master",
 
-        allow_tearing   = false, -- required for `immediate` window rule
+        allow_tearing   = false,
 
         gaps_workspaces = vars.workspaceGaps,
         gaps_in         = vars.windowGapsIn,

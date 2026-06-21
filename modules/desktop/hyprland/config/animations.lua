@@ -35,5 +35,3 @@ hl.animation({ leaf = "workspaces",    enabled = true, speed = 5,    bezier = "o
 hl.animation({ leaf = "workspacesIn",  enabled = true, speed = 5,    bezier = "overshoot",     style = "slide" })
 hl.animation({ leaf = "workspacesOut", enabled = true, speed = 5,    bezier = "overshoot",     style = "slide" })
 hl.animation({ leaf = "zoomFactor",    enabled = true, speed = 6,    bezier = "quick" })
-
--- snappy with slight overshoot on moves
