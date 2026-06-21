@@ -20,101 +20,107 @@ $character"""
 
 add_newline = false
 
-# username module
+# username — quiet anchor; you already know who you are
 [username]
 show_always = true
-style_user = "fg:#ffd60a"
-style_root = "fg:#ff453a"
-format = '[$user]($style)'
+style_user = "fg:#98989d"
+style_root = "bold fg:#ff453a"
+format = '[$user]($style) '
 
-# directory module
+# directory — primary focal point (Apple blue)
 [directory]
-style = "fg:#0869cb"
-format = "[ $path ]($style)"
+style = "bold fg:#0a84ff"
+read_only_style = "bold fg:#98989d"
+read_only = "  "
+format = '[ $path ]($style)'
 truncation_length = 3
 truncation_symbol = "…/"
 
-# git branch module
+# git branch — distinct from path; classic terminal green
 [git_branch]
 symbol = ""
-style = "fg:#0a84ff"
-format = '[[ $symbol $branch ](fg:#0a84ff)]($style)'
+style = "fg:#32d74b"
+format = ' [[ $symbol $branch ](fg:#32d74b)]($style)'
 
-# git status module
+# git status — semantic colors; only shows when something is happening
 [git_status]
-style = "fg:#98989d"
-format = '[[($all_status$ahead_behind )](fg:#98989d)]($style)'
+style = "bold"
+format = '([$all_status$ahead_behind]($style))'
+conflicted = '[=${count}](fg:#ff453a bold)'
+ahead = '[⇡${count}](fg:#76d6ff)'
+behind = '[⇣${count}](fg:#76d6ff)'
+diverged = '[⇕⇡${ahead_count}⇣${behind_count}](fg:#ffd60a)'
+untracked = '[?${count}](fg:#76d6ff)'
+stashed = '[$](fg:#bf5af2)'
+modified = '[!${count}](fg:#ffd60a)'
+staged = '[+${count}](fg:#32d74b)'
+renamed = '[»${count}](fg:#bf5af2)'
+deleted = '[✘${count}](fg:#ff453a)'
 
-# nodejs module
+# language modules — cool cyan badges; tertiary context, not competing with path/git
 [nodejs]
 symbol = "󰎙"
-style = "fg:#32d74b"
-format = '[[ $symbol( $version) ](fg:#32d74b)]($style)'
+style = "fg:#76d6ff"
+format = ' [[ $symbol $version](fg:#76d6ff)]($style)'
 
-# c module
 [c]
 symbol = ""
-style = "fg:#ffffff"
-format = '[[ $symbol( $version) ](fg:#ffffff)]($style)'
+style = "fg:#76d6ff"
+format = ' [[ $symbol $version](fg:#76d6ff)]($style)'
 
-# rust module
 [rust]
 symbol = ""
-style = "fg:#cc372e"
-format = '[[ $symbol( $version) ](fg:#cc372e)]($style)'
+style = "fg:#ff453a"
+format = ' [[ $symbol $version](fg:#ff453a)]($style)'
 
-# go module
 [golang]
 symbol = "󰟓"
 style = "fg:#479ec2"
-format = '[[ $symbol( $version) ](fg:#479ec2)]($style)'
+format = ' [[ $symbol $version](fg:#479ec2)]($style)'
 
-# php module
 [php]
 symbol = ""
-style = "fg:#9647bf"
-format = '[[ $symbol( $version) ](fg:#9647bf)]($style)'
+style = "fg:#76d6ff"
+format = ' [[ $symbol $version](fg:#76d6ff)]($style)'
 
-# java module
 [java]
 symbol = ""
-style = "fg:#cdac08"
-format = '[[ $symbol( $version) ](fg:#cdac08)]($style)'
+style = "fg:#bf5af2"
+format = ' [[ $symbol $version](fg:#bf5af2)]($style)'
 
-# kotlin module
 [kotlin]
 symbol = ""
 style = "fg:#bf5af2"
-format = '[[ $symbol( $version) ](fg:#bf5af2)]($style)'
+format = ' [[ $symbol $version](fg:#bf5af2)]($style)'
 
-# haskell module
 [haskell]
 symbol = ""
-style = "fg:#9647bf"
-format = '[[ $symbol( $version) ](fg:#9647bf)]($style)'
+style = "fg:#76d6ff"
+format = ' [[ $symbol $version](fg:#76d6ff)]($style)'
 
-# python module
 [python]
 symbol = ""
 style = "fg:#ffd60a"
-format = '[[ $symbol( $version) ](fg:#ffd60a)]($style)'
+format = ' [[ $symbol $version](fg:#ffd60a)]($style)'
 
-# lua module
 [lua]
 symbol = "󰢱"
 style = "fg:#ffd60a"
-format = '[[ $symbol( $version) ](fg:#ffd60a)]($style)'
+format = ' [[ $symbol $version](fg:#ffd60a)]($style)'
 
-# docker context module
+# docker — purple reads as "infra", separate from dev langs
 [docker_context]
 symbol = "󰡨"
-style = "fg:#0869cb"
-format = '[[ $symbol( $context) ](fg:#0869cb)]($style)'
+style = "fg:#bf5af2"
+format = ' [[ $symbol $context](fg:#bf5af2)]($style)'
 
-# line break module
 [line_break]
 disabled = true
 
-# character module
+# prompt char — blue when ready, red when last command failed
 [character]
-format = "[](fg:#0a84ff) "
+success_symbol = "[](fg:#0a84ff) "
+error_symbol = "[](fg:#ff453a) "
+vimcmd_symbol = "[❮](fg:#32d74b) "
+vimcmd_replace_symbol = "[❮](fg:#bf5af2) "
+vimcmd_visual_symbol = "[❮](fg:#ffd60a) "
