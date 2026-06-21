@@ -39,11 +39,6 @@
         ];
     };
 
-    programs.broot = {
-        enable = true;
-        enableFishIntegration = true;
-    };
-
     home.sessionVariables = {
         MANPAGER = "sh -c 'col -bx | bat -l man -p'";
         MANROFFOPT = "-c";
