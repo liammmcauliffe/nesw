@@ -34,7 +34,6 @@
             "--style=full"
             "--border"
             "--padding=1,2"
-            "--preview=bat --color=always {}"
             "--color=bg:#09090b,fg:#fafafa,hl:#e4e4e7,pointer:#e4e4e7,marker:#71717a"
             "--color=border:#52525b,label:#a1a1aa"
             "--color=preview-bg:#18181b,preview-border:#3f3f46,preview-label:#e4e4e7"

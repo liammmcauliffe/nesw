@@ -11,7 +11,7 @@
 
         interactiveShellInit = ''
             set fish_greeting ""
-            set -ax FZF_DEFAULT_OPTS "--border-label=' nesw ' --input-label=' Search ' --header-label=' Info '"
+            set -ax FZF_DEFAULT_OPTS "--border-label=' nesw ' --input-label=' Search ' --header-label=' Info ' --preview='bat --color=always {}'"
         '';
     };
 
