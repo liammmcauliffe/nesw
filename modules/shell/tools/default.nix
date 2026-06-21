@@ -33,7 +33,6 @@
         defaultOptions = [
             "--height 40%"
             "--layout=reverse"
-            "--border"
             "--info=inline"
             "--preview 'bat --color=always {}'"
         ];
