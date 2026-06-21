@@ -1,7 +1,8 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import "icons"
+import common
+import "../icons"
 
 Item {
     id: root
@@ -24,14 +25,14 @@ Item {
 
     readonly property url currentIcon: {
         if (root.muted)
-            return Qt.resolvedUrl("icons/assets/volume-muted.svg")
+            return Qt.resolvedUrl("../icons/assets/volume-muted.svg")
         if (root.volume <= 0.001)
-            return Qt.resolvedUrl("icons/assets/volume-none.svg")
+            return Qt.resolvedUrl("../icons/assets/volume-none.svg")
         if (root.volume < 0.33)
-            return Qt.resolvedUrl("icons/assets/volume-low.svg")
+            return Qt.resolvedUrl("../icons/assets/volume-low.svg")
         if (root.volume < 0.66)
-            return Qt.resolvedUrl("icons/assets/volume-med.svg")
-        return Qt.resolvedUrl("icons/assets/volume-high.svg")
+            return Qt.resolvedUrl("../icons/assets/volume-med.svg")
+        return Qt.resolvedUrl("../icons/assets/volume-high.svg")
     }
 
     visible: opacity > 0

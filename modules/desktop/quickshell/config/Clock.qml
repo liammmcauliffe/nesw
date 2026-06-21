@@ -5,7 +5,6 @@ import Quickshell.Services.UPower
 import Quickshell.Networking
 import "icons"
 
-// TODO: separate clock, battery, and network stuff into separate components
 PanelWindow {
     id: root
 

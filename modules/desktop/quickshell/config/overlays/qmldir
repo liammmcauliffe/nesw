@@ -1,0 +1,3 @@
+module overlays
+Launcher 1.0 Launcher.qml
+Logout 1.0 Logout.qml

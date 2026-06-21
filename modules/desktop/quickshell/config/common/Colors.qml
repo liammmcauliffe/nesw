@@ -2,45 +2,12 @@ pragma Singleton
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
 
 Singleton {
     id: root
 
     readonly property Palette palette: current
     readonly property Palette current: Palette {}
-
-    readonly property string schemePath: `${Quickshell.env("HOME")}/.local/state/nesw/scheme.json`
-
-    function load(data: string): void {
-        if (!data)
-            return;
-
-        let scheme;
-        try {
-            scheme = JSON.parse(data);
-        } catch (e) {
-            return;
-        }
-
-        const colors = scheme.colors ?? scheme.colours ?? scheme;
-        for (const name in colors) {
-            const propName = name.startsWith("m3") ? name : `m3${name}`;
-            if (!current.hasOwnProperty(propName))
-                continue;
-            const value = colors[name];
-            current[propName] = value.startsWith("#") ? value : `#${value}`;
-        }
-    }
-
-    FileView {
-        path: root.schemePath
-        watchChanges: true
-        printErrors: false
-        onFileChanged: reload()
-        onLoaded: root.load(text())
-    }
 
     component Palette: QtObject {
         property color m3primary: "#e4e4e7"
