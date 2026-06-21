@@ -7,12 +7,14 @@
         extraOptions = [
             "--group-directories-first"
             "--header"
+            "--hyperlink"
+            "--time-style=relative"
         ];
     };
 
     programs.zoxide = {
         enable = true;
-        enableFishIntegration = true;
+        enableFishIntegration = false;
         options = ["--cmd" "cd"];
     };
 
@@ -21,7 +23,7 @@
         config = {
             theme = "TwoDark";
             style = "numbers,changes,header";
-            paging = "always";
+            paging = "auto";
         };
     };
 
@@ -34,6 +36,8 @@
             "--border"
             "--info=inline"
             "--preview 'bat --color=always {}'"
+            "--color=bg+:#313244,bg:#1e1e2e"
+            "--pointer='>' --marker='*'"
         ];
     };
 
