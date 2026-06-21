@@ -34,7 +34,7 @@ in
   imports = [ ./generator.nix ];
 
   options.programs.quickshell.nesw.enable =
-    lib.mkEnableOption "NESW Quickshell shell (systemd user service)";
+    lib.mkEnableOption "NESW Quickshell shell";
 
   config = lib.mkIf cfg.enable {
     home.packages = [ qsPkg ];
@@ -48,28 +48,5 @@ in
     };
 
     home.file.".local/state/nesw/.keep".text = "";
-
-    systemd.user.services.quickshell = {
-      Unit = {
-        Description = "NESW Quickshell Shell";
-        After = [ "dbus.service" ];
-        Requires = [ "dbus.service" ];
-      };
-
-      Service = {
-        ExecStart = "${qsPkg}/bin/qs -c nesw";
-        Restart = "on-failure";
-        RestartSec = 5;
-        Environment = [
-          "QT_QPA_PLATFORM=wayland"
-          "QT_WAYLAND_DISABLE_WINDOWDECORATION=1"
-          "WAYLAND_DISPLAY=wayland-1"
-        ];
-      };
-
-      Install = {
-        WantedBy = [ "default.target" ];
-      };
-    };
   };
 }

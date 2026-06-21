@@ -8,6 +8,8 @@ local graphicalSessionCmd =
 hl.on("hyprland.start", function()
     os.execute(graphicalSessionCmd)
 
+    hl.exec_cmd("qs -c nesw")
+
     hl.exec_cmd("gnome-keyring-daemon --start --components=secrets")
 
     hl.exec_cmd("wl-paste --type text --watch cliphist store")
@@ -23,6 +25,5 @@ hl.on("hyprland.start", function()
 end)
 
 hl.on("hyprland.shutdown", function()
-    os.execute("systemctl --user stop quickshell 2>/dev/null || true")
     os.execute("systemctl --user stop graphical-session.target 2>/dev/null || true")
 end)
