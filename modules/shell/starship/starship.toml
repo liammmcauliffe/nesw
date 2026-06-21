@@ -1,7 +1,7 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-(bright-blue)$username\
+$username\
 $directory\
 $git_branch\
 $git_status\
@@ -23,13 +23,13 @@ add_newline = false
 # username module
 [username]
 show_always = true
-style_user = "bright-yellow"
-style_root = "purple "
+style_user = "fg:#a1a1aa"
+style_root = "fg:#f87171"
 format = '[$user]($style)'
 
 # directory module
 [directory]
-style = "blue"
+style = "fg:#e4e4e7"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
@@ -37,79 +37,79 @@ truncation_symbol = "…/"
 # git branch module
 [git_branch]
 symbol = ""
-style = "bright-blue"
-format = '[[ $symbol $branch ](bright-blue)]($style)'
+style = "fg:#e4e4e7"
+format = '[[ $symbol $branch ](fg:#e4e4e7)]($style)'
 
 # git status module
 [git_status]
-style = "bright-blue"
-format = '[[($all_status$ahead_behind )](bright-blue)]($style)'
+style = "fg:#71717a"
+format = '[[($all_status$ahead_behind )](fg:#71717a)]($style)'
 
 # nodejs module
 [nodejs]
 symbol = "󰎙"
-style = "bright-green"
-format = '[[ $symbol( $version) ](bright-green)]($style)'
+style = "fg:#a1a1aa"
+format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
 
 # c module
 [c]
 symbol = ""
-style = "white"
-format = '[[ $symbol( $version) ](white)]($style)'
+style = "fg:#a1a1aa"
+format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
 
 # rust module
 [rust]
 symbol = ""
-style = "red"
-format = '[[ $symbol( $version) ](red)]($style)'
+style = "fg:#a1a1aa"
+format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
 
 # go module
 [golang]
 symbol = "󰟓"
-style = "cyan"
-format = '[[ $symbol( $version) ](cyan)]($style)'
+style = "fg:#a1a1aa"
+format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
 
 # php module
 [php]
 symbol = ""
-style = "purple"
-format = '[[ $symbol( $version) ](purple)]($style)'
+style = "fg:#a1a1aa"
+format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
 
 # java module
 [java]
 symbol = ""
-style = "yellow"
-format = '[[ $symbol( $version) ](yellow)]($style)'
+style = "fg:#a1a1aa"
+format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
 
 # kotlin module
 [kotlin]
 symbol = ""
-style = "bright-purple"
-format = '[[ $symbol( $version) ](bright-purple)]($style)'
+style = "fg:#a1a1aa"
+format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
 
 # haskell module
 [haskell]
 symbol = ""
-style = "magenta"
-format = '[[ $symbol( $version) ](magenta)]($style)'
+style = "fg:#a1a1aa"
+format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
 
 # python module
 [python]
 symbol = ""
-style = "bright-yellow"
-format = '[[ $symbol( $version) ](bright-yellow)]($style)'
+style = "fg:#a1a1aa"
+format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
 
 # lua module
 [lua]
 symbol = "󰢱"
-style = "bright-yellow"
-format = '[[ $symbol( $version) ](bright-yellow)]($style)'
+style = "fg:#a1a1aa"
+format = '[[ $symbol( $version) ](fg:#a1a1aa)]($style)'
 
 # docker context module
 [docker_context]
 symbol = "󰡨"
-style = "blue"
-format = '[[ $symbol( $context) ](blue)]($style)'
+style = "fg:#71717a"
+format = '[[ $symbol( $context) ](fg:#71717a)]($style)'
 
 # line break module
 [line_break]
@@ -117,4 +117,4 @@ disabled = true
 
 # character module
 [character]
-format = "[](bright-blue) "
+format = "[](fg:#e4e4e7) "
