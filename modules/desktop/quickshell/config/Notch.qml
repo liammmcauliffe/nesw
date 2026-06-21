@@ -79,8 +79,15 @@ PanelWindow {
     }
 
     property bool expanded: false
-    property real notchWidth: Math.min(Constants.maxWidth, Math.max(Constants.minWidth, expanded ? Constants.maxWidth : Constants.minWidth))
+    property real notchWidth: Constants.minWidth
+    property real contentOpacity: 0
     property real slideOffset: 0
+
+    readonly property int expandWidthDuration: 220
+    readonly property int collapseWidthDuration: 180
+    readonly property int expandOpacityDuration: 150
+    readonly property int collapseOpacityDuration: 120
+    readonly property int expandOpacityDelay: 50
 
     readonly property int displayNumber: Math.max(1, Math.round(1 - slideOffset / Constants.stepPx))
 
@@ -226,6 +233,64 @@ PanelWindow {
         }
     }
 
+    onExpandedChanged: {
+        if (expanded) {
+            widthCollapseAnim.stop()
+            contentOpacityOutAnim.stop()
+            contentOpacityDelay.stop()
+            widthExpandAnim.restart()
+            contentOpacityDelay.restart()
+        } else {
+            widthExpandAnim.stop()
+            contentOpacityInAnim.stop()
+            contentOpacityDelay.stop()
+            contentOpacityOutAnim.restart()
+            widthCollapseAnim.restart()
+        }
+    }
+
+    NumberAnimation {
+        id: widthExpandAnim
+        target: root
+        property: "notchWidth"
+        to: Constants.maxWidth
+        duration: root.expandWidthDuration
+        easing.type: Easing.OutCubic
+    }
+
+    NumberAnimation {
+        id: widthCollapseAnim
+        target: root
+        property: "notchWidth"
+        to: Constants.minWidth
+        duration: root.collapseWidthDuration
+        easing.type: Easing.OutCubic
+    }
+
+    Timer {
+        id: contentOpacityDelay
+        interval: root.expandOpacityDelay
+        onTriggered: contentOpacityInAnim.restart()
+    }
+
+    NumberAnimation {
+        id: contentOpacityInAnim
+        target: root
+        property: "contentOpacity"
+        to: 1
+        duration: root.expandOpacityDuration
+        easing.type: Easing.OutCubic
+    }
+
+    NumberAnimation {
+        id: contentOpacityOutAnim
+        target: root
+        property: "contentOpacity"
+        to: 0
+        duration: root.collapseOpacityDuration
+        easing.type: Easing.OutCubic
+    }
+
     Behavior on slideOffset {
         enabled: !wsDrag.active
         NumberAnimation {
@@ -334,10 +399,7 @@ PanelWindow {
 
         z: root.audioMode ? 10 : 0
 
-        opacity: root.expanded ? 1 : 0
-        Behavior on opacity {
-            NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
-        }
+        opacity: root.contentOpacity
 
         WorkspaceRuler {
             anchors.fill: parent
