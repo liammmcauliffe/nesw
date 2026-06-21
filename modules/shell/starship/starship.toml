@@ -36,9 +36,8 @@ truncation_symbol = "…/"
 
 # git branch module
 [git_branch]
-symbol = ""
 style = "bright-blue"
-format = '[[$symbol $branch ](bright-blue)]($style)'
+format = '[$branch ](bright-blue)'
 
 # git status module
 [git_status]
