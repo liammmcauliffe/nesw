@@ -66,5 +66,6 @@
         ripgrep
         fd
         jq
+        file
     ];
 }
