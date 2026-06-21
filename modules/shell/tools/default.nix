@@ -36,8 +36,6 @@
             "--border"
             "--info=inline"
             "--preview 'bat --color=always {}'"
-            "--color=bg+:#313244,bg:#1e1e2e"
-            "--pointer='>' --marker='*'"
         ];
     };
 
