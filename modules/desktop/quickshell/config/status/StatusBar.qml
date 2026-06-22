@@ -25,7 +25,15 @@ PanelWindow {
     readonly property int iconSize: 26
     readonly property int clockFontSize: 18
 
-    mask: Region {}
+    Item {
+        id: hitMask
+        anchors.fill: row
+        visible: false
+    }
+
+    mask: Region {
+        item: hitMask
+    }
 
     Row {
         id: row

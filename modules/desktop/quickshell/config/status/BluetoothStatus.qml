@@ -8,6 +8,8 @@ Item {
 
     implicitWidth: iconSize
     implicitHeight: iconSize
+    width: iconSize
+    height: iconSize
 
     readonly property var states: ["off", "on", "searching", "connected"]
     property int stateIndex: 0
@@ -18,7 +20,9 @@ Item {
         anchors.centerIn: parent
     }
 
-    TapHandler {
-        onTapped: root.stateIndex = (root.stateIndex + 1) % root.states.length
+    MouseArea {
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        onClicked: root.stateIndex = (root.stateIndex + 1) % root.states.length
     }
 }
