@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            substituters = https://cache.nixos.org https://cachix.org https://hyprland.cachix.org https://quickshell.cachix.org
+            trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= cachix.org-1:eWNHQldw9Jw7dJQj9N8Hfs1a18o4572a631v8Y28d32= hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc= quickshell.cachix.org-1:XjjmE4bDIg6RqHpMETSCxL8RSz5wMmfLJGBQ3QSsKPk=
+
+      - name: Prepare hardware configuration stub
+        run: |
+          if [ ! -f hosts/laptop/hardware-configuration.nix ]; then
+            cp hosts/laptop/hardware-configuration.nix.example hosts/laptop/hardware-configuration.nix
+          fi
+
+      - name: Build system configuration
+        run: nix build .#nixosConfigurations.main.config.system.build.toplevel
