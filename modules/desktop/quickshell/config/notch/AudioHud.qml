@@ -52,7 +52,7 @@ Item {
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
             source: root.currentIcon
-            size: 22
+            size: 26
             iconColor: root.muted ? root.barMuted : root.barFg
         }
 

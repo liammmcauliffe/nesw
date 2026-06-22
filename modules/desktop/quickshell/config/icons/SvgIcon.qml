@@ -17,11 +17,11 @@ Item {
 
     readonly property real drawn: root.size * root.artScale
     readonly property int renderPx: Math.max(1, Math.round(root.drawn * Screen.devicePixelRatio))
-    readonly property bool tinted: root.iconColor !== "transparent"
+    readonly property bool tinted: root.iconColor.a > 0
 
     FileView {
         id: svgFile
-        path: root.source
+        path: root.tinted ? root.source : ""
     }
 
     function colorHex(c) {
