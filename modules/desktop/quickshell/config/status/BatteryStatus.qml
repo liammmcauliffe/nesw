@@ -73,8 +73,6 @@ Item {
     }
 
     readonly property string glyph: {
-        if (pluggedIn)
-            return "charging"
         if (percentage >= 0.90) return "full"
         if (percentage >= 0.60) return "high"
         if (percentage >= 0.30) return "medium"
@@ -88,6 +86,7 @@ Item {
     BatteryIcon {
         visible: root.showBattery
         glyph: root.glyph
+        charging: root.pluggedIn
         size: root.iconSize
         anchors.centerIn: parent
     }
