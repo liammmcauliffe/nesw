@@ -20,7 +20,7 @@ end
 local function resize_by_screen(width_pct, height_pct)
     local screen = hl.get_active_monitor()
     if screen and type(screen.width) == "number" and type(screen.height) == "number" then
-        if (width_pct and height_pct) > 0 then
+        if width_pct > 0 and height_pct > 0 then
             local w = math.floor(screen.width * width_pct / 100)
             local h = math.floor(screen.height * height_pct / 100)
             return { x = w, y = h, relative = false }

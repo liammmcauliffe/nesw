@@ -8,7 +8,7 @@ return {
     touchpadScrollFactor = 0.2,
     gestureFingers = 3,
     workspaceSwipeFingers = 4,
-    gestureFingersMore = 4,
+    gestureFingersMore = 5,
 
     blurEnabled = true,
     blurSpecialWs = false,

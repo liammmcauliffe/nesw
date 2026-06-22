@@ -36,7 +36,6 @@ in {
         plugins = with pkgs.vimPlugins; [
             friendly-snippets
             nvim-treesitter-plugins
-            nvim-lspconfig
 
             mini-files
             mini-notify

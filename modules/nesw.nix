@@ -1,8 +1,4 @@
-{
-    config,
-    lib,
-    ...
-}: {
+{...}: {
     imports = [
         ./desktop
         ./shell
@@ -10,6 +6,4 @@
         ./editors
         ./browser
     ];
-
-    options.nesw.enable = lib.mkEnableOption "nesw";
 }

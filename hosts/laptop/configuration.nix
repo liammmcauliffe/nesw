@@ -54,11 +54,16 @@
         substituters = [
             "https://cache.nixos.org"
             "https://hyprland.cachix.org"
+            "https://quickshell.cachix.org"
         ];
-        trusted-substituters = ["https://hyprland.cachix.org"];
+        trusted-substituters = [
+            "https://hyprland.cachix.org"
+            "https://quickshell.cachix.org"
+        ];
         trusted-public-keys = [
             "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
             "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+            "quickshell.cachix.org-1:XjjmE4bDIg6RqHpMETSCxL8RSz5wMmfLJGBQ3QSsKPk="
         ];
         trusted-users = ["root" "@wheel"];
     };
@@ -66,7 +71,7 @@
     nix.gc = {
         automatic = true;
         dates = "weekly";
-        options = "--delete-older-than 14d --keep-outputs --keep-derivations";
+        options = "--delete-older-than 14d";
     };
 
     security.rtkit.enable = true;
@@ -140,8 +145,6 @@
         extraGroups = ["wheel" "networkmanager" "video" "audio"];
         shell = pkgs.fish;
     };
-
-    security.sudo.enable = true;
 
     system.stateVersion = "26.05";
 }

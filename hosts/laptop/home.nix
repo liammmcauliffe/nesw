@@ -14,6 +14,5 @@
             else []
         );
 
-    nesw.enable = true;
     programs.quickshell.nesw.enable = true;
 }
