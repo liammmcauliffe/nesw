@@ -1,3 +1,5 @@
+// TODO: Constants.shellScreen (single eDP-1) to Quickshell.Variants for multi-monitor support
+
 import Quickshell
 import qs.chrome
 import qs.notch

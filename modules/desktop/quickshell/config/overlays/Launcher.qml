@@ -98,10 +98,10 @@ PanelWindow {
     readonly property var results: {
         const _epoch = historyEpoch;
         const q = query.trim().toLowerCase();
-        const all = DesktopEntries.applications.values.filter(a => a && !a.noDisplay);
+        const allApps = DesktopEntries.applications.values.filter(a => a && !a.noDisplay);
 
         if (q.length === 0) {
-            return all.slice().sort((a, b) => {
+            return allApps.slice().sort((a, b) => {
                 const ta = root.launchHistory[root.historyKey(a)] || 0;
                 const tb = root.launchHistory[root.historyKey(b)] || 0;
                 if (tb !== ta)
@@ -110,7 +110,7 @@ PanelWindow {
             });
         }
 
-        return all.map(a => {
+        return allApps.map(a => {
             const name = (a.name || "").toLowerCase();
             const generic = (a.genericName || "").toLowerCase();
             const keywords = (a.keywords || []).join(" ").toLowerCase();
