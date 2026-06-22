@@ -14,8 +14,9 @@ Item {
 
     signal requestSetVolume(real fraction)
     signal requestBumpVolume(real delta)
+    signal requestToggleMute()
 
-    readonly property alias dragContainsMouse: audioDrag.containsMouse
+    readonly property bool interacting: iconHover.hovered || audioDrag.pressed
 
     readonly property int barHeight: 6
     readonly property int barRadius: barHeight / 2
@@ -47,18 +48,35 @@ Item {
         width: parent.width
         height: Math.max(icon.implicitHeight, root.barHeight)
 
-        SvgIcon {
-            id: icon
+        Item {
+            id: iconHit
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
-            source: root.currentIcon
-            size: 26
-            iconColor: root.muted ? root.barMuted : root.barFg
+            width: icon.width
+            height: icon.height
+
+            SvgIcon {
+                id: icon
+                anchors.centerIn: parent
+                source: root.currentIcon
+                size: 26
+                iconColor: root.muted ? root.barMuted : root.barFg
+            }
+
+            HoverHandler {
+                id: iconHover
+            }
+
+            TapHandler {
+                acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                cursorShape: Qt.PointingHandCursor
+                onTapped: root.requestToggleMute()
+            }
         }
 
         Rectangle {
             id: barBgRect
-            anchors.left: icon.right
+            anchors.left: iconHit.right
             anchors.leftMargin: 10
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter

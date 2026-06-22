@@ -152,9 +152,16 @@ PanelWindow {
     }
 
     function showAudio() {
+        collapseTimer.stop()
         audioMode = true
         expanded = true
         audioTimer.restart()
+    }
+
+    function toggleMute() {
+        if (!audioSink || !audioSink.audio)
+            return
+        audioSink.audio.muted = !audioSink.audio.muted
     }
 
     function setVolume(fraction) {
@@ -208,12 +215,12 @@ PanelWindow {
         id: audioTimer
         interval: 2000
         onTriggered: {
-            if (hoverHandler.hovered || audioHud.dragContainsMouse) {
-                restart();
-                return;
+            if (audioHud.interacting) {
+                restart()
+                return
             }
-            root.expanded = false;
-            root.audioMode = false;
+            root.expanded = false
+            root.audioMode = false
         }
     }
 
@@ -403,6 +410,7 @@ PanelWindow {
             muted: root.muted
             onRequestSetVolume: fraction => root.setVolume(fraction)
             onRequestBumpVolume: delta => root.bumpVolume(delta)
+            onRequestToggleMute: root.toggleMute()
         }
     }
 
@@ -488,13 +496,12 @@ PanelWindow {
             cursorShape: Qt.PointingHandCursor
             onHoveredChanged: {
                 if (hovered) {
-                    collapseTimer.stop();
-                    audioTimer.stop();
+                    collapseTimer.stop()
                 } else if (root.expanded) {
                     if (root.audioMode)
-                        audioTimer.restart();
+                        audioTimer.restart()
                     else if (!wsDrag.active)
-                        collapseTimer.restart();
+                        collapseTimer.restart()
                 }
             }
         }
