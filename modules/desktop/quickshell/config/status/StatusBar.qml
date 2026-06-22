@@ -34,6 +34,11 @@ PanelWindow {
         spacing: 28
         y: root.borderWidth + (root.barHeight - root.borderWidth - height) / 2
 
+        BluetoothStatus {
+            iconSize: root.iconSize
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
         NetworkStatus {
             iconSize: root.iconSize
             anchors.verticalCenter: parent.verticalCenter
