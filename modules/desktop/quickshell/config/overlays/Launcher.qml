@@ -82,9 +82,7 @@ PanelWindow {
         const key = historyKey(entry);
         if (!key)
             return;
-        const next = Object.assign({}, launchHistory);
-        next[key] = Date.now();
-        launchHistory = next;
+        launchHistory[key] = Date.now();
         historyEpoch++;
         persistHistory();
     }

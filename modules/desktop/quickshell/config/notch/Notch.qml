@@ -31,7 +31,6 @@ PanelWindow {
     readonly property bool muted: audioSink && audioSink.audio ? audioSink.audio.muted : false
 
     property bool audioMode: false
-    property bool isVolumeChanging: false
     property real _lastVolume: -1
 
     readonly property bool inSpecialWs: {
@@ -132,15 +131,6 @@ PanelWindow {
         slideReady = true
     }
 
-    Timer {
-        id: audioLockTimer
-        interval: 800
-        repeat: false
-        onTriggered: {
-            root.isVolumeChanging = false
-        }
-    }
-
     onActiveWsChanged: {
         if (!slideReady)
             return
@@ -162,10 +152,8 @@ PanelWindow {
     }
 
     function showAudio() {
-        isVolumeChanging = true
         audioMode = true
         expanded = true
-        audioLockTimer.restart()
         audioTimer.restart()
     }
 
@@ -174,10 +162,8 @@ PanelWindow {
             return
         audioSink.audio.muted = false
         audioSink.audio.volume = Math.max(0, Math.min(1, fraction))
-        isVolumeChanging = true
         audioMode = true
         expanded = true
-        audioLockTimer.restart()
         audioTimer.restart()
     }
 
@@ -394,8 +380,6 @@ PanelWindow {
         width: root.contentWidth
         height: Constants.notchHeight - Constants.borderWidth
         clip: true
-
-        z: root.audioMode ? 10 : 0
 
         opacity: root.contentOpacity
 

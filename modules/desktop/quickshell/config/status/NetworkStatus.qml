@@ -7,37 +7,17 @@ Item {
 
     property int iconSize: 26
 
-    readonly property var wifiDevice: {
-        const list = Networking.devices.values
-        for (let i = 0; i < list.length; i++) {
-            if (list[i].type === DeviceType.Wifi)
-                return list[i]
-        }
-        return null
-    }
+    readonly property var wifiDevice: Array.from(Networking.devices.values)
+        .find(d => d.type === DeviceType.Wifi) ?? null
 
-    readonly property var ethernetDevice: {
-        const list = Networking.devices.values
-        for (let i = 0; i < list.length; i++) {
-            if (list[i].type === DeviceType.Wired)
-                return list[i]
-        }
-        return null
-    }
+    readonly property var ethernetDevice: Array.from(Networking.devices.values)
+        .find(d => d.type === DeviceType.Wired) ?? null
 
     readonly property bool onEthernet: ethernetDevice && ethernetDevice.connected
 
-    readonly property var activeWifi: {
-        const dev = wifiDevice
-        if (!dev)
-            return null
-        const nets = dev.networks.values
-        for (let i = 0; i < nets.length; i++) {
-            if (nets[i].connected)
-                return nets[i]
-        }
-        return null
-    }
+    readonly property var activeWifi: wifiDevice
+        ? Array.from(wifiDevice.networks.values).find(n => n.connected) ?? null
+        : null
 
     readonly property bool wifiConnecting: {
         const dev = wifiDevice
