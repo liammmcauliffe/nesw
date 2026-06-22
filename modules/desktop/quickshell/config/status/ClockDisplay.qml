@@ -6,13 +6,7 @@ Item {
 
     property int fontSize: 18
 
-    property var now: new Date()
-    property real minuteSlide: 0
-    property bool clockReady: false
-
-    function minuteIndex(d) {
-        return Math.floor(d.getTime() / 60000)
-    }
+    property date now: new Date()
 
     function formatClock(d) {
         const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -27,64 +21,16 @@ Item {
             + "  " + hours + ":" + mm + " " + ampm
     }
 
-    function slideDuration(fromIdx, toIdx) {
-        const dist = Math.abs(toIdx - fromIdx)
-        if (dist === 0)
-            return 0
-        return Math.min(450, Math.max(60, dist * 40))
-    }
-
-    function animateToNow() {
-        const target = minuteIndex(now)
-        if (Math.abs(minuteSlide - target) < 0.5) {
-            minuteSlide = target
-            return
-        }
-
-        minuteAnim.stop()
-        minuteAnim.duration = slideDuration(Math.round(minuteSlide), target)
-        minuteAnim.from = minuteSlide
-        minuteAnim.to = target
-        minuteAnim.start()
-    }
-
-    readonly property string clockText: formatClock(
-        clockReady
-            ? new Date(Math.round(minuteSlide) * 60000)
-            : now
-    )
+    readonly property string clockText: formatClock(root.now)
 
     implicitWidth: clockLabel.implicitWidth
     implicitHeight: clockLabel.implicitHeight
 
     Timer {
-        id: minuteTimer
-        interval: 60000 - (Date.now() % 60000) + 50
+        interval: 1000
         running: true
         repeat: true
-        onTriggered: {
-            interval = 60000
-            root.now = new Date()
-            if (!root.clockReady) {
-                root.minuteSlide = root.minuteIndex(root.now)
-                root.clockReady = true
-                return
-            }
-            root.animateToNow()
-        }
-    }
-
-    Component.onCompleted: {
-        root.now = new Date()
-        root.minuteSlide = root.minuteIndex(root.now)
-        root.clockReady = true
-    }
-
-    NumberAnimation {
-        id: minuteAnim
-        target: root
-        property: "minuteSlide"
-        easing.type: Easing.Linear
+        onTriggered: root.now = new Date()
     }
 
     Text {

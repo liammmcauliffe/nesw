@@ -4,12 +4,13 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Io
+import Quickshell.Hyprland
 import qs.common
 
 PanelWindow {
     id: root
 
-    screen: Quickshell.screens[0]
+    screen: Constants.shellScreen
     anchors {
         top: true
         left: true
@@ -34,7 +35,7 @@ PanelWindow {
     readonly property int rowSpacing: 4
 
     readonly property var actions: [
-        { label: "Logout", command: ["hyprctl", "dispatch", "hl.dsp.exit()"] },
+        { label: "Logout", dispatch: "hl.dsp.exit()" },
         { label: "Suspend", command: ["systemctl", "suspend"] },
         { label: "Reboot", command: ["systemctl", "reboot"] },
         { label: "Shutdown", command: ["systemctl", "poweroff"] },
@@ -50,9 +51,12 @@ PanelWindow {
         open = !open;
     }
 
-    function runAction(command): void {
+    function runAction(action): void {
         open = false;
-        Quickshell.execDetached(command);
+        if (action.dispatch !== undefined)
+            Hyprland.dispatch(action.dispatch);
+        else
+            Quickshell.execDetached(action.command);
     }
 
     onOpenChanged: {
@@ -123,7 +127,7 @@ PanelWindow {
             } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
                 const action = root.actions[list.currentIndex];
                 if (action)
-                    root.runAction(action.command);
+                    root.runAction(action);
                 event.accepted = true;
             } else if (event.key === Qt.Key_Tab && !(event.modifiers & Qt.ShiftModifier) && list.count > 0) {
                 list.currentIndex = (list.currentIndex + 1) % list.count;
@@ -186,7 +190,7 @@ PanelWindow {
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
                         onEntered: list.currentIndex = actionRow.index
-                        onClicked: root.runAction(actionRow.modelData.command)
+                        onClicked: root.runAction(actionRow.modelData)
                     }
                 }
             }

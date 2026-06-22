@@ -8,26 +8,6 @@ function _nesw_repo --description "Enter the nesw repo, sets NESW_HOST and NESW_
         return 1
     end
     pushd "$repo"
-    set -gx NESW_HOST (command -q hostnamectl; and hostnamectl hostname; or hostname 2>/dev/null; or string trim (cat /etc/hostname 2>/dev/null))
-    if test -z "$NESW_HOST"
-        echo "✗ could not determine hostname for flake target"
-        popd
-        return 1
-    end
-    set -l host_dir "$NESW_HOST_DIR"
-    if test -z "$host_dir"
-        set host_dir hosts/$NESW_HOST
-    end
-    if not test -d "$host_dir"
-        set -l candidates hosts/*
-        if test (count $candidates) -eq 1
-            set host_dir $candidates[1]
-        end
-    end
-    if not test -d "$host_dir"
-        echo "✗ host config dir not found (expected hosts/$NESW_HOST or set \$NESW_HOST_DIR)"
-        popd
-        return 1
-    end
-    set -gx NESW_HOST_DIR "$host_dir"
+    set -gx NESW_HOST main
+    set -gx NESW_HOST_DIR hosts/laptop
 end

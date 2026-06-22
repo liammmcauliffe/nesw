@@ -1,9 +1,19 @@
 pragma Singleton
 
 import QtQuick
+import Quickshell
 
 QtObject {
     id: root
+
+    readonly property var shellScreen: {
+        const list = Quickshell.screens
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].name === "eDP-1")
+                return list[i]
+        }
+        return list.length > 0 ? list[0] : null
+    }
 
     // notch geometry
     readonly property int minWidth: 300

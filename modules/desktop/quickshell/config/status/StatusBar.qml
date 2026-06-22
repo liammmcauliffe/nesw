@@ -6,7 +6,7 @@ import qs.common
 PanelWindow {
     id: root
 
-    screen: Quickshell.screens[0]
+    screen: Constants.shellScreen
 
     anchors.top: true
     anchors.right: true
@@ -25,15 +25,7 @@ PanelWindow {
     readonly property int iconSize: 26
     readonly property int clockFontSize: 18
 
-    Item {
-        id: hitMask
-        anchors.fill: parent
-        visible: false
-    }
-
-    mask: Region {
-        item: hitMask
-    }
+    mask: Region {}
 
     Row {
         id: row

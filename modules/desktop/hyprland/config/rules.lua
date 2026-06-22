@@ -35,9 +35,6 @@ hl.window_rule({ match = { xwayland = true, title = "win[0-9]+" }, no_dim = true
 hl.workspace_rule({ workspace = "w[tv1]s[false]", gaps_out = vars.singleWindowGapsOut })
 hl.workspace_rule({ workspace = "f[1]s[false]", gaps_out = vars.singleWindowGapsOut })
 
-hl.layer_rule({ match = { namespace = "hyprpicker" }, animation = "fade" })
 hl.layer_rule({ match = { namespace = "logout_dialog" }, animation = "fade" })
-hl.layer_rule({ match = { namespace = "selection" }, animation = "fade" })
-hl.layer_rule({ match = { namespace = "launcher" }, animation = "popin 80%", blur = true })
 hl.layer_rule({ match = { namespace = "nesw-launcher" }, animation = "fade" })
 hl.layer_rule({ match = { namespace = "nesw-topbar" }, blur = true, ignore_alpha = 0.1 })

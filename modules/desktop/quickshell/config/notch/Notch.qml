@@ -11,7 +11,7 @@ import qs.common
 PanelWindow {
     id: root
 
-    screen: Quickshell.screens[0]
+    screen: Constants.shellScreen
 
     anchors.top: true
     anchors.left: true
@@ -48,7 +48,7 @@ PanelWindow {
     Connections {
         target: Hyprland
         function onRawEvent(event) {
-            if (event.name === "activespecialv2" || event.name === "activespecial")
+            if (event.name === "activespecialv2")
                 Hyprland.refreshMonitors();
         }
     }
@@ -198,7 +198,7 @@ PanelWindow {
 
     function goToWorkspace(n) {
         const target = Math.max(1, Math.round(n))
-        Hyprland.dispatch("workspace " + target)
+        Hyprland.dispatch("hl.dsp.focus({ workspace = " + target + " })")
         reveal()
     }
 

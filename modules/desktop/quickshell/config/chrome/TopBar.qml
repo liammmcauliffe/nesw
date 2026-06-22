@@ -7,7 +7,7 @@ import qs.common
 PanelWindow {
     id: root
 
-    screen: Quickshell.screens[0]
+    screen: Constants.shellScreen
 
     anchors.top: true
     anchors.left: true

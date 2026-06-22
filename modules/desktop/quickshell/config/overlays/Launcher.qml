@@ -10,7 +10,7 @@ import qs.icons
 PanelWindow {
     id: root
 
-    screen: Quickshell.screens[0]
+    screen: Constants.shellScreen
     anchors {
         top: true
         left: true
