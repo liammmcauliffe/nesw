@@ -22,7 +22,24 @@ Item {
     readonly property real drawn: root.size * root.artScale
     readonly property real symbolOffset: (root.size - root.drawn) / 2
     readonly property real dotRadius: 10 / 200 * root.drawn
-    readonly property color dotColor: root.glyph === "connected" ? "#FFFFFF" : "#A1A1AA"
+    readonly property color zincColor: "#A1A1AA"
+    readonly property color whiteColor: "#FFFFFF"
+
+    readonly property color leftDotColor: {
+        if (root.glyph === "connected")
+            return root.whiteColor
+        if (root.isSearching)
+            return root.blinkFrame ? root.whiteColor : root.zincColor
+        return root.zincColor
+    }
+
+    readonly property color rightDotColor: {
+        if (root.glyph === "connected")
+            return root.whiteColor
+        if (root.isSearching)
+            return root.blinkFrame ? root.zincColor : root.whiteColor
+        return root.zincColor
+    }
 
     readonly property url source: root.glyph === "off"
             ? Qt.resolvedUrl("assets/bluetooth-off.svg")
@@ -50,10 +67,9 @@ Item {
         width: root.dotRadius * 2
         height: root.dotRadius * 2
         radius: root.dotRadius
-        color: root.dotColor
+        color: root.leftDotColor
         x: root.symbolOffset + (47.22 / 200) * root.drawn - root.dotRadius
         y: root.symbolOffset + (100 / 200) * root.drawn - root.dotRadius
-        opacity: root.isSearching ? (root.blinkFrame ? 0 : 1) : 1
     }
 
     Rectangle {
@@ -61,9 +77,8 @@ Item {
         width: root.dotRadius * 2
         height: root.dotRadius * 2
         radius: root.dotRadius
-        color: root.dotColor
+        color: root.rightDotColor
         x: root.symbolOffset + (152.78 / 200) * root.drawn - root.dotRadius
         y: root.symbolOffset + (100 / 200) * root.drawn - root.dotRadius
-        opacity: root.isSearching ? (root.blinkFrame ? 1 : 0) : 1
     }
 }
