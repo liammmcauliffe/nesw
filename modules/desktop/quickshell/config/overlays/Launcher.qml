@@ -164,6 +164,14 @@ PanelWindow {
         onTriggered: searchInput.forceActiveFocus()
     }
 
+    KeyNavigator {
+        id: listKeys
+        targetList: list
+        enabled: root.open
+        onClose: () => { root.open = false }
+        onAccept: () => { root.launch(root.results[list.currentIndex]) }
+    }
+
     IpcHandler {
         target: "launcher"
         function toggle(): void {
@@ -290,9 +298,9 @@ PanelWindow {
                 width: parent.width
                 height: root.searchHeight
 
-                TintedSvgIcon {
+                SvgIcon {
                     size: 26
-                    color: root.textSecondary
+                    iconColor: root.textSecondary
                     source: Qt.resolvedUrl("../icons/assets/search.svg")
                     anchors.left: parent.left
                     anchors.leftMargin: 28
@@ -323,28 +331,7 @@ PanelWindow {
                     }
 
                     Keys.onPressed: function (event) {
-                        if (event.key === Qt.Key_Escape) {
-                            root.open = false;
-                            event.accepted = true;
-                        } else if (event.key === Qt.Key_Space && (event.modifiers & Qt.MetaModifier)) {
-                            root.open = false;
-                            event.accepted = true;
-                        } else if (event.key === Qt.Key_Up) {
-                            list.currentIndex = Math.max(0, list.currentIndex - 1);
-                            event.accepted = true;
-                        } else if (event.key === Qt.Key_Down) {
-                            list.currentIndex = Math.min(list.count - 1, list.currentIndex + 1);
-                            event.accepted = true;
-                        } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                            root.launch(root.results[list.currentIndex]);
-                            event.accepted = true;
-                        } else if (event.key === Qt.Key_Tab && !(event.modifiers & Qt.ShiftModifier) && list.count > 0) {
-                            list.currentIndex = (list.currentIndex + 1) % list.count;
-                            event.accepted = true;
-                        } else if (event.key === Qt.Key_Tab && (event.modifiers & Qt.ShiftModifier) && list.count > 0) {
-                            list.currentIndex = (list.currentIndex - 1 + list.count) % list.count;
-                            event.accepted = true;
-                        }
+                        listKeys.press(event)
                     }
 
                     Text {
@@ -446,7 +433,7 @@ PanelWindow {
                     Rectangle {
                         anchors.fill: parent
                         radius: root.rowRadius
-                        color: Colors.palette.m3primary
+                        color: Colors.m3primary
                         opacity: appRow.active ? 0.22 : 0
                         Behavior on opacity {
                             NumberAnimation {
@@ -546,9 +533,9 @@ PanelWindow {
                             anchors.verticalCenter: parent.verticalCenter
                         }
 
-                        TintedSvgIcon {
+                        SvgIcon {
                             size: 26
-                            color: root.textSecondary
+                            iconColor: root.textSecondary
                             source: Qt.resolvedUrl("../icons/assets/return-key.svg")
                             anchors.verticalCenter: parent.verticalCenter
                         }

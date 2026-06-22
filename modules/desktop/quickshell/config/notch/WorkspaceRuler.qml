@@ -49,7 +49,7 @@ Item {
                         width: 1
                         height: 6
                         radius: 0.5
-                        color: root.inSpecialWs ? Colors.palette.m3tertiary : Colors.palette.m3onSurfaceVariant
+                        color: root.inSpecialWs ? Colors.m3tertiary : Colors.m3onSurfaceVariant
                         opacity: 0.3
                         x: tick.width / 2 + modelData * (Constants.stepPx / 6) - width / 2
                         anchors.verticalCenter: tick.verticalCenter
@@ -60,10 +60,10 @@ Item {
                     width: 2
                     height: 14
                     radius: 1
-                    color: root.inSpecialWs ? Colors.palette.m3tertiary
-                         : tick.isActive ? Colors.palette.m3primary
-                         : tick.isOccupied ? Colors.palette.m3onSurface
-                         : Colors.palette.m3onSurfaceVariant
+                    color: root.inSpecialWs ? Colors.m3tertiary
+                         : tick.isActive ? Colors.m3primary
+                         : tick.isOccupied ? Colors.m3onSurface
+                         : Colors.m3onSurfaceVariant
                     opacity: tick.isActive || tick.isOccupied ? 1 : 0.5
                     anchors.horizontalCenter: tick.horizontalCenter
                     anchors.verticalCenter: tick.verticalCenter
@@ -78,7 +78,7 @@ Item {
 
     Text {
         text: root.inSpecialWs ? "S" : root.indicatorWs
-        color: Colors.palette.m3primary
+        color: Colors.m3primary
         font.family: Fonts.family
         font.pixelSize: Fonts.sizeNotch
         font.weight: Fonts.weightBold

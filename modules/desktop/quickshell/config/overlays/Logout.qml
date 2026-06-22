@@ -104,38 +104,18 @@ PanelWindow {
         onClicked: root.open = false
     }
 
-    Item {
+    KeyNavigator {
         id: panelFocus
         anchors.fill: parent
         focus: root.open
         enabled: root.open
         visible: root.open
-
-        Keys.onPressed: function (event) {
-            if (event.key === Qt.Key_Escape) {
-                root.open = false;
-                event.accepted = true;
-            } else if (event.key === Qt.Key_Space && (event.modifiers & Qt.MetaModifier)) {
-                root.open = false;
-                event.accepted = true;
-            } else if (event.key === Qt.Key_Up) {
-                list.currentIndex = Math.max(0, list.currentIndex - 1);
-                event.accepted = true;
-            } else if (event.key === Qt.Key_Down) {
-                list.currentIndex = Math.min(list.count - 1, list.currentIndex + 1);
-                event.accepted = true;
-            } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                const action = root.actions[list.currentIndex];
-                if (action)
-                    root.runAction(action);
-                event.accepted = true;
-            } else if (event.key === Qt.Key_Tab && !(event.modifiers & Qt.ShiftModifier) && list.count > 0) {
-                list.currentIndex = (list.currentIndex + 1) % list.count;
-                event.accepted = true;
-            } else if (event.key === Qt.Key_Tab && (event.modifiers & Qt.ShiftModifier) && list.count > 0) {
-                list.currentIndex = (list.currentIndex - 1 + list.count) % list.count;
-                event.accepted = true;
-            }
+        targetList: list
+        onClose: () => { root.open = false }
+        onAccept: () => {
+            const action = root.actions[list.currentIndex]
+            if (action)
+                root.runAction(action)
         }
 
         Rectangle {
@@ -169,7 +149,7 @@ PanelWindow {
                     Rectangle {
                         anchors.fill: parent
                         radius: root.rowRadius
-                        color: Colors.palette.m3primary
+                        color: Colors.m3primary
                         opacity: actionRow.active ? 0.22 : 0
                         Behavior on opacity {
                             NumberAnimation { duration: 80 }
@@ -182,7 +162,7 @@ PanelWindow {
                         font.family: Fonts.family
                         font.pixelSize: 18
                         font.weight: actionRow.active ? Fonts.weightBold : Fonts.weightBaseline
-                        color: Colors.palette.m3onSurface
+                        color: Colors.m3onSurface
                     }
 
                     MouseArea {

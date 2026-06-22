@@ -61,9 +61,9 @@ Item {
         anchors.centerIn: parent
     }
 
-    TintedSvgIcon {
+    SvgIcon {
         visible: root.showEthernetIcon
-        color: "white"
+        iconColor: "white"
         size: root.iconSize
         source: Qt.resolvedUrl("../icons/assets/ethernet.svg")
         anchors.centerIn: parent

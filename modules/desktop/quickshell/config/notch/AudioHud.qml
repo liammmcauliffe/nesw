@@ -19,9 +19,9 @@ Item {
 
     readonly property int barHeight: 6
     readonly property int barRadius: barHeight / 2
-    readonly property color barFg: Colors.palette.m3primary
-    readonly property color barBg: Colors.palette.m3onSurfaceVariant
-    readonly property color barMuted: Colors.palette.m3onSurfaceVariant
+    readonly property color barFg: Colors.m3primary
+    readonly property color barBg: Colors.m3onSurfaceVariant
+    readonly property color barMuted: Colors.m3onSurfaceVariant
 
     readonly property url currentIcon: {
         if (root.muted)
@@ -31,8 +31,8 @@ Item {
         if (root.volume < 0.33)
             return Qt.resolvedUrl("../icons/assets/volume-low.svg")
         if (root.volume < 0.66)
-            return Qt.resolvedUrl("../icons/assets/volume-med.svg")
-        return Qt.resolvedUrl("../icons/assets/volume-high.svg")
+            return Qt.resolvedUrl("../icons/assets/volume-medium.svg")
+        return Qt.resolvedUrl("../icons/assets/volume-max.svg")
     }
 
     visible: opacity > 0
@@ -47,13 +47,13 @@ Item {
         width: parent.width
         height: Math.max(icon.implicitHeight, root.barHeight)
 
-        TintedSvgIcon {
+        SvgIcon {
             id: icon
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
             source: root.currentIcon
             size: 22
-            color: root.muted ? root.barMuted : root.barFg
+            iconColor: root.muted ? root.barMuted : root.barFg
         }
 
         Rectangle {
