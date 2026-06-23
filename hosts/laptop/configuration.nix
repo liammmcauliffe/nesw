@@ -98,7 +98,11 @@ in {
         enable = true;
         settings = {
             default_session = {
+<<<<<<< HEAD
                 command = "${greeterLauncher}/bin/nesw-greeter";
+=======
+                command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd hyprland";
+>>>>>>> 560ef92 (tuigreet)
                 user = "greeter";
             };
         };

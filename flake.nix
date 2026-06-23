@@ -35,9 +35,8 @@
         system = "x86_64-linux";
 
         # change this to your system username before the first rebuild
-        userName = "YOUR_USERNAME";
-        # full name eg. "John Doe"
-        userDescription = "John Doe";
+        userName = "liam";
+        userDescription = "Liam McAuliffe";
 
         host = import ./hosts/laptop;
     in {
