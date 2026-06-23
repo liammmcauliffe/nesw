@@ -92,7 +92,7 @@
         enable = true;
         settings = {
             initial_session = {
-                command = "hyprland";
+                command = "start-hyprland";
                 user = "${userName}";
             };
             default_session = {
