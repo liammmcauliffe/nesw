@@ -38,3 +38,4 @@ hl.workspace_rule({ workspace = "f[1]s[false]", gaps_out = vars.singleWindowGaps
 hl.layer_rule({ match = { namespace = "logout_dialog" }, animation = "fade" })
 hl.layer_rule({ match = { namespace = "nesw-launcher" }, animation = "fade" })
 hl.layer_rule({ match = { namespace = "nesw-topbar" }, blur = true, ignore_alpha = 0.1 })
+hl.layer_rule({ match = { namespace = "nesw-.*" }, no_anim = true })

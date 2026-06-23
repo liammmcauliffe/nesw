@@ -122,6 +122,7 @@ PanelWindow {
 
     property bool slideReady: false
     property bool workspaceScrubbing: false
+    property bool initialWorkspaceSync: true
 
     readonly property int indicatorWs: workspaceScrubbing ? displayNumber : activeWs
 
@@ -139,6 +140,10 @@ PanelWindow {
 
         audioMode = false
         animateSlideTo(activeWs)
+        if (initialWorkspaceSync) {
+            initialWorkspaceSync = false
+            return
+        }
         reveal()
     }
 
