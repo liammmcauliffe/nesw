@@ -88,11 +88,17 @@
         portalPackage = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
     };
 
-    services.displayManager = {
-        defaultSession = "hyprland";
-        sddm = {
-            enable = true;
-            wayland.enable = true;
+    services.greetd = {
+        enable = true;
+        settings = {
+            initial_session = {
+                command = "hyprland";
+                user = "${userName}";
+            };
+            default_session = {
+                command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd hyprland";
+                user = "greeter";
+            };
         };
     };
 
