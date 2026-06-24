@@ -35,7 +35,9 @@
         system = "x86_64-linux";
 
         # change this to your system username before the first rebuild
-        userName = "liam";
+        userName = "YOUR_USERNAME";
+        # full name eg. "John Doe"
+        userDescription = "John Doe";
 
         host = import ./hosts/laptop;
     in {
@@ -47,7 +49,7 @@
         nixosConfigurations.main = nixpkgs.lib.nixosSystem {
             inherit system;
 
-            specialArgs = {inherit inputs hyprland userName;};
+            specialArgs = {inherit inputs hyprland userName userDescription;};
             
             modules = [
                 home-manager.nixosModules.home-manager

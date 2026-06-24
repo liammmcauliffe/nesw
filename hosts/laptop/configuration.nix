@@ -3,6 +3,7 @@
     pkgs,
     hyprland,
     userName,
+    userDescription,
     ...
 }: {
     imports =
@@ -149,6 +150,7 @@
 
     users.users.${userName} = {
         isNormalUser = true;
+        description = userDescription;
         extraGroups = ["wheel" "networkmanager" "video" "audio"];
         shell = pkgs.fish;
     };
