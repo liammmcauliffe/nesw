@@ -2,10 +2,15 @@
     config,
     pkgs,
     hyprland,
+    quickshell,
     userName,
     userDescription,
     ...
-}: {
+}: let
+    greeterLauncher = import ../../modules/desktop/quickshell/greeter.nix {
+        inherit pkgs quickshell hyprland userName;
+    };
+in {
     imports =
         [
             ./hardware-configuration.nix
@@ -92,12 +97,8 @@
     services.greetd = {
         enable = true;
         settings = {
-            initial_session = {
-                command = "start-hyprland";
-                user = "${userName}";
-            };
             default_session = {
-                command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd start-hyprland";
+                command = "${greeterLauncher}/bin/nesw-greeter";
                 user = "greeter";
             };
         };
@@ -108,6 +109,7 @@
     security.polkit.enable = true;
     services.gnome.gnome-keyring.enable = true;
     security.pam.services.login.enableGnomeKeyring = true;
+    security.pam.services.greetd.enableGnomeKeyring = true;
 
     # location for gammastep
     services.geoclue2.enable = true;
@@ -146,6 +148,16 @@
             monospace = ["Monaspace Neon NF" "Noto Sans Mono CJK SC"];
             emoji = ["Noto Color Emoji"];
         };
+    };
+
+    users.groups.greeter = {};
+
+    users.users.greeter = {
+        isSystemUser = true;
+        group = "greeter";
+        home = "/var/lib/greeter";
+        createHome = true;
+        shell = pkgs.nologin;
     };
 
     users.users.${userName} = {
