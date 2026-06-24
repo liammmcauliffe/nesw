@@ -2,13 +2,17 @@
     config,
     pkgs,
     hyprland,
+    quickshell,
     userName,
     ...
-}: {
+}: let
+    qsPkg = quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
+in {
     imports =
         [
             ./hardware-configuration.nix
             ../../modules/drivers
+            ../../modules/desktop/quickshell
         ]
         ++ (
             if builtins.pathExists ./local.nix
@@ -88,6 +92,8 @@
         portalPackage = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
     };
 
+    services.quickshell.greeter.enable = true;
+
     services.greetd = {
         enable = true;
         settings = {
@@ -96,7 +102,7 @@
                 user = "${userName}";
             };
             default_session = {
-                command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd start-hyprland";
+                command = "${pkgs.cage}/bin/cage -- ${qsPkg}/bin/quickshell -p /etc/xdg/quickshell/greeter";
                 user = "greeter";
             };
         };
@@ -123,6 +129,7 @@
     environment.systemPackages = with pkgs; [
         git
         app2unit
+        cage
         grim
         slurp
     ];
