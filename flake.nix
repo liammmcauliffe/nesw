@@ -47,7 +47,7 @@
         nixosConfigurations.main = nixpkgs.lib.nixosSystem {
             inherit system;
 
-            specialArgs = {inherit inputs hyprland quickshell userName;};
+            specialArgs = {inherit inputs hyprland userName;};
             
             modules = [
                 home-manager.nixosModules.home-manager
