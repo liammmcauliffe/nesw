@@ -157,7 +157,7 @@ in {
         group = "greeter";
         home = "/var/lib/greeter";
         createHome = true;
-        shell = pkgs.nologin;
+        shell = pkgs.shadow;
     };
 
     users.users.${userName} = {
