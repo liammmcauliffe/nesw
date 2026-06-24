@@ -4,8 +4,10 @@ import QtQuick
 import Quickshell.Services.Greetd
 import qs.common
 
-QtObject {
+Item {
     id: root
+
+    visible: false
 
     property string password: ""
     property string statusText: ""
