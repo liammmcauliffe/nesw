@@ -19,10 +19,13 @@
         }
     '';
 
-    greeterCommon = pkgs.runCommand "nesw-greeter-common" {} ''
-        cp -r ${./config/common}/. $out/
-        cp ${sessionFile} $out/Session.qml
-    '';
+    greeterCommon = pkgs.linkFarm "nesw-greeter-common" [
+        {name = "Colors.qml"; path = ./config/common/Colors.qml;}
+        {name = "Constants.qml"; path = ./config/common/Constants.qml;}
+        {name = "Fonts.qml"; path = ./config/common/Fonts.qml;}
+        {name = "KeyNavigator.qml"; path = ./config/common/KeyNavigator.qml;}
+        {name = "Session.qml"; path = sessionFile;}
+    ];
 
     greeterDir = pkgs.linkFarm "nesw-greeter" [
         {name = "shell.qml"; path = ./greeter/shell.qml;}
