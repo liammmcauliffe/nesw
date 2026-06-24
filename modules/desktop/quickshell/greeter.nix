@@ -19,14 +19,21 @@
         }
     '';
 
-    greeterDir = pkgs.runCommand "nesw-greeter-config" {} ''
-        cp -r ${./greeter}/. $out/
-        ln -s ${./config/icons} $out/icons
-        ln -s ${./config/status} $out/status
-        mkdir -p $out/common
-        cp -r ${./config/common}/. $out/common/
-        cp ${sessionFile} $out/common/Session.qml
+    greeterCommon = pkgs.runCommand "nesw-greeter-common" {} ''
+        cp -r ${./config/common}/. $out/
+        cp ${sessionFile} $out/Session.qml
     '';
+
+    greeterDir = pkgs.linkFarm "nesw-greeter" [
+        {name = "shell.qml"; path = ./greeter/shell.qml;}
+        {name = "GreeterScreen.qml"; path = ./greeter/GreeterScreen.qml;}
+        {name = "GreeterAuth.qml"; path = ./greeter/GreeterAuth.qml;}
+        {name = "GreeterClock.qml"; path = ./greeter/GreeterClock.qml;}
+        {name = "PasswdDisplayName.qml"; path = ./greeter/PasswdDisplayName.qml;}
+        {name = "common"; path = greeterCommon;}
+        {name = "icons"; path = ./config/icons;}
+        {name = "status"; path = ./config/status;}
+    ];
 
     quickshellDir = pkgs.linkFarm "quickshell" [
         {name = "nesw"; path = ./config;}
